@@ -20,39 +20,46 @@ def tPrint(message):
 model = WhisperModel("large-v2", device="cuda", compute_type="float16")
 
 # Initialize PyAudio and WebRTC VAD
-FORMAT = pyaudio.paInt16
-CHANNELS = 1
-RATE = 16000
+SAMPLE_RATE = 16000
 FRAME_DURATION_MS = 30  # Frame duration in milliseconds (10, 20, or 30 ms)
-FRAME_SIZE = int(RATE * FRAME_DURATION_MS / 1000)  # Frame size in samples
+FRAME_SIZE = int(SAMPLE_RATE * FRAME_DURATION_MS / 1000)  # Frame size in samples
+MAX_SECONDS = 10
+SILENCE_TIMEOUT = 1
 
 audio_interface = pyaudio.PyAudio()
 vad = webrtcvad.Vad()
-vad.set_mode(1)  # Adjust VAD aggressiveness (0-3)
+vad.set_mode(3)  # Adjust VAD aggressiveness (0-3)
 
 audio_queue = queue.Queue()
 
 def get_audio_input():
-    stream = audio_interface.open(format=FORMAT,
-                                  channels=CHANNELS,
-                                  rate=RATE,
+    stream = audio_interface.open(format=pyaudio.paInt16,
+                                  channels=1, # 1 for mono
+                                  rate=SAMPLE_RATE,
                                   input=True,
                                   frames_per_buffer=FRAME_SIZE)
     return stream
 
 def is_speech(frame):
-    return vad.is_speech(frame, RATE)
+    return vad.is_speech(frame, SAMPLE_RATE)
 
 def process_audio():
     stream = get_audio_input()
+
     frames = []
-    while True:
-        frame = stream.read(FRAME_SIZE)
-        if is_speech(frame):
-            frames.append(frame)
-        else:
-            if frames:
-                break
+
+    start_time = time.time()
+    last_voice_time = None
+    while time.time()-start_time < MAX_SECONDS:
+        data=stream.read(FRAME_SIZE)
+        if vad.is_speech(data, SAMPLE_RATE):
+            # print("Frame is speech")
+            frames.append(data)
+            last_voice_time = time.time()
+        # else:
+            # print("Frame is not speech")
+        if last_voice_time and time.time() - last_voice_time > SILENCE_TIMEOUT:
+            break
     return b''.join(frames)
 
 def transcribe_audio(audio_data):
