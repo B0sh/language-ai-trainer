@@ -3,3 +3,4 @@ pyaudio
 torch
 numpy<2
 openai-whisper
+webrtcvad
