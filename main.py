@@ -2,7 +2,7 @@ import eel
 from audio import AudioTranscriptionEngine
 from conversation import ConversationEngine
 
-eel.init('web')
+eel.init('web-src/build')
 
 audio = AudioTranscriptionEngine()
 conversation = ConversationEngine()
@@ -17,4 +17,4 @@ def start_listening():
 
     return text
 
-eel.start('index.html', size=(800, 600))
+eel.start('index.html', size=(800, 600), cmdline_args=['--disable-extensions'])
