@@ -7,6 +7,14 @@ import queue
 import torch
 from faster_whisper import WhisperModel
 import numpy as np
+import time
+
+last_time = time.time()
+def tPrint(message):
+    global last_time
+    out = (time.time() - last_time)*1000
+    last_time = time.time()
+    print(f"[{out:.2f}ms] {message}")
 
 # Initialize Whisper model with CUDA support
 model = WhisperModel("large-v2", device="cuda", compute_type="float16")
@@ -49,7 +57,7 @@ def process_audio():
 
 def transcribe_audio(audio_data):
     audio_array = np.frombuffer(audio_data, dtype=np.int16).astype(np.float32) / 32768.0
-    segments, _ = model.transcribe(audio_array, beam_size=5)
+    segments, _ = model.transcribe(audio_array, beam_size=5, language="ja")
     return ' '.join([segment.text for segment in segments])
 
 def chat_with_gpt(prompt):
@@ -62,14 +70,16 @@ def chat_with_gpt(prompt):
     # return response.choices[0].text.strip()
 
 def main():
-    print("Listening...")
+    tPrint("Listening...")
     while True:
+        tPrint(f"Start listening")
         audio_data = process_audio()
         if audio_data:
+            tPrint("Start transcribing")
             transcript = transcribe_audio(audio_data)
-            print(f"User: {transcript}")
+            tPrint(f"User: {transcript}")
             response = chat_with_gpt(transcript)
-            print(f"ChatGPT: {response}")
+            tPrint(f"ChatGPT: {response}")
 
 if __name__ == "__main__":
     main()
