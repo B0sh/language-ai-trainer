@@ -3,3 +3,4 @@ pyaudio
 numpy<2
 faster-whisper
 webrtcvad
+eel
