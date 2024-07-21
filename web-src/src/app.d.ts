@@ -1,3 +1,8 @@
+export interface Eel {
+	expose(fn: Function, key: string): void;
+	[key: string]: (...args: any[]) => (...args: any[]) => Promise<any>;
+}
+
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
 declare global {
@@ -7,6 +12,10 @@ declare global {
 		// interface PageData {}
 		// interface PageState {}
 		// interface Platform {}
+	}
+
+	interface Window {
+		eel: Eel;
 	}
 }
 

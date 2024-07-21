@@ -1,3 +1,5 @@
-<section>
-asdf
-</section>
+<script>
+	import Terminal from './Terminal.svelte';
+</script>
+
+<Terminal />
