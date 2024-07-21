@@ -1,4 +1,5 @@
+export type OpenAIMessageRole = 'system' | 'user' | 'assistant';
 export interface OpenAIMessage {
-	role: 'system' | 'user' | 'assistant';
-	content: string;
+    role: OpenAIMessageRole;
+    content: string;
 }

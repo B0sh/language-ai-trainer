@@ -13,10 +13,10 @@ class ConversationEngine:
             }
         ]
 
-
-    def send(self, input):
+    def addUserMessage(self, input):
         self.messages.append({"role": "user", "content": input})
 
+    def process(self):
         response = self.client.chat.completions.create(
             model="gpt-4o-mini",
             max_tokens=256,

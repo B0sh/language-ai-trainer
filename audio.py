@@ -23,11 +23,7 @@ class AudioTranscriptionEngine:
 
     def listen(self):
         audio_data = self.process_audio()
-        if audio_data:
-            transcript = self.transcribe_audio(audio_data)
-            return transcript
-        else:
-            return None
+        return audio_data
 
     def get_audio_input(self):
         stream = self.audio_interface.open(format=pyaudio.paInt16,
