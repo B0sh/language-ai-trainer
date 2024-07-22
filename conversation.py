@@ -10,10 +10,10 @@ SYSTEM_PROMPT = """
 例文
 
 ユーザー：
-こんにちわ！
+こんにちは！図書館で行きましたよ。
 
 あなた：
-修正）こんにちは！
+修正） こんにちは！図書館に行きましたよ。
 ノート）間違ったことを説明する
 こんにちは！お元気ですか？  
 
@@ -32,6 +32,7 @@ class ConversationEngine:
         ]
 
     def addUserMessage(self, input):
+        print("input: " + input)
         self.messages.append({"role": "user", "content": input})
 
     def process(self):
@@ -44,6 +45,8 @@ class ConversationEngine:
         response = response.choices[0].message.content.strip()
 
         self.messages.append({"role": "assistant", "content": response})
+
+        print("response: " + response)
 
         return response
 

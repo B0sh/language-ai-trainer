@@ -27,5 +27,9 @@ def start_listening():
     eel.setProcessingState('')
     return None
 
+@eel.expose
+def get_messages():
+    return conversation.getMessages()
+
 
 eel.start('index.html', size=(800, 600), cmdline_args=['--disable-extensions'])

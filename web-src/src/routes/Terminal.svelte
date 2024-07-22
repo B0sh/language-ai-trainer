@@ -15,9 +15,11 @@
 		messages = _messages;
 	}
 
-    onMount(() => {
+    onMount(async () => {
         window.eel.expose(setProcessingState, 'setProcessingState');
         window.eel.expose(setMessages, 'setMessages');
+
+        messages = await window.eel.get_messages()();
     });
 
     async function startListening() {

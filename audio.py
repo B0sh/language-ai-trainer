@@ -16,7 +16,7 @@ SILENCE_TIMEOUT = 1
 
 class AudioTranscriptionEngine:
     def __init__(self):
-        self.model =  WhisperModel("large-v2", device="cuda", compute_type="float16")
+        self.model =  WhisperModel("large-v3", device="cuda", compute_type="float16")
         self.vad = webrtcvad.Vad()
         self.vad.set_mode(3)  # Adjust VAD aggressiveness (0-3)
         self.audio_interface = pyaudio.PyAudio()
