@@ -1,6 +1,6 @@
 <script lang="ts">
     import { afterUpdate, beforeUpdate } from 'svelte';
-    import type { OpenAIMessage } from '../models/openai-message';
+    import type { CorrectionMessage, OpenAIMessage } from '../models/openai-message';
     
 	let div: any;
 	let autoscroll = false;
@@ -18,7 +18,7 @@
 		}
 	});
 
-    export let messages: OpenAIMessage[];
+    export let messages: CorrectionMessage[];
 </script>
 
 <div class="container">
@@ -33,10 +33,23 @@
                 {#if message.role === 'assistant'}
                     <article class="assistant">
                         <span>{message.content}</span>
+
+
                     </article>
                 {:else}
                     <article class="user">
                         <span>{message.content}</span>
+
+                        {#if message.correctedText}
+                            <div class="corrected">
+                                {message.correctedText}
+
+                                {#if message.notes}
+                                    {message.notes}
+                                {/if}
+                            </div>
+                        {/if}
+
                     </article>
                 {/if}
             {/each}
@@ -114,55 +127,14 @@
         margin-left: 25%;
 	}
 
+    .user .corrected {
+        margin-top: 0.5em;
+        margin-left: 25%;
+    }
+
 	@media (prefers-reduced-motion) {
 		.chat {
 			scroll-behavior: auto;
 		}
 	}
-    /* .history-container {
-        max-width: 32rem;
-        margin: 0 auto;
-        overflow-y: auto;
-        height: 440px;
-        scrollbar-width: none;
-        display: flex;
-        position: relative;
-    }
-
-    .history {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        justify-content: flex-end;
-        font-size: 1rem;
-        flex: 1 1 auto; 
-        height: 0;
-        scroll-behavior: smooth;
-    }
-
-    .user {
-        display: flex;
-        justify-content: flex-end;
-    }
-    .assistant {
-        display: flex;
-        justify-content: flex-start;
-    }
-
-    .assistant p {
-        margin-right: 25%;
-        background: #eee;
-        border-radius: 1rem;
-        padding: .5rem;
-    }
-
-    .user p {
-        margin-left: 25%;
-        text-align: right;
-        background: linear-gradient(to bottom, #00D0EA 0%, #0085D1 100%);
-        background-attachment: fixed;
-        border-radius: 1rem;
-        padding: .5rem;
-        color: white;
-    } */
 </style>

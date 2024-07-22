@@ -2,17 +2,17 @@
     import { onMount } from 'svelte';
 
     import History from './History.svelte';
-    import type { OpenAIMessage, OpenAIMessageRole } from '../models/openai-message';
+    import type { CorrectionMessage, OpenAIMessage, OpenAIMessageRole } from '../models/openai-message';
 
     let processing: string = '';
-    let messages: OpenAIMessage[] = [];
+    let messages: CorrectionMessage[] = [];
 
     function setProcessingState(state: string) {
         processing = state;
     }
 
-	function setMessages(_messages: OpenAIMessage[]) {
-		messages = _messages.filter((m) => m.role !== 'system');
+	function setMessages(_messages: CorrectionMessage[]) {
+		messages = _messages;
 	}
 
     onMount(() => {
@@ -22,13 +22,19 @@
 
     async function startListening() {
         setProcessingState('聞いている');
-        const result: string = await window.eel.start_listening()();
-        // setProcessingState('');
-        // messages = result.filter((m) => m.role !== 'system');
+        messages = await window.eel.start_listening()();
 
-		var utterance = new SpeechSynthesisUtterance(result);
+        const lastMessage = messages[messages.length - 1].content;
+
+        setProcessingState('音声化中…');
+
+		const utterance = new SpeechSynthesisUtterance(lastMessage);
 		utterance.lang = 'ja-JP'; 
 		window.speechSynthesis.speak(utterance);
+
+        setProcessingState('');
+
+        console.log(messages);
     }
 
     function fakeMessage() {

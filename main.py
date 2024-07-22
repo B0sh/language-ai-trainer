@@ -18,12 +18,11 @@ def start_listening():
 
         if text:
             conversation.addUserMessage(text)
-            eel.setMessages(conversation.messages)
+            eel.setMessages(conversation.getMessages())
             eel.setProcessingState('出力中…')
             response = conversation.process()
-            eel.setMessages(conversation.messages)
-            eel.setProcessingState('')
-            return response
+
+            return conversation.getMessages()
 
     eel.setProcessingState('')
     return None
