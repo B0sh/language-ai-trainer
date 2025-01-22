@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { History } from './History';
-import type { CorrectionMessage, OpenAIMessageRole } from '../models/openai-message';
-import './Terminal.css';
+import React, { useEffect, useState } from "react";
+import type {
+    CorrectionMessage,
+    OpenAIMessageRole,
+} from "../../models/openai-message";
+import "./Terminal.css";
+import { History } from "./History";
 
 export const Terminal: React.FC = () => {
-    const [processing, setProcessing] = useState<string>('');
+    const [processing, setProcessing] = useState<string>("");
     const [messages, setMessages] = useState<CorrectionMessage[]>([]);
 
     useEffect(() => {
         // window.eel.expose(setProcessingState, 'setProcessingState');
         // window.eel.expose(setMessagesState, 'setMessages');
-
         // const fetchMessages = async () => {
         //     const initialMessages = await window.eel.get_messages()();
         //     setMessages(initialMessages);
         // };
-
         // fetchMessages();
     }, []);
 
@@ -28,7 +29,7 @@ export const Terminal: React.FC = () => {
     };
 
     const startListening = async () => {
-        setProcessingState('聞いている');
+        setProcessingState("聞いている");
         // const newMessages = await window.eel.start_listening()();
         // setMessages(newMessages);
 
@@ -44,14 +45,17 @@ export const Terminal: React.FC = () => {
     };
 
     const fakeMessage = () => {
-        let role: OpenAIMessageRole = 'assistant';
-        if (messages.length === 0 || messages[messages.length - 1].role === 'assistant') {
-            role = 'user';
+        let role: OpenAIMessageRole = "assistant";
+        if (
+            messages.length === 0 ||
+            messages[messages.length - 1].role === "assistant"
+        ) {
+            role = "user";
         }
 
         setMessages([
             ...messages,
-            { role: role, content: `${messages.length} 回目のメッセージ` }
+            { role: role, content: `${messages.length} 回目のメッセージ` },
         ]);
     };
 
@@ -60,8 +64,8 @@ export const Terminal: React.FC = () => {
             <History messages={messages} />
             <div className="actions">
                 <button onClick={fakeMessage}> 偽る </button>
-                <button onClick={startListening} disabled={processing !== ''}>
-                    {processing || '話す'}
+                <button onClick={startListening} disabled={processing !== ""}>
+                    {processing || "話す"}
                 </button>
             </div>
         </div>
