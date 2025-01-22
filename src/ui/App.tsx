@@ -1,5 +1,18 @@
-import * as React from 'react';
-import { createRoot } from 'react-dom/client';
+import * as React from "react";
+import { createRoot } from "react-dom/client";
+
+import "@shoelace-style/shoelace/dist/themes/light.css";
+import { setBasePath } from "@shoelace-style/shoelace/dist/utilities/base-path";
+import { Layout } from "./Layout";
+import { Layout2 } from "./Layout2";
+
+setBasePath(
+  "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.19.1/cdn/"
+);
 
 const root = createRoot(document.body);
-root.render(<h2>Hello from React!</h2>);
+root.render(
+  <React.StrictMode>
+    <Layout2 />
+  </React.StrictMode>
+);
