@@ -3,7 +3,8 @@ import { createRoot } from "react-dom/client";
 
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import { setBasePath } from "@shoelace-style/shoelace/dist/utilities/base-path";
-import { Layout } from "./Layout";
+import "./index.css";
+// import { Layout } from "./Layout";
 import { Layout2 } from "./Layout2";
 
 setBasePath(
