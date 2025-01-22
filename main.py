@@ -3,7 +3,7 @@ from audio import AudioTranscriptionEngine
 from conversation import ConversationEngine
 import traceback
 
-eel.init('web-src/build')
+eel.init('web/dist')
 
 try:
     audio = AudioTranscriptionEngine()
@@ -32,7 +32,6 @@ try:
     @eel.expose
     def get_messages():
         return conversation.getMessages()
-
 
     eel.start('index.html', size=(800, 600), cmdline_args=['--disable-extensions'])
 except Exception as e:
