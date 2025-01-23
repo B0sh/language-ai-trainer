@@ -13,28 +13,26 @@ if (require("electron-squirrel-startup")) {
 
 let pythonProcess: ChildProcess;
 const createWindow = (): void => {
-    /*
-  console.log(__dirname);
+    // console.log(__dirname);
 
-  const pythonScript = path.join(__dirname, '../../server', 'service.py');
-  const pythonExecutable = process.platform === 'win32'
-    ? path.join(__dirname, '../..', '.venv', 'Scripts', 'python.exe')
-    : path.join(__dirname, '../..', '.venv', 'bin', 'python');
+    // const pythonScript = path.join(__dirname, '../../server', 'service.py');
+    // const pythonExecutable = process.platform === 'win32'
+    //   ? path.join(__dirname, '../..', '.venv', 'Scripts', 'python.exe')
+    //   : path.join(__dirname, '../..', '.venv', 'bin', 'python');
 
-  pythonProcess = spawn(pythonExecutable, [pythonScript]);
+    // pythonProcess = spawn(pythonExecutable, [pythonScript]);
 
-  pythonProcess.stdout.on('data', (data) => {
-    console.log(`Python stdout: ${data}`);
-  });
+    // pythonProcess.stdout.on('data', (data) => {
+    //   console.log(`Python stdout: ${data}`);
+    // });
 
-  pythonProcess.stderr.on('data', (data) => {
-    console.error(`Python stderr: ${data}`);
-  });
+    // pythonProcess.stderr.on('data', (data) => {
+    //   console.error(`Python stderr: ${data}`);
+    // });
 
-  pythonProcess.on('close', (code) => {
-    console.log(`Python process exited with code ${code}`);
-  });
-  */
+    // pythonProcess.on('close', (code) => {
+    //   console.log(`Python process exited with code ${code}`);
+    // });
 
     // Create the browser window.
     const mainWindow = new BrowserWindow({
@@ -44,15 +42,6 @@ const createWindow = (): void => {
             preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
         },
     });
-
-    // session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-    //     callback({
-    //         responseHeaders: {
-    //             ...details.responseHeaders,
-    //             "Content-Security-Policy": ["default-src 'self'"],
-    //         },
-    //     });
-    // });
 
     // and load the index.html of the app.
     mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);

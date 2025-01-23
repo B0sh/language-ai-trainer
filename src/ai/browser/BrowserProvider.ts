@@ -20,7 +20,11 @@ export class BrowserProvider extends AIProvider {
         this.speechSynthesis = window.speechSynthesis;
     }
 
-    async textToSpeech(request: TTSRequest) {
+    validateConfig(): string {
+        return "";
+    }
+
+    async textToSpeech(request: TTSRequest): Promise<BrowserTTS> {
         const utterance = new SpeechSynthesisUtterance(request.text);
 
         if (request.speed) utterance.rate = request.speed;

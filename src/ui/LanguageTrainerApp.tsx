@@ -18,12 +18,9 @@ export const LanguageTrainerApp: React.FC = () => {
 
     const [settings, setSettings] = useState<AppSettings>(() => SettingsService.loadSettings());
 
-    useEffect(() => {
-        SettingsService.saveSettings(settings);
-        SettingsService.updateProviders(settings);
-    }, [settings]);
-
     const handleSettingsChange = (newSettings: AppSettings) => {
+        SettingsService.saveSettings(newSettings);
+        SettingsService.updateProviders(newSettings);
         setSettings(newSettings);
     };
 
@@ -67,7 +64,7 @@ export const LanguageTrainerApp: React.FC = () => {
                     onClick={() => setOpen(!open)}
                 ></SlIconButton>
 
-                <span className="title">Japanese Language AI Trainer</span>
+                <span className="title">Walden's AI Language Trainer</span>
             </header>
             <div className="container">
                 <nav>

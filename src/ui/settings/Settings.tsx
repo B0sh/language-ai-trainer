@@ -13,7 +13,10 @@ interface SettingsProps {
 
 export const Settings: React.FC<SettingsProps> = ({ settings, onSettingsChange }) => {
     return (
-        <div className="settings-container" style={{ padding: "20px", maxWidth: "600px", margin: "0 auto" }}>
+        <div
+            className="settings-container form-control"
+            style={{ padding: "20px", maxWidth: "600px", margin: "0 auto" }}
+        >
             <GeneralSettings settings={settings} onSettingsChange={onSettingsChange} />
 
             <SlDivider />

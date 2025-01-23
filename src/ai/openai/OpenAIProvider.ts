@@ -35,14 +35,19 @@ export class OpenAIProvider extends AIProvider {
         this.organization = config.organization;
     }
 
-    private validateConfig() {
+    validateConfig(): string {
         if (!this.apiKey) {
-            throw new Error("OpenAI API key not configured");
+            return "OpenAI API key is not configured";
         }
+
+        return "";
     }
 
     async generateText(prompt: string, options: LLMGenerationOptions = {}): Promise<LLMGenerationResult> {
-        this.validateConfig();
+        const validation = this.validateConfig();
+        if (validation) {
+            throw new Error(validation);
+        }
 
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",
@@ -79,7 +84,9 @@ export class OpenAIProvider extends AIProvider {
     }
 
     // async textToSpeech(text: string, options: TextToSpeechOptions = {}): Promise<TextToSpeechResult> {
-    //     this.validateConfig();
+    // const validation = this.validateConfig();
+    // if (validation) {
+    //     throw new Error(validation);
 
     //     const response = await fetch('https://api.openai.com/v1/audio/speech', {
     //         method: 'POST',
@@ -112,7 +119,10 @@ export class OpenAIProvider extends AIProvider {
     // }
 
     async speechToText(audioData: ArrayBuffer): Promise<SpeechToTextResult> {
-        this.validateConfig();
+        const validation = this.validateConfig();
+        if (validation) {
+            throw new Error(validation);
+        }
 
         const formData = new FormData();
         const audioBlob = new Blob([audioData], { type: "audio/wav" });

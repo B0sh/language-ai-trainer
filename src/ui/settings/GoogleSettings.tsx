@@ -27,6 +27,7 @@ export const GoogleSettings: React.FC<GoogleSettingsProps> = ({ settings, onSett
             <SlInput
                 label="API Key"
                 type="password"
+                required
                 value={settings.configs.google?.apiKey}
                 onSlChange={(e) => handleConfigChange("apiKey", (e.target as HTMLInputElement).value)}
             />

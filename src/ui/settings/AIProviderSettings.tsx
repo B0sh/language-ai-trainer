@@ -4,6 +4,9 @@ import { AppSettings } from "../../models/app-settings";
 import { AIProviderRegistry } from "../../ai/registry";
 import SlSelect from "@shoelace-style/shoelace/dist/react/select";
 import SlOption from "@shoelace-style/shoelace/dist/react/option";
+import SlAlert from "@shoelace-style/shoelace/dist/react/alert";
+import SlIcon from "@shoelace-style/shoelace/dist/react/icon";
+import { AIProvider } from "../../ai/interfaces";
 
 interface AIProviderSettingsProps {
     settings: AppSettings;
@@ -20,9 +23,39 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ settings
         });
     };
 
+    const active: AIProvider[] = [
+        AIProviderRegistry.getActiveProvider("tts"),
+        AIProviderRegistry.getActiveProvider("stt"),
+        AIProviderRegistry.getActiveProvider("llm"),
+    ];
+
+    const errors: Set<string> = new Set();
+    for (const provider of active) {
+        const validationMessage = provider.validateConfig();
+        if (validationMessage) {
+            errors.add(validationMessage);
+        }
+    }
+
+    let errorAlert = null;
+    if (errors.size > 0) {
+        errorAlert = (
+            <SlAlert variant="danger" open>
+                <SlIcon slot="icon" name="exclamation-octagon" />
+                <strong>Your selected configuration is invalid.</strong>
+                <br />
+                {Array.from(errors).map((e) => (
+                    <div key={e}>{e}</div>
+                ))}
+            </SlAlert>
+        );
+    }
+
     return (
         <div>
             <h2>AI Provider Settings</h2>
+            {errorAlert}
+
             <SlSelect
                 label="Text-to-Speech Provider"
                 value={settings.tts}
@@ -36,6 +69,7 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ settings
                         </SlOption>
                     ))}
             </SlSelect>
+
             <SlSelect
                 label="Speech-to-Text Provider"
                 value={settings.stt}

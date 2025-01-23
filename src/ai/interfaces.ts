@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-empty-function */
 export interface TTSRequest {
     text: string;
     language: string;
@@ -43,6 +45,10 @@ export abstract class AIProvider {
     abstract readonly name: string;
     abstract readonly description: string;
     abstract readonly capabilities: AICapabilities;
+
+    validateConfig(): string {
+        throw new Error("Method not implemented");
+    }
 
     textToSpeech?(request: TTSRequest): Promise<TTSAudio> {
         throw new Error("Text to speech not supported by this provider");

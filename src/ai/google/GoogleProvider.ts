@@ -32,14 +32,19 @@ export class GoogleProvider extends AIProvider {
         }
     }
 
-    private validateConfig() {
+    validateConfig(): string {
         if (!this.apiKey) {
-            throw new Error("Google API key not configured");
+            return "Google API key not configured";
         }
+
+        return "";
     }
 
     async textToSpeech(request: TTSRequest): Promise<GoogleTTSAudio> {
-        this.validateConfig();
+        const config = this.validateConfig();
+        if (config) {
+            throw new Error(config);
+        }
 
         if (!request.voice) {
             request.voice = "ja-JP-Neural2-B";
@@ -84,7 +89,10 @@ export class GoogleProvider extends AIProvider {
     }
 
     async generateText(prompt: string, options: LLMGenerationOptions = {}): Promise<LLMGenerationResult> {
-        this.validateConfig();
+        const validation = this.validateConfig();
+        if (validation) {
+            throw new Error(validation);
+        }
 
         if (!this.genAI) {
             throw new Error("Gemini API not initialized");

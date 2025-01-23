@@ -27,6 +27,7 @@ export const OpenAISettings: React.FC<OpenAISettingsProps> = ({ settings, onSett
             <SlInput
                 label="API Key"
                 type="password"
+                required
                 value={settings.configs.openai.apiKey}
                 onSlChange={(e) => handleConfigChange("apiKey", (e.target as HTMLInputElement).value)}
             />

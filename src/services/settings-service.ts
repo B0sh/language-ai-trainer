@@ -6,7 +6,9 @@ export class SettingsService {
 
     static loadSettings(): AppSettings {
         const saved = localStorage.getItem(this.STORAGE_KEY);
-        return saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
+        const settings = saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
+        this.updateProviders(settings);
+        return settings;
     }
 
     static saveSettings(settings: AppSettings): void {
@@ -25,11 +27,7 @@ export class SettingsService {
                 AIProviderRegistry.setActiveProvider(type, provider);
             };
 
-            await Promise.all([
-                updateProvider("tts"),
-                updateProvider("stt"),
-                updateProvider("llm")
-            ]);
+            await Promise.all([updateProvider("tts"), updateProvider("stt"), updateProvider("llm")]);
         } catch (error) {
             console.error("Failed to update AI providers:", error);
             throw error;
