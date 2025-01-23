@@ -7,12 +7,25 @@ import { useState, useEffect } from "react";
 import { DateTrainer } from "./date-trainer/DateTrainer";
 import { NumberTrainer } from "./number-trainer/NumberTrainer";
 import { Settings } from "./settings/Settings";
-import "./Layout.css";
+import "./LanguageTrainerApp.css";
 import { SpeakingTrainer } from "./speaking-trainer/SpeakingTrainer";
+import { AppSettings } from "../models/app-settings";
+import { SettingsService } from "../services/settings-service";
 
-export const Layout: React.FC = () => {
+export const LanguageTrainerApp: React.FC = () => {
     const [open, setOpen] = useState(true);
     const [selectedMenu, setSelectedMenu] = useState<string | null>(null);
+
+    const [settings, setSettings] = useState<AppSettings>(() => SettingsService.loadSettings());
+
+    useEffect(() => {
+        SettingsService.saveSettings(settings);
+        SettingsService.updateProviders(settings);
+    }, [settings]);
+
+    const handleSettingsChange = (newSettings: AppSettings) => {
+        setSettings(newSettings);
+    };
 
     useEffect(() => {
         const storedMenu = localStorage.getItem("selectedMenu");
@@ -39,7 +52,7 @@ export const Layout: React.FC = () => {
             case "number":
                 return <NumberTrainer />;
             case "settings":
-                return <Settings />;
+                return <Settings settings={settings} onSettingsChange={handleSettingsChange} />;
         }
         return null;
     };

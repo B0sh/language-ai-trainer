@@ -8,6 +8,13 @@ main {
     transition: margin-left 0.25s ease;
     padding: 1rem;
 }
+main.drawer-open {
+    margin-left: 220px;
+}
+
+main.drawer-closed {
+    margin-left: 0;
+}
 
 header {
     user-select: none;
@@ -35,12 +42,4 @@ header {
 }
 .menu-drawer sl-button::part(base) {
     --sl-input-height-large: 2rem;
-}
-
-.drawer-open {
-    margin-left: 220px;
-}
-
-.drawer-closed {
-    margin-left: 0;
 }
