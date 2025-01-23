@@ -1,6 +1,8 @@
 body {
     font-family: "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     margin: auto;
+    background-color: var(--sl-color-neutral-0);
+    color: var(--sl-color-neutral-900);
 }
 
 @font-face {

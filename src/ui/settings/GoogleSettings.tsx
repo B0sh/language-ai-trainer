@@ -19,7 +19,7 @@ export const GoogleSettings: React.FC<GoogleSettingsProps> = ({ settings, onSett
                 ...settings.configs,
                 google: {
                     ...settings.configs.google,
-                    [field]: value,
+                    [field]: value.trim(),
                 },
             },
         });
@@ -49,6 +49,7 @@ export const GoogleSettings: React.FC<GoogleSettingsProps> = ({ settings, onSett
                 value={settings.configs.google?.apiKey}
                 onSlChange={(e) => handleConfigChange("apiKey", (e.target as HTMLInputElement).value)}
             />
+
             <br />
 
             <SlAlert open>

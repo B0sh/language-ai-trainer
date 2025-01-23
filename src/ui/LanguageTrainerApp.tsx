@@ -26,7 +26,6 @@ export const LanguageTrainerApp: React.FC = () => {
 
     useEffect(() => {
         const storedMenu = localStorage.getItem("selectedMenu");
-        console.log(storedMenu);
         if (storedMenu) {
             setSelectedMenu(storedMenu);
         } else {
@@ -54,8 +53,24 @@ export const LanguageTrainerApp: React.FC = () => {
         return null;
     };
 
+    let theme = "";
+    if (settings.theme === "light") {
+        theme = "sl-theme-light";
+    } else if (settings.theme === "dark") {
+        theme = "sl-theme-dark";
+    } else if (settings.theme === "auto") {
+        if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            theme = "sl-theme-dark";
+        } else {
+            theme = "sl-theme-light";
+        }
+    }
+
+    // TODO: find a better solution to this
+    document.body.setAttribute("class", theme);
+
     return (
-        <>
+        <div className={theme}>
             <header>
                 <SlIconButton
                     className="menu-button"
@@ -117,6 +132,6 @@ export const LanguageTrainerApp: React.FC = () => {
                 </nav>
                 <main className={open ? "drawer-open" : "drawer-closed"}>{renderContent()}</main>
             </div>
-        </>
+        </div>
     );
 };

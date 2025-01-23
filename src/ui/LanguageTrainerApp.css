@@ -16,6 +16,17 @@ main.drawer-closed {
     margin-left: 0;
 }
 
+nav .selected {
+    text-align: left;
+    background-color: var(--sl-color-sky-100);
+    color: var(--sl-color-neutral-900);
+    border-radius: 0.5rem;
+    width: 100%;
+}
+nav .selected::part(base) {
+    justify-content: flex-start;
+}
+
 header {
     user-select: none;
     position: relative;
@@ -24,6 +35,7 @@ header {
     height: 40px;
     box-shadow: var(--sl-shadow-medium);
     z-index: calc(var(--sl-z-index-drawer) + 1);
+    background-color: var(--sl-color-sky-100);
 
     .menu-button {
         font-size: 1.5rem;
