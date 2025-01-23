@@ -37,3 +37,58 @@ body {
         margin-top: 0.5rem;
     }
 }
+sl-radio-group[align-right]::part(form-control) {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: var(--sl-spacing-3x-small) var(--gap-width);
+    align-items: center;
+}
+
+sl-radio-group[align-right]::part(form-control-label) {
+    display: contents;
+    order: 2;
+}
+
+sl-radio-group[align-right]::part(button-group) {
+    order: 1;
+    margin-left: auto;
+}
+
+sl-select[align-right]::part(form-control) {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: var(--sl-spacing-3x-small) var(--gap-width);
+    align-items: center;
+}
+
+sl-select[align-right]::part(form-control-label) {
+    display: contents;
+    order: 2;
+}
+
+sl-select[align-right]::part(form-control-input) {
+    width: 50%;
+    order: 1;
+    margin-left: auto;
+}
+
+sl-input[align-right]::part(form-control) {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: var(--sl-spacing-3x-small) var(--gap-width);
+    align-items: center;
+}
+
+sl-input[align-right]::part(form-control-label) {
+    display: contents;
+    order: 2;
+}
+
+sl-input[align-right]::part(form-control-input) {
+    width: 50%;
+    order: 1;
+    margin-left: auto;
+}

@@ -1,6 +1,8 @@
 import * as React from "react";
 import { AppSettings } from "../../models/app-settings";
 import SlInput from "@shoelace-style/shoelace/dist/react/input";
+import SlIconButton from "@shoelace-style/shoelace/dist/react/icon-button";
+import SlTooltip from "@shoelace-style/shoelace/dist/react/tooltip";
 
 interface OpenAISettingsProps {
     settings: AppSettings;
@@ -23,17 +25,32 @@ export const OpenAISettings: React.FC<OpenAISettingsProps> = ({ settings, onSett
 
     return (
         <div>
-            <h3>OpenAI Configuration</h3>
+            <h3>
+                OpenAI
+                <SlTooltip content="Learn how to get an API key">
+                    <SlIconButton
+                        name="box-arrow-up-right"
+                        onClick={() => {
+                            window.electron.ipcRenderer.invoke(
+                                "open-external-url",
+                                "https://platform.openai.com/account/api-keys"
+                            );
+                        }}
+                    />
+                </SlTooltip>
+            </h3>
+
             <SlInput
                 label="API Key"
                 type="password"
-                required
+                align-right
                 value={settings.configs.openai.apiKey}
                 onSlChange={(e) => handleConfigChange("apiKey", (e.target as HTMLInputElement).value)}
             />
             <SlInput
                 label="Organization ID (optional)"
                 type="text"
+                align-right
                 value={settings.configs.openai.organization}
                 onSlChange={(e) => handleConfigChange("organization", (e.target as HTMLInputElement).value)}
             />

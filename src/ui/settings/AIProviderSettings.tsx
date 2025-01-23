@@ -58,6 +58,7 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ settings
 
             <SlSelect
                 label="Text-to-Speech Provider"
+                align-right
                 value={settings.tts}
                 onSlChange={(e) => handleProviderChange("tts", (e.target as HTMLSelectElement).value)}
             >
@@ -72,6 +73,7 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ settings
 
             <SlSelect
                 label="Speech-to-Text Provider"
+                align-right
                 value={settings.stt}
                 onSlChange={(e) => handleProviderChange("stt", (e.target as HTMLSelectElement).value)}
             >
@@ -84,7 +86,8 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ settings
                     ))}
             </SlSelect>
             <SlSelect
-                label="Text Generation Provider"
+                label="LLM Provider"
+                align-right
                 value={settings.llm}
                 onSlChange={(e) => handleProviderChange("llm", (e.target as HTMLSelectElement).value)}
             >

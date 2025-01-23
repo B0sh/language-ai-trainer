@@ -85,6 +85,7 @@ export const NumberTrainer = () => {
                         type="number"
                         size="large"
                         pill
+                        className="number-trainer-input"
                         value={state.userInput}
                         onSlInput={handleInputChange}
                         onKeyDown={handleKeyPress}

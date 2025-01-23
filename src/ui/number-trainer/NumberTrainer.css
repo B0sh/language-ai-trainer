@@ -39,7 +39,7 @@
     align-items: center;
 }
 
-sl-input {
+.number-trainer-input {
     width: 100%;
     max-width: 300px;
 }
