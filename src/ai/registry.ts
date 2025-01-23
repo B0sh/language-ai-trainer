@@ -1,4 +1,4 @@
-import { AIProvider, TTSRequest } from "./interfaces";
+import { AIProvider, TTSAudio, TTSRequest } from "./interfaces";
 import { BrowserProvider } from "./browser/BrowserProvider";
 import { OpenAIProvider } from "./openai/OpenAIProvider";
 import { GoogleProvider } from "./google/GoogleProvider";
@@ -58,12 +58,27 @@ export class AIProviderRegistry {
         return provider;
     }
 
-    static async textToSpeech(request: TTSRequest) {
+    private static ttsRequestProcessing = false;
+    static async textToSpeech(request: TTSRequest): Promise<TTSAudio | undefined> {
         const provider = this.getActiveProvider("tts");
         if (!provider.textToSpeech) {
             throw new Error(`Provider ${provider.name} does not support text-to-speech`);
         }
-        return provider.textToSpeech(request);
+        if (this.ttsRequestProcessing) {
+            return;
+        }
+
+        this.ttsRequestProcessing = true;
+        return provider
+            .textToSpeech(request)
+            .then((tts) => {
+                this.ttsRequestProcessing = false;
+                return tts;
+            })
+            .catch((error) => {
+                this.ttsRequestProcessing = false;
+                throw error;
+            });
     }
 
     static async speechToText(audioData: ArrayBuffer | MediaStream, options?: any) {

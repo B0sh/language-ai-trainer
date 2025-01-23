@@ -1,9 +1,7 @@
 export interface NumberChallengeState {
     currentNumber: number;
-    userInput: string;
-    status: "waiting" | "speaking" | "listening" | "correct" | "incorrect";
+    status: "waiting" | "audio-playing" | "audio-finished" | "correct" | "incorrect";
     attempts: number;
-    correctAttempts: number;
 }
 
 export const generateNumber = (): number => {

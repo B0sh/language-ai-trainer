@@ -17,6 +17,15 @@ body {
     font-family: "keifont";
     src: url("assets/keifont.ttf");
 }
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+}
 /* @font-face {
     font-family: "Rampart One";
     src: url("assets/RampartOne-Regular.ttf");
