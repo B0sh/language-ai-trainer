@@ -2,6 +2,9 @@ import * as React from "react";
 import { AppSettings } from "../../models/app-settings";
 import SlRadioGroup from "@shoelace-style/shoelace/dist/react/radio-group";
 import SlRadioButton from "@shoelace-style/shoelace/dist/react/radio-button";
+import SlSelect from "@shoelace-style/shoelace/dist/react/select";
+import SlOption from "@shoelace-style/shoelace/dist/react/option";
+import { APP_LANGUAGES, TARGET_LANGUAGES } from "../../shared/constants";
 
 interface GeneralSettingsProps {
     settings: AppSettings;
@@ -9,10 +12,17 @@ interface GeneralSettingsProps {
 }
 
 export const GeneralSettings: React.FC<GeneralSettingsProps> = ({ settings, onSettingsChange }) => {
-    const handleLanguageChange = (language: string) => {
+    const handleAppLanguageChange = (language: string) => {
         onSettingsChange({
             ...settings,
-            language,
+            appLanguage: language,
+        });
+    };
+
+    const handleTargetLanguageChange = (language: string) => {
+        onSettingsChange({
+            ...settings,
+            targetLanguage: language,
         });
     };
 
@@ -24,33 +34,43 @@ export const GeneralSettings: React.FC<GeneralSettingsProps> = ({ settings, onSe
     };
 
     return (
-        <div style={{ display: "flex", gap: "1rem" }}>
-            <div style={{ width: "50%" }}>
-                <SlRadioGroup
-                    label="Language"
-                    name="language"
-                    align-right
-                    value={settings.language}
-                    onSlChange={(e) => handleLanguageChange((e.target as HTMLInputElement).value)}
-                >
-                    <SlRadioButton value="en">English</SlRadioButton>
-                    <SlRadioButton value="jp">Japanese</SlRadioButton>
-                </SlRadioGroup>
-            </div>
+        <div>
+            <h2>App Settings</h2>
+            <SlSelect
+                label="Target Language"
+                name="targetLanguage"
+                align-right
+                value={settings.targetLanguage}
+                onSlChange={(e) => handleTargetLanguageChange((e.target as HTMLInputElement).value)}
+            >
+                {TARGET_LANGUAGES.map((lang) => (
+                    <SlOption value={lang.id}>{lang.description}</SlOption>
+                ))}
+            </SlSelect>
 
-            <div style={{ width: "50%" }}>
-                <SlRadioGroup
-                    label="Theme"
-                    name="theme"
-                    align-right
-                    value={settings.theme}
-                    onSlChange={(e) => handleThemeChange((e.target as HTMLInputElement).value)}
-                >
-                    <SlRadioButton value="light">Light</SlRadioButton>
-                    <SlRadioButton value="dark">Dark</SlRadioButton>
-                    <SlRadioButton value="auto">Auto</SlRadioButton>
-                </SlRadioGroup>
-            </div>
+            <SlRadioGroup
+                label="App Language"
+                name="appLanguage"
+                align-right
+                value={settings.appLanguage}
+                onSlChange={(e) => handleAppLanguageChange((e.target as HTMLInputElement).value)}
+            >
+                {APP_LANGUAGES.map((lang) => (
+                    <SlRadioButton value={lang.id}>{lang.description}</SlRadioButton>
+                ))}
+            </SlRadioGroup>
+
+            <SlRadioGroup
+                label="Theme"
+                name="theme"
+                align-right
+                value={settings.theme}
+                onSlChange={(e) => handleThemeChange((e.target as HTMLInputElement).value)}
+            >
+                <SlRadioButton value="light">Light</SlRadioButton>
+                <SlRadioButton value="dark">Dark</SlRadioButton>
+                <SlRadioButton value="auto">Auto</SlRadioButton>
+            </SlRadioGroup>
         </div>
     );
 };

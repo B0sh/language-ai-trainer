@@ -2,7 +2,8 @@ export interface AppSettings {
     tts: string;
     stt: string;
     llm: string;
-    language: string;
+    appLanguage: string;
+    targetLanguage: string;
     theme: string;
     configs: Record<string, any>;
 }
@@ -14,6 +15,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
     configs: {
         openai: { apiKey: "", organization: "" },
     },
-    language: "en",
+    appLanguage: "en-US",
+    targetLanguage: "en",
     theme: "light",
 };
