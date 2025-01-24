@@ -10,6 +10,10 @@ export class GoogleTTSAudio extends TTSAudio {
     }
 
     async play(): Promise<void> {
+        if (!this.audioElement.paused) {
+            return;
+        }
+
         return new Promise((resolve, reject) => {
             this.audioElement.onended = () => resolve();
             this.audioElement.onerror = (e) => reject(new Error(`Audio playback failed: ${e}`));

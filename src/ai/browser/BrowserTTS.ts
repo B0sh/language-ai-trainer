@@ -9,6 +9,10 @@ export class BrowserTTS extends TTSAudio {
     }
 
     async play(): Promise<void> {
+        if (this.speechSynthesis.speaking) {
+            return;
+        }
+
         return new Promise((resolve, reject) => {
             this.speech.onend = () => {
                 resolve();

@@ -22,6 +22,8 @@ export const NumberTrainerRound: React.FC<NumberTrainerRoundProps> = ({ playback
         return <SlIcon style={{ fontSize: "2rem" }} name="soundwave" />;
     };
 
+    inputRef.current?.focus();
+
     return (
         <>
             <div className="number-trainer-input-row">

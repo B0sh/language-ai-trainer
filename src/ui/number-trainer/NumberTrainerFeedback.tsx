@@ -23,9 +23,13 @@ export const NumberTrainerFeedback: React.FC<NumberTrainerFeedbackProps> = ({
             timeout = setTimeout(() => {
                 onNextRound();
             }, 3000);
+            return () => clearTimeout(timeout);
         }
-        return () => clearTimeout(timeout);
-    }, [state.status, onNextRound]);
+
+        if (state.status === "incorrect") {
+            onReplayAudio();
+        }
+    }, []);
 
     return (
         <div className="feedback-container">
