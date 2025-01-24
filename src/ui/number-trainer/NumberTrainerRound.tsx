@@ -6,24 +6,20 @@ import type SlInputElement from "@shoelace-style/shoelace/dist/components/input/
 import { NumberChallengeState } from "./NumberChallenge";
 
 interface NumberTrainerRoundProps {
-    targetLanguage: string;
+    playbackStatus: string;
     state: NumberChallengeState;
     onSubmit: (input: string) => void;
 }
 
-export const NumberTrainerRound: React.FC<NumberTrainerRoundProps> = ({ targetLanguage, state, onSubmit }) => {
+export const NumberTrainerRound: React.FC<NumberTrainerRoundProps> = ({ playbackStatus, state, onSubmit }) => {
     const inputRef = useRef<SlInputElement>(null);
 
     const getStatusIcon = () => {
-        switch (state.status) {
-            case "audio-loading":
-                return <SlSpinner style={{ fontSize: "2rem" }} />;
-            case "audio-playing":
-            case "audio-finished":
-                return <SlIcon style={{ fontSize: "2rem" }} name="soundwave" />;
-            default:
-                return null;
+        if (playbackStatus === "loading") {
+            return <SlSpinner style={{ fontSize: "2rem" }} />;
         }
+
+        return <SlIcon style={{ fontSize: "2rem" }} name="soundwave" />;
     };
 
     return (

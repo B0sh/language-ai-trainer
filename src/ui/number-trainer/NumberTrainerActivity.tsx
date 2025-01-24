@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import SlButton from "@shoelace-style/shoelace/dist/react/button";
 import { NumberChallengeState, generateNumber, checkAnswer, NumberChallengeStatus } from "./NumberChallenge";
 import { NumberTrainerRound } from "./NumberTrainerRound";
 import { NumberTrainerFeedback } from "./NumberTrainerFeedback";
@@ -13,9 +12,10 @@ interface NumberTrainerActivityProps {
 
 export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ targetLanguage, onStop }) => {
     const [ttsAudio, setTtsAudio] = useState<TTSAudio | null>(null);
+    const [playbackStatus, setPlaybackStatus] = useState<string>("");
     const [state, setState] = useState<NumberChallengeState>({
         currentNumber: generateNumber(),
-        status: "waiting",
+        status: "active",
         streak: 0,
     });
 
@@ -35,8 +35,8 @@ export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ ta
     );
 
     const speakNumber = useCallback(async () => {
-        setStatus("audio-loading");
         setTtsAudio(null);
+        setPlaybackStatus("loading");
         try {
             const ttsRequest: TTSRequest = {
                 text: state.currentNumber.toString(),
@@ -45,9 +45,9 @@ export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ ta
 
             const result = await AIProviderRegistry.textToSpeech(ttsRequest);
             if (result) {
-                setStatus("audio-playing");
+                setPlaybackStatus("playing");
                 await result.play();
-                setStatus("audio-finished");
+                setPlaybackStatus("stopped");
                 setTtsAudio(result);
             }
         } catch (error) {
@@ -63,25 +63,30 @@ export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ ta
     const handleNextRound = useCallback(() => {
         setState((prev) => ({
             currentNumber: generateNumber(),
-            status: "waiting",
+            status: "active",
             streak: prev.streak + 1,
         }));
     }, []);
 
-    const replayAudio = useCallback(() => {
-        // later
-    }, []);
+    const replayAudio = async () => {
+        if (ttsAudio) {
+            setPlaybackStatus("playing");
+            await ttsAudio.play();
+            setPlaybackStatus("stopped");
+        }
+    };
 
     return (
         <>
             {state.status === "correct" || state.status === "incorrect" ? (
                 <NumberTrainerFeedback
                     state={state}
+                    playbackStatus={playbackStatus}
                     onReplayAudio={() => replayAudio()}
                     onNextRound={handleNextRound}
                 />
             ) : (
-                <NumberTrainerRound targetLanguage={targetLanguage} state={state} onSubmit={handleSubmit} />
+                <NumberTrainerRound playbackStatus={playbackStatus} state={state} onSubmit={handleSubmit} />
             )}
 
             {/* <a href="" onClick={onStop}>

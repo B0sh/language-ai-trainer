@@ -4,13 +4,7 @@ export interface NumberChallengeState {
     streak: number;
 }
 
-export type NumberChallengeStatus =
-    | "waiting"
-    | "audio-loading"
-    | "audio-playing"
-    | "audio-finished"
-    | "correct"
-    | "incorrect";
+export type NumberChallengeStatus = "active" | "correct" | "incorrect";
 
 export const generateNumber = (): number => {
     return Math.floor(Math.random() * 1000) + 1;

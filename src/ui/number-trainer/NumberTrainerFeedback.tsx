@@ -1,15 +1,22 @@
 import React, { useEffect } from "react";
 import SlButton from "@shoelace-style/shoelace/dist/react/button";
 import SlAlert from "@shoelace-style/shoelace/dist/react/alert";
+import SlIcon from "@shoelace-style/shoelace/dist/react/icon";
 import { NumberChallengeState } from "./NumberChallenge";
 
 interface NumberTrainerFeedbackProps {
+    playbackStatus: string;
     state: NumberChallengeState;
     onReplayAudio: () => void;
     onNextRound: () => void;
 }
 
-export const NumberTrainerFeedback: React.FC<NumberTrainerFeedbackProps> = ({ state, onReplayAudio, onNextRound }) => {
+export const NumberTrainerFeedback: React.FC<NumberTrainerFeedbackProps> = ({
+    playbackStatus,
+    state,
+    onReplayAudio,
+    onNextRound,
+}) => {
     useEffect(() => {
         let timeout: NodeJS.Timeout;
         if (state.status === "correct") {
@@ -21,22 +28,31 @@ export const NumberTrainerFeedback: React.FC<NumberTrainerFeedbackProps> = ({ st
     }, [state.status, onNextRound]);
 
     return (
-        <div className="feedback-container" style={{ marginTop: "1rem", textAlign: "center" }}>
+        <div className="feedback-container">
             {state.status === "correct" ? (
                 <SlAlert variant="success" open>
-                    <h3>Correct! ✅</h3>
-                    The number was: {state.currentNumber}
+                    <SlIcon slot="icon" name="check-circle-fill" />
+                    <h3>Correct!</h3>
+                    The number was {state.currentNumber}.
                 </SlAlert>
             ) : (
-                <SlAlert variant="danger" open>
-                    <h3>Incorrect ❌</h3>
-                    The correct number was {state.currentNumber}.
-                    <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
-                        <SlButton variant="primary" onClick={onReplayAudio}>
-                            Replay Audio
-                        </SlButton>
-                    </div>
-                </SlAlert>
+                <>
+                    <SlAlert variant="danger" open>
+                        <SlIcon slot="icon" name="x-circle-fill" />
+                        <h3>Incorrect</h3>
+                        The number was {state.currentNumber}.
+                    </SlAlert>
+
+                    <br />
+
+                    <SlButton variant="neutral" onClick={onReplayAudio} disabled={playbackStatus === "playing"}>
+                        Replay Audio
+                    </SlButton>
+
+                    <SlButton variant="primary" onClick={onNextRound}>
+                        Restart
+                    </SlButton>
+                </>
             )}
         </div>
     );
