@@ -1,13 +1,16 @@
 import * as React from "react";
 import { AppSettings } from "../../models/app-settings";
+import { LlamaProvider } from "../../ai/llama/LlamaProvider";
+import { LlamaModel } from "../../ai/llama/LlamaModel";
+import { openUrl } from "../../shared/utility";
+import SlSpinner from "@shoelace-style/shoelace/dist/react/spinner";
 import SlIconButton from "@shoelace-style/shoelace/dist/react/icon-button";
 import SlTooltip from "@shoelace-style/shoelace/dist/react/tooltip";
 import SlSelect from "@shoelace-style/shoelace/dist/react/select";
 import SlOption from "@shoelace-style/shoelace/dist/react/option";
 import SlAlert from "@shoelace-style/shoelace/dist/react/alert";
-import SlButton from "@shoelace-style/shoelace/dist/react/button";
-import { LlamaProvider } from "../../ai/llama/LlamaProvider";
-import { LlamaModel } from "../../ai/llama/LlamaModel";
+import SlIcon from "@shoelace-style/shoelace/dist/react/icon";
+import ExternalLink from "../shared/ExternalLink";
 
 interface LlamaSettingsProps {
     settings: AppSettings;
@@ -17,22 +20,33 @@ interface LlamaSettingsProps {
 export const LlamaSettings: React.FC<LlamaSettingsProps> = ({ settings, onSettingsChange }) => {
     const [models, setModels] = React.useState<LlamaModel[]>([]);
     const [error, setError] = React.useState<string>("");
+    const [loading, setLoading] = React.useState<boolean>(false);
 
-    const fetchModels = async () => {
+    const fetchModels = React.useCallback(async () => {
+        if (loading) {
+            return;
+        }
+
+        setError("");
+        setLoading(true);
+        setModels([]);
+
         try {
             const response = await LlamaProvider.listModels();
+
+            setLoading(false);
+            setModels(response.models);
+
             if (response.models.length === 0) {
                 setError(
-                    "Llama was installed successfully, but no models were found. Please install a model and try again."
+                    "No Llama models are available. To use Llama locally, install Ollama and install a Llama model."
                 );
             }
-            setModels(response.models);
-            setError("");
         } catch (err) {
-            setError("Unable to retrieve Llama models. Please ensure Llama is installed on your computer.");
-            console.error("Error fetching Llama models:", err);
+            setLoading(false);
+            setError("Unable to connect to Llama. To use Llama locally, install Ollama and install a Llama model.");
         }
-    };
+    }, [loading]);
 
     React.useEffect(() => {
         fetchModels();
@@ -55,38 +69,40 @@ export const LlamaSettings: React.FC<LlamaSettingsProps> = ({ settings, onSettin
         <div>
             <h3>
                 Llama
-                <SlTooltip content="Supports Llama models">
-                    <SlIconButton
-                        name="box-arrow-up-right"
-                        onClick={() => {
-                            window.electron.ipcRenderer.invoke("open-external-url", "https://ollama.com/");
-                        }}
-                    />
+                <SlTooltip content="Learn how to install Ollama">
+                    <SlIconButton name="box-arrow-up-right" onClick={() => openUrl("https://ollama.com/")} />
+                </SlTooltip>
+                <SlTooltip content="Refresh Llama model list">
+                    {loading ? (
+                        <SlSpinner />
+                    ) : (
+                        <SlIconButton name="arrow-clockwise" onClick={fetchModels}></SlIconButton>
+                    )}
                 </SlTooltip>
             </h3>
 
-            {error && (
-                <div>
-                    <SlAlert variant="danger" closable>
-                        {error}
+            {error ? (
+                <div style={{ marginTop: "1rem" }}>
+                    <SlAlert variant="danger" open>
+                        <SlIcon slot="icon" name="exclamation-octagon" />
+                        {error} <ExternalLink href="https://ollama.com/">Learn more</ExternalLink>
                     </SlAlert>
-                    <SlButton onClick={fetchModels}>Refresh Models</SlButton>
                 </div>
+            ) : (
+                <SlSelect
+                    label="Model"
+                    align-right
+                    value={settings.configs.llama?.model || ""}
+                    onSlChange={(e) => handleConfigChange("model", (e.target as HTMLSelectElement).value)}
+                    disabled={models.length === 0}
+                >
+                    {models.map((model) => (
+                        <SlOption key={model.name} value={model.name}>
+                            {model.name} ({model.details.parameter_size})
+                        </SlOption>
+                    ))}
+                </SlSelect>
             )}
-
-            <SlSelect
-                label="Model"
-                align-right
-                value={settings.configs.llama?.model || ""}
-                onSlChange={(e) => handleConfigChange("model", (e.target as HTMLSelectElement).value)}
-                disabled={models.length === 0}
-            >
-                {models.map((model) => (
-                    <SlOption key={model.name} value={model.name}>
-                        {model.name} ({model.details.parameter_size})
-                    </SlOption>
-                ))}
-            </SlSelect>
         </div>
     );
 };

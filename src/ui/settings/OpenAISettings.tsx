@@ -3,6 +3,7 @@ import { AppSettings } from "../../models/app-settings";
 import SlInput from "@shoelace-style/shoelace/dist/react/input";
 import SlIconButton from "@shoelace-style/shoelace/dist/react/icon-button";
 import SlTooltip from "@shoelace-style/shoelace/dist/react/tooltip";
+import { openUrl } from "../../shared/utility";
 
 interface OpenAISettingsProps {
     settings: AppSettings;
@@ -30,12 +31,7 @@ export const OpenAISettings: React.FC<OpenAISettingsProps> = ({ settings, onSett
                 <SlTooltip content="Learn how to get an API key">
                     <SlIconButton
                         name="box-arrow-up-right"
-                        onClick={() => {
-                            window.electron.ipcRenderer.invoke(
-                                "open-external-url",
-                                "https://platform.openai.com/account/api-keys"
-                            );
-                        }}
+                        onClick={() => openUrl("https://platform.openai.com/account/api-keys")}
                     />
                 </SlTooltip>
             </h3>

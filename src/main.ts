@@ -48,7 +48,7 @@ const createWindow = (): void => {
             responseHeaders: {
                 ...details.responseHeaders,
                 "Content-Security-Policy": [
-                    "default-src 'self' 'unsafe-eval' 'unsafe-inline' data:; connect-src 'self' https://*.googleapis.com/ data:;",
+                    "default-src 'self' 'unsafe-eval' 'unsafe-inline' data:; connect-src 'self' https://*.googleapis.com/ http://localhost:11434 data:;",
                 ],
             },
         });

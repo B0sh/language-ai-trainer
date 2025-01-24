@@ -5,6 +5,7 @@ import SlIconButton from "@shoelace-style/shoelace/dist/react/icon-button";
 import SlTooltip from "@shoelace-style/shoelace/dist/react/tooltip";
 import SlAlert from "@shoelace-style/shoelace/dist/react/alert";
 import SlIcon from "@shoelace-style/shoelace/dist/react/icon";
+import { openUrl } from "../../shared/utility";
 
 interface GoogleSettingsProps {
     settings: AppSettings;
@@ -32,12 +33,7 @@ export const GoogleSettings: React.FC<GoogleSettingsProps> = ({ settings, onSett
                 <SlTooltip content="Learn how to get an API key">
                     <SlIconButton
                         name="box-arrow-up-right"
-                        onClick={() => {
-                            window.electron.ipcRenderer.invoke(
-                                "open-external-url",
-                                "https://support.google.com/googleapi/answer/6158862?hl=en"
-                            );
-                        }}
+                        onClick={() => openUrl("https://support.google.com/googleapi/answer/6158862?hl=en")}
                     />
                 </SlTooltip>
             </h3>
