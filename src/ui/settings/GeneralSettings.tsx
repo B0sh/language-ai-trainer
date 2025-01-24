@@ -4,7 +4,7 @@ import SlRadioGroup from "@shoelace-style/shoelace/dist/react/radio-group";
 import SlRadioButton from "@shoelace-style/shoelace/dist/react/radio-button";
 import SlSelect from "@shoelace-style/shoelace/dist/react/select";
 import SlOption from "@shoelace-style/shoelace/dist/react/option";
-import { APP_LANGUAGES, TARGET_LANGUAGES } from "../../shared/constants";
+import { APP_LANGUAGES, TARGET_LANGUAGES } from "../../shared/languages";
 
 interface GeneralSettingsProps {
     settings: AppSettings;

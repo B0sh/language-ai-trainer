@@ -9,7 +9,6 @@ interface Props {
 export const NumberTrainerMenu: React.FC<Props> = ({ onStart }) => {
     return (
         <>
-            <h2>Number Trainer</h2>
             <div>
                 The Number Trainer tests your ability to hear numbers. A number will be spoken, and you must type it
                 out.
