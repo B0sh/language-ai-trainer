@@ -16,7 +16,9 @@ export class OpenAIProvider extends AIProvider {
     readonly description = "OpenAI's suite of AI models including GPT-4, Whisper, and TTS";
     readonly capabilities: AICapabilities = {
         canGenerateText: true,
-        canTextToSpeech: true,
+        // Open AI text to speech does not support setting a language type
+        // When it reads out numbers, it always reads them in English
+        canTextToSpeech: false,
         canSpeechToText: true,
     };
 
@@ -82,41 +84,6 @@ export class OpenAIProvider extends AIProvider {
             },
         };
     }
-
-    // async textToSpeech(text: string, options: TextToSpeechOptions = {}): Promise<TextToSpeechResult> {
-    // const validation = this.validateConfig();
-    // if (validation) {
-    //     throw new Error(validation);
-
-    //     const response = await fetch('https://api.openai.com/v1/audio/speech', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Authorization': `Bearer ${this.apiKey}`,
-    //             'Content-Type': 'application/json',
-    //             ...(this.organization && { 'OpenAI-Organization': this.organization })
-    //         },
-    //         body: JSON.stringify({
-    //             model: 'tts-1',
-    //             input: text,
-    //             voice: options.voice || 'alloy',
-    //             speed: options.speed || 1.0
-    //         })
-    //     });
-
-    //     if (!response.ok) {
-    //         throw new Error(`OpenAI API error: ${response.statusText}`);
-    //     }
-
-    //     const audioBuffer = await response.arrayBuffer();
-    //     return {
-    //         audioBuffer,
-    //         duration: 0, // OpenAI doesn't provide duration information
-    //         metadata: {
-    //             voice: options.voice || 'alloy',
-    //             speed: options.speed || 1.0
-    //         }
-    //     };
-    // }
 
     async speechToText(audioData: ArrayBuffer): Promise<SpeechToTextResult> {
         const validation = this.validateConfig();
