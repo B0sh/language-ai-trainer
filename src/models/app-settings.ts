@@ -14,6 +14,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
     llm: "openai",
     configs: {
         openai: { apiKey: "", organization: "" },
+        google: { apiKey: "" },
     },
     appLanguage: "en-US",
     targetLanguage: "en",

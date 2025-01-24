@@ -5,11 +5,11 @@ export type TargetLanguage = {
 
 export const TARGET_LANGUAGES: TargetLanguage[] = [
     {
-        id: "en",
+        id: "en-US",
         description: "English",
     },
     {
-        id: "ja",
+        id: "ja-JP",
         description: "Japanese",
     },
 ];

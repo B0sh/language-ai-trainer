@@ -68,6 +68,7 @@ export abstract class AIProvider {
 }
 
 export abstract class TTSAudio {
+    text: string;
     abstract play(): Promise<void>;
     abstract stop(): Promise<void>;
     abstract pause(): Promise<void>;

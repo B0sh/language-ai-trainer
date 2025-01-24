@@ -5,6 +5,7 @@ export class BrowserTTS extends TTSAudio {
 
     constructor(private speech: SpeechSynthesisUtterance) {
         super();
+        this.text = speech.text;
     }
 
     async play(): Promise<void> {

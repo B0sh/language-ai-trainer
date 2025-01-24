@@ -2,10 +2,11 @@ import { TTSAudio } from "../interfaces";
 
 export class GoogleTTSAudio extends TTSAudio {
     private audioElement: HTMLAudioElement;
-    
-    constructor(audioContent: string) {
+
+    constructor(text: string, audioContent: string) {
         super();
         this.audioElement = new Audio(`data:audio/mp3;base64,${audioContent}`);
+        this.text = text;
     }
 
     async play(): Promise<void> {

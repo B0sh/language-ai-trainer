@@ -1,6 +1,7 @@
 import { AICapabilities, AIProvider, LLMGenerationOptions, LLMGenerationResult, TTSRequest } from "../interfaces";
 import { GoogleTTSAudio } from "./GoogleTTSAudio";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import * as VOICE_LIST from "./google-voices.json";
 
 interface GoogleConfig {
     apiKey: string;
@@ -46,8 +47,21 @@ export class GoogleProvider extends AIProvider {
             throw new Error(config);
         }
 
-        if (!request.voice) {
-            request.voice = "ja-JP-Neural2-B";
+        let voice = "";
+        if (request.voice) {
+            const data = VOICE_LIST.voices.find((v) => v.name === request.voice);
+            if (data) {
+                voice = data.name;
+            }
+        }
+
+        if (!voice) {
+            const data = VOICE_LIST.voices.find((v) => v.languageCodes.includes(request.language));
+            if (data) {
+                voice = data.name;
+            } else {
+                throw new Error(`No google voice found for language ${request.language}`);
+            }
         }
 
         // const voice = this.weightedRandom([
@@ -85,7 +99,7 @@ export class GoogleProvider extends AIProvider {
         }
 
         const data = await response.json();
-        return new GoogleTTSAudio(data.audioContent);
+        return new GoogleTTSAudio(request.text, data.audioContent);
     }
 
     async generateText(prompt: string, options: LLMGenerationOptions = {}): Promise<LLMGenerationResult> {
