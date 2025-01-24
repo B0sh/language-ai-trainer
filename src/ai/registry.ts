@@ -2,6 +2,7 @@ import { AIProvider, TTSAudio, TTSRequest } from "./interfaces";
 import { BrowserProvider } from "./browser/BrowserProvider";
 import { OpenAIProvider } from "./openai/OpenAIProvider";
 import { GoogleProvider } from "./google/GoogleProvider";
+import { LlamaProvider } from "./llama/LlamaProvider";
 
 export class AIProviderRegistry {
     private static providers = new Map<string, new (...args: any[]) => AIProvider>();
@@ -11,6 +12,7 @@ export class AIProviderRegistry {
         this.registerProvider("browser", BrowserProvider);
         this.registerProvider("openai", OpenAIProvider);
         this.registerProvider("google", GoogleProvider);
+        this.registerProvider("llama", LlamaProvider);
     }
 
     static registerProvider(id: string, providerClass: new (...args: any[]) => AIProvider) {

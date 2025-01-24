@@ -44,7 +44,9 @@ export const GeneralSettings: React.FC<GeneralSettingsProps> = ({ settings, onSe
                 onSlChange={(e) => handleTargetLanguageChange((e.target as HTMLInputElement).value)}
             >
                 {TARGET_LANGUAGES.map((lang) => (
-                    <SlOption value={lang.id}>{lang.description}</SlOption>
+                    <SlOption key={lang.id} value={lang.id}>
+                        {lang.description}
+                    </SlOption>
                 ))}
             </SlSelect>
 
@@ -56,7 +58,9 @@ export const GeneralSettings: React.FC<GeneralSettingsProps> = ({ settings, onSe
                 onSlChange={(e) => handleAppLanguageChange((e.target as HTMLInputElement).value)}
             >
                 {APP_LANGUAGES.map((lang) => (
-                    <SlRadioButton value={lang.id}>{lang.description}</SlRadioButton>
+                    <SlRadioButton key={lang.id} value={lang.id}>
+                        {lang.description}
+                    </SlRadioButton>
                 ))}
             </SlRadioGroup>
 

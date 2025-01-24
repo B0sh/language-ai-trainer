@@ -5,6 +5,7 @@ import { AIProviderSettings } from "./AIProviderSettings";
 import { OpenAISettings } from "./OpenAISettings";
 import { GoogleSettings } from "./GoogleSettings";
 import { GeneralSettings } from "./GeneralSettings";
+import { LlamaSettings } from "./LlamaSettings";
 
 interface SettingsProps {
     settings: AppSettings;
@@ -34,6 +35,13 @@ export const Settings: React.FC<SettingsProps> = ({ settings, onSettingsChange }
                 <>
                     <SlDivider />
                     <GoogleSettings settings={settings} onSettingsChange={onSettingsChange} />
+                </>
+            ) : null}
+
+            {settings.tts === "llama" || settings.stt === "llama" || settings.llm === "llama" ? (
+                <>
+                    <SlDivider />
+                    <LlamaSettings settings={settings} onSettingsChange={onSettingsChange} />
                 </>
             ) : null}
         </div>
