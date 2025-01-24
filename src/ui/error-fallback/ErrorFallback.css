@@ -1,0 +1,22 @@
+.error-fallback {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+}
+
+.error-icon {
+    font-size: 3rem;
+    color: var(--sl-color-danger-600);
+}
+
+.error-message {
+    padding: 1rem;
+    background: var(--sl-color-neutral-100);
+    border-radius: var(--sl-border-radius-medium);
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 0;
+}

@@ -3,7 +3,8 @@ import SlButton from "@shoelace-style/shoelace/dist/react/button";
 import SlIcon from "@shoelace-style/shoelace/dist/react/icon";
 import SlIconButton from "@shoelace-style/shoelace/dist/react/icon-button";
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, createRef } from "react";
+import { ErrorBoundary, useErrorBoundary } from "react-error-boundary";
 import { DateTrainer } from "./date-trainer/DateTrainer";
 import { NumberTrainer } from "./number-trainer/NumberTrainer";
 import { Settings } from "./settings/Settings";
@@ -11,10 +12,13 @@ import "./LanguageTrainerApp.css";
 import { SpeakingTrainer } from "./speaking-trainer/SpeakingTrainer";
 import { AppSettings } from "../models/app-settings";
 import { SettingsService } from "../services/settings-service";
+import { ErrorFallback } from "./error-fallback/ErrorFallback";
+import { Home } from "./home/Home";
 
 export const LanguageTrainerApp: React.FC = () => {
     const [open, setOpen] = useState(true);
     const [selectedMenu, setSelectedMenu] = useState<string | null>(null);
+    const errorBoundaryRef = createRef<ErrorBoundary>();
 
     const [settings, setSettings] = useState<AppSettings>(() => SettingsService.loadSettings());
 
@@ -24,12 +28,22 @@ export const LanguageTrainerApp: React.FC = () => {
         setSettings(newSettings);
     };
 
+    const selectMenu = (menu: string) => {
+        if (menu === selectedMenu) {
+            setSelectedMenu("home");
+        } else {
+            setSelectedMenu(menu);
+        }
+
+        errorBoundaryRef.current?.resetErrorBoundary();
+    };
+
     useEffect(() => {
         const storedMenu = localStorage.getItem("selectedMenu");
         if (storedMenu) {
             setSelectedMenu(storedMenu);
         } else {
-            setSelectedMenu("settings");
+            setSelectedMenu("home");
         }
     }, []);
 
@@ -46,11 +60,11 @@ export const LanguageTrainerApp: React.FC = () => {
             case "date":
                 return <DateTrainer />;
             case "number":
-                return <NumberTrainer />;
+                return <NumberTrainer settings={settings} />;
             case "settings":
                 return <Settings settings={settings} onSettingsChange={handleSettingsChange} />;
         }
-        return null;
+        return <Home />;
     };
 
     let theme = "";
@@ -65,6 +79,14 @@ export const LanguageTrainerApp: React.FC = () => {
             theme = "sl-theme-light";
         }
     }
+
+    const onError = (error: Error, info: React.ErrorInfo) => {
+        setSelectedMenu("home");
+    };
+
+    const onErrorReset = () => {
+        console.log("ErrorBoundary reset");
+    };
 
     // TODO: find a better solution to this
     document.body.setAttribute("class", theme);
@@ -96,7 +118,7 @@ export const LanguageTrainerApp: React.FC = () => {
                             variant="text"
                             size="large"
                             className={selectedMenu === "speaking" ? "selected" : ""}
-                            onClick={() => setSelectedMenu("speaking")}
+                            onClick={() => selectMenu("speaking")}
                         >
                             <SlIcon slot="prefix" name="soundwave"></SlIcon>
                             Speaking Trainer
@@ -105,7 +127,7 @@ export const LanguageTrainerApp: React.FC = () => {
                             variant="text"
                             size="large"
                             className={selectedMenu === "date" ? "selected" : ""}
-                            onClick={() => setSelectedMenu("date")}
+                            onClick={() => selectMenu("date")}
                         >
                             <SlIcon slot="prefix" name="calendar"></SlIcon>
                             Date Trainer
@@ -114,7 +136,7 @@ export const LanguageTrainerApp: React.FC = () => {
                             variant="text"
                             size="large"
                             className={selectedMenu === "number" ? "selected" : ""}
-                            onClick={() => setSelectedMenu("number")}
+                            onClick={() => selectMenu("number")}
                         >
                             <SlIcon slot="prefix" name="123"></SlIcon>
                             Number Trainer
@@ -123,14 +145,23 @@ export const LanguageTrainerApp: React.FC = () => {
                             variant="text"
                             size="large"
                             className={selectedMenu === "settings" ? "selected" : ""}
-                            onClick={() => setSelectedMenu("settings")}
+                            onClick={() => selectMenu("settings")}
                         >
                             <SlIcon slot="prefix" name="gear"></SlIcon>
                             Settings
                         </SlButton>
                     </SlDrawer>
                 </nav>
-                <main className={open ? "drawer-open" : "drawer-closed"}>{renderContent()}</main>
+                <main className={open ? "drawer-open" : "drawer-closed"}>
+                    <ErrorBoundary
+                        ref={errorBoundaryRef}
+                        FallbackComponent={ErrorFallback}
+                        onError={onError}
+                        onReset={onErrorReset}
+                    >
+                        {renderContent()}
+                    </ErrorBoundary>
+                </main>
             </div>
         </div>
     );
