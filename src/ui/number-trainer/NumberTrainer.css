@@ -27,6 +27,12 @@
         box-shadow: var(--sl-shadow-large);
     }
 
+    .trainer-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
     .controls {
         display: flex;
         gap: 1rem;
@@ -49,7 +55,7 @@
         align-items: center;
         justify-content: center;
     }
-    .number-trainer-input::part(input) {
+    .trainer-input::part(input) {
         text-align: center;
     }
 }

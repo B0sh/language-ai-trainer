@@ -3,15 +3,15 @@ import SlInput from "@shoelace-style/shoelace/dist/react/input";
 import SlSpinner from "@shoelace-style/shoelace/dist/react/spinner";
 import SlIcon from "@shoelace-style/shoelace/dist/react/icon";
 import type SlInputElement from "@shoelace-style/shoelace/dist/components/input/input";
-import { NumberChallengeState } from "./NumberChallenge";
 
 interface NumberTrainerRoundProps {
     playbackStatus: string;
-    state: NumberChallengeState;
+    status: string;
+    streak: number;
     onSubmit: (input: string) => void;
 }
 
-export const NumberTrainerRound: React.FC<NumberTrainerRoundProps> = ({ playbackStatus, state, onSubmit }) => {
+export const NumberTrainerRound: React.FC<NumberTrainerRoundProps> = ({ playbackStatus, status, streak, onSubmit }) => {
     const inputRef = useRef<SlInputElement>(null);
 
     const getStatusIcon = () => {
@@ -31,18 +31,18 @@ export const NumberTrainerRound: React.FC<NumberTrainerRoundProps> = ({ playback
                 <SlInput
                     ref={inputRef}
                     pill
-                    className="number-trainer-input"
+                    className="trainer-input"
                     size="large"
                     autoFocus
                     autocomplete="off"
                     autoCorrect="off"
-                    disabled={state.status === "correct" || state.status === "incorrect" ? true : false}
+                    disabled={status === "correct" || status === "incorrect" ? true : false}
                     onKeyDown={(e) => e.key === "Enter" && onSubmit((e.target as HTMLInputElement).value)}
                 />
             </div>
 
             <div className="stats">
-                Your streak is <strong>{state.streak}</strong>.
+                Your streak is <strong>{streak}</strong>.
             </div>
         </>
     );

@@ -8,7 +8,7 @@ export class BrowserTTS extends TTSAudio {
         this.text = speech.text;
     }
 
-    async play(): Promise<void> {
+    async play(volume?: number): Promise<void> {
         if (this.speechSynthesis.speaking) {
             return;
         }
@@ -19,8 +19,16 @@ export class BrowserTTS extends TTSAudio {
             };
 
             this.speech.onerror = (event: SpeechSynthesisErrorEvent) => {
-                reject(new Error(`Speech synthesis failed: ${event.error}`));
+                if (event.error === "interrupted") {
+                    resolve();
+                } else {
+                    reject(new Error(`Speech synthesis failed: ${event.error}`));
+                }
             };
+
+            if (volume !== undefined) {
+                this.speech.volume = volume / 100;
+            }
 
             this.speechSynthesis.speak(this.speech);
         });
