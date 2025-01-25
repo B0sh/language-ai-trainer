@@ -62,7 +62,7 @@ export const LanguageTrainerApp: React.FC = () => {
             case "date":
                 return <DateTrainer />;
             case "number":
-                return <NumberTrainer settings={settings} />;
+                return <NumberTrainer settings={settings} onSettingsChange={handleSettingsChange} />;
             case "settings":
                 return <Settings settings={settings} onSettingsChange={handleSettingsChange} />;
             case "ai-settings":

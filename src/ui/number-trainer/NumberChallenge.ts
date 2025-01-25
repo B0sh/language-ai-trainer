@@ -1,5 +1,21 @@
 import { TTSAudio, TTSRequest } from "../../ai/interfaces";
 import { AIProviderRegistry } from "../../ai/registry";
+import { getRandomInt } from "../../shared/utility";
+import { Weighter } from "../../shared/weighter";
+
+export interface NumberChallengeRoundConfig {
+    label?: string;
+    helpText?: string;
+    generators: NumberChallengeRoundGenerator[];
+}
+
+export interface NumberChallengeRoundGenerator {
+    type: "random";
+    weight: number;
+    min: number;
+    max: number;
+    multiplier?: number;
+}
 
 export type NumberChallengeStatus = "active" | "correct" | "incorrect";
 
@@ -7,10 +23,13 @@ export class NumberChallenge {
     public currentNumber: number;
     public status: NumberChallengeStatus;
     public streak: number;
+    public config: NumberChallengeRoundConfig;
     private ttsAudio: TTSAudio | null;
 
-    constructor() {
-        this.currentNumber = generateNumber();
+    constructor(config: NumberChallengeRoundConfig) {
+        this.config = config;
+
+        this.currentNumber = this.generateNumber();
         this.status = "active";
         this.streak = 0;
         this.ttsAudio = null;
@@ -45,9 +64,24 @@ export class NumberChallenge {
     }
 
     public nextRound(): void {
-        this.currentNumber = generateNumber();
+        this.currentNumber = this.generateNumber();
         this.status = "active";
         this.streak += 1;
+    }
+
+    public generateNumber(): number {
+        const weighter = new Weighter<NumberChallengeRoundGenerator>();
+        for (const generator of this.config.generators) {
+            weighter.add(generator, generator.weight);
+        }
+
+        const round = weighter.getWeightedItem();
+        switch (round.type) {
+            case "random":
+                return getRandomInt(round.min, round.max) * (round.multiplier ?? 1);
+        }
+
+        throw new Error("Invalid round type");
     }
 
     public checkAnswer(answer: string): boolean {
@@ -55,7 +89,3 @@ export class NumberChallenge {
         return !isNaN(parsedAnswer) && parsedAnswer === this.currentNumber;
     }
 }
-
-export const generateNumber = (): number => {
-    return Math.floor(Math.random() * 1000) + 1;
-};

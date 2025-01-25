@@ -6,6 +6,7 @@ export interface AppSettings {
     targetLanguage: string;
     volume: number;
     theme: string;
+    numberTrainerDifficulty: string;
     configs: Record<string, any>;
 }
 
@@ -21,5 +22,6 @@ export const DEFAULT_SETTINGS: AppSettings = {
     appLanguage: "en-US",
     targetLanguage: "en",
     theme: "light",
+    numberTrainerDifficulty: "easy",
     volume: 50,
 };

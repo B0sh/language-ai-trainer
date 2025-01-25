@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { NumberChallenge, NumberChallengeStatus } from "./NumberChallenge";
+import { NumberChallenge, NumberChallengeRoundConfig } from "./NumberChallenge";
 import { NumberTrainerRound } from "./NumberTrainerRound";
 import { TrainerFeedback } from "../shared/Trainer/TrainerFeedback";
 import SlFormatNumber from "@shoelace-style/shoelace/dist/react/format-number";
@@ -8,11 +8,12 @@ import { AIProviderRegistry } from "../../ai/registry";
 
 interface NumberTrainerActivityProps {
     settings: AppSettings;
+    config: NumberChallengeRoundConfig;
     onStop: () => void;
 }
 
-export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ settings, onStop }) => {
-    const [challenge] = useState(() => new NumberChallenge());
+export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ settings, config, onStop }) => {
+    const [challenge] = useState(() => new NumberChallenge(config));
     const [playbackStatus, setPlaybackStatus] = useState<string>("");
     const [, forceUpdate] = useState({});
 
