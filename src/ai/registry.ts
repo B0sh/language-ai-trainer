@@ -7,6 +7,9 @@ import { LlamaProvider } from "./llama/LlamaProvider";
 export class AIProviderRegistry {
     private static providers = new Map<string, new (...args: any[]) => AIProvider>();
     private static activeProviders = new Map<string, AIProvider>();
+    private static sttProcessing = false;
+    private static llmProcessing = false;
+    private static ttsProcessing = false;
 
     static registerDefaults() {
         this.registerProvider("browser", BrowserProvider);
@@ -60,25 +63,24 @@ export class AIProviderRegistry {
         return provider;
     }
 
-    private static ttsRequestProcessing = false;
     static async textToSpeech(request: TTSRequest): Promise<TTSAudio | undefined> {
         const provider = this.getActiveProvider("tts");
         if (!provider.textToSpeech) {
             throw new Error(`Provider ${provider.name} does not support text-to-speech`);
         }
-        if (this.ttsRequestProcessing) {
+        if (this.ttsProcessing) {
             return;
         }
 
-        this.ttsRequestProcessing = true;
+        this.ttsProcessing = true;
         return provider
             .textToSpeech(request)
             .then((tts) => {
-                this.ttsRequestProcessing = false;
+                this.ttsProcessing = false;
                 return tts;
             })
             .catch((error) => {
-                this.ttsRequestProcessing = false;
+                this.ttsProcessing = false;
                 throw error;
             });
     }
@@ -88,7 +90,20 @@ export class AIProviderRegistry {
         if (!provider.speechToText) {
             throw new Error(`Provider ${provider.name} does not support speech-to-text`);
         }
-        return provider.speechToText(audioData, options);
+        if (this.sttProcessing) {
+            return;
+        }
+        this.sttProcessing = true;
+        return provider
+            .speechToText(audioData, options)
+            .then((stt) => {
+                this.sttProcessing = false;
+                return stt;
+            })
+            .catch((error) => {
+                this.sttProcessing = false;
+                throw error;
+            });
     }
 
     static async llm(request: LLMRequest) {
@@ -96,7 +111,20 @@ export class AIProviderRegistry {
         if (!provider.llm) {
             throw new Error(`Provider ${provider.name} does not support text generation`);
         }
-        return provider.llm(request);
+        if (this.llmProcessing) {
+            return;
+        }
+        this.llmProcessing = true;
+        return provider
+            .llm(request)
+            .then((llm) => {
+                this.llmProcessing = false;
+                return llm;
+            })
+            .catch((error) => {
+                this.llmProcessing = false;
+                throw error;
+            });
     }
 }
 AIProviderRegistry.registerDefaults();

@@ -16,6 +16,7 @@ import { SettingsService } from "../services/settings-service";
 import { ErrorFallback } from "./error-fallback/ErrorFallback";
 import { Home } from "./home/Home";
 import { AIProviderSettings } from "./settings/AIProviderSettings";
+import { CompTrainer } from "./comp-trainer/CompTrainer";
 
 export const LanguageTrainerApp: React.FC = () => {
     const [open, setOpen] = useState(true);
@@ -63,6 +64,8 @@ export const LanguageTrainerApp: React.FC = () => {
                 return <DateTrainer />;
             case "number":
                 return <NumberTrainer settings={settings} onSettingsChange={handleSettingsChange} />;
+            case "comprehension":
+                return <CompTrainer settings={settings} onSettingsChange={handleSettingsChange} />;
             case "settings":
                 return <Settings settings={settings} onSettingsChange={handleSettingsChange} />;
             case "ai-settings":
@@ -144,6 +147,15 @@ export const LanguageTrainerApp: React.FC = () => {
                         >
                             <SlIcon slot="prefix" name="123"></SlIcon>
                             Number Trainer
+                        </SlButton>
+                        <SlButton
+                            variant="text"
+                            size="large"
+                            className={selectedMenu === "comprehension" ? "selected" : ""}
+                            onClick={() => selectMenu("comprehension")}
+                        >
+                            <SlIcon slot="prefix" name="book"></SlIcon>
+                            Comprehension
                         </SlButton>
                         <SlDivider />
                         <SlButton

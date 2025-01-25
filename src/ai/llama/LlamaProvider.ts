@@ -1,5 +1,8 @@
 import { AIProvider, AICapabilities, LLMRequest, LLMResult } from "../interfaces";
-import { LlamaApiGenerateDto, LlamaApiGenerateResponse, LlamaListModelsResponse } from "./LlamaModel";
+import { LlamaListModelsResponse } from "./LlamaModel";
+// https://github.com/ollama/ollama-js/issues/151
+// must be manually imported from dist file because of upstream issue with ollama bundling
+import ollama, { ChatRequest, ChatResponse, Message } from "ollama/dist/browser.cjs";
 
 interface LlamaConfig {
     model: string;
@@ -41,32 +44,28 @@ export class LlamaProvider extends AIProvider {
             throw new Error(validation);
         }
 
-        const dto: LlamaApiGenerateDto = {
-            prompt: request.prompt,
+        const messages: Message[] = [];
+        if (request.systemPrompt) {
+            messages.push({ role: "system", content: request.systemPrompt });
+        }
+        messages.push({ role: "user", content: request.prompt });
+
+        // Sad typescript assertion
+        const dto: ChatRequest & { stream?: false } = {
             model: this.model,
+            messages,
             stream: false,
             options: {
                 temperature: request.temperature ?? 0.7,
             },
+            format: request.format ?? undefined,
         };
 
-        const response = await fetch("http://localhost:11434/api/generate", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(dto),
-        });
-
-        if (!response.ok) {
-            throw new Error(`Ollama API error: ${response.statusText}`);
-        }
-
-        const data: LlamaApiGenerateResponse = await response.json();
+        const response: ChatResponse = await ollama.chat(dto);
 
         return {
-            response: data.response,
-            tokens: data.eval_count,
+            response: response.message.content,
+            tokens: response.eval_count,
         };
     }
 

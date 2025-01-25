@@ -1,80 +1,79 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { NumberChallenge, NumberChallengeRoundConfig } from "./NumberChallenge";
-import { NumberTrainerRound } from "./NumberTrainerRound";
 import { TrainerFeedback } from "../shared/Trainer/TrainerFeedback";
-import SlFormatNumber from "@shoelace-style/shoelace/dist/react/format-number";
 import { AppSettings } from "../../models/app-settings";
 import { AIProviderRegistry } from "../../ai/registry";
+import { CompChallenge } from "./CompChallenge";
+import { CompTrainerRound } from "./CompTrainerRound";
 
-interface NumberTrainerActivityProps {
+interface Props {
     settings: AppSettings;
-    config: NumberChallengeRoundConfig;
     onStop: () => void;
 }
 
-export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ settings, config, onStop }) => {
-    const [challenge] = useState(() => new NumberChallenge(config));
+export const CompTrainerActivity: React.FC<Props> = ({ settings, onStop }) => {
+    const [challenge] = useState(() => new CompChallenge(settings.targetLanguage));
     const [playbackStatus, setPlaybackStatus] = useState<string>("");
     const [, forceUpdate] = useState({});
 
     const handleSubmit = useCallback(
         (userInput: string) => {
-            const isCorrect = challenge.checkAnswer(userInput);
+            const isCorrect = challenge.checkComprehension(userInput);
+            console.log(isCorrect);
+
             if (isCorrect) {
                 challenge.setStatus("correct");
             } else {
                 challenge.setStatus("incorrect");
                 challenge.playAudio();
             }
+
             forceUpdate({});
         },
         [challenge]
     );
 
-    const speakNumber = useCallback(async () => {
+    const generateProblem = useCallback(async () => {
         setPlaybackStatus("loading");
         try {
-            await challenge.generateAudio(settings.targetLanguage);
+            await challenge.generateProblem();
             setPlaybackStatus("playing");
             await challenge.playAudio();
             setPlaybackStatus("finished");
         } catch (error) {
+            // Can I show error for which part that failed?
             const provider = AIProviderRegistry.getActiveProvider("tts");
             throw new Error(`Failed to generate speech with ${provider.name}.\n${error}`);
         }
-    }, [challenge, settings.targetLanguage]);
+    }, [challenge]);
 
     useEffect(() => {
-        speakNumber();
-    }, [speakNumber]);
+        generateProblem();
+
+        return () => {
+            challenge.stopAudio();
+        };
+    }, [generateProblem]);
 
     const handleNextRound = useCallback(() => {
         challenge.nextRound();
-        speakNumber();
+        generateProblem();
         forceUpdate({});
     }, [challenge]);
 
-    const replayAudio = () => {
-        challenge.playAudio();
-    };
-
     return (
         <>
+            {challenge.storyText}
+
             {challenge.status === "correct" || challenge.status === "incorrect" ? (
                 <TrainerFeedback
                     playbackStatus={playbackStatus}
-                    message={
-                        <div>
-                            The number was{" "}
-                            <SlFormatNumber value={challenge.currentNumber} lang={settings.appLanguage} />.
-                        </div>
-                    }
+                    message={<div>{challenge.storyText}</div>}
                     status={challenge.status}
                     onNextRound={handleNextRound}
-                    onReplayAudio={replayAudio}
+                    onReplayAudio={generateProblem}
                 />
             ) : (
-                <NumberTrainerRound
+                <CompTrainerRound
                     playbackStatus={playbackStatus}
                     status={challenge.status}
                     streak={challenge.streak}
