@@ -1,0 +1,6 @@
+.volume-range {
+    height: 40px;
+    align-content: center;
+    --track-color-active: var(--sl-color-primary-600);
+    --track-color-inactive: var(--sl-color-primary-200);
+}

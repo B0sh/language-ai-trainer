@@ -2,7 +2,7 @@ import { AIProvider, AICapabilities, TTSRequest } from "../interfaces";
 import { BrowserTTS } from "./BrowserTTS";
 
 export class BrowserProvider extends AIProvider {
-    readonly name = "Browser";
+    readonly name = "Browser TTS (Local)";
     readonly description = "Uses built-in browser Web Speech API for text-to-speech";
     readonly capabilities: AICapabilities = {
         canGenerateText: false,

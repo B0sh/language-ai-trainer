@@ -38,16 +38,14 @@ h6 {
 } */
 
 .form-control {
-    sl-radio-group {
-        margin-top: 0.5rem;
-    }
-    sl-input {
-        margin-top: 0.5rem;
-    }
-    sl-select {
+    sl-radio-group,
+    sl-input,
+    sl-select,
+    sl-range {
         margin-top: 0.5rem;
     }
 }
+
 sl-radio-group[align-right]::part(form-control) {
     width: 100%;
     display: flex;
@@ -66,6 +64,8 @@ sl-radio-group[align-right]::part(button-group) {
     margin-left: auto;
 }
 
+sl-range[align-right]::part(form-control),
+sl-input[align-right]::part(form-control),
 sl-select[align-right]::part(form-control) {
     width: 100%;
     display: flex;
@@ -74,31 +74,16 @@ sl-select[align-right]::part(form-control) {
     align-items: center;
 }
 
+sl-range[align-right]::part(form-control-label),
+sl-input[align-right]::part(form-control-label),
 sl-select[align-right]::part(form-control-label) {
     display: contents;
     order: 2;
 }
 
+sl-range[align-right]::part(form-control-input),
+sl-input[align-right]::part(form-control-input),
 sl-select[align-right]::part(form-control-input) {
-    width: 50%;
-    order: 1;
-    margin-left: auto;
-}
-
-sl-input[align-right]::part(form-control) {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    gap: var(--sl-spacing-3x-small) var(--gap-width);
-    align-items: center;
-}
-
-sl-input[align-right]::part(form-control-label) {
-    display: contents;
-    order: 2;
-}
-
-sl-input[align-right]::part(form-control-input) {
     width: 50%;
     order: 1;
     margin-left: auto;

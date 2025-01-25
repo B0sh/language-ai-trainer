@@ -6,7 +6,7 @@ interface LlamaConfig {
 }
 
 export class LlamaProvider extends AIProvider {
-    readonly name = "Llama";
+    readonly name = "Llama (Local)";
     readonly description = "Locally installed Llama model";
     readonly capabilities: AICapabilities = {
         canGenerateText: true,

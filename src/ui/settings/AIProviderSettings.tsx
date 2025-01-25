@@ -6,7 +6,11 @@ import SlSelect from "@shoelace-style/shoelace/dist/react/select";
 import SlOption from "@shoelace-style/shoelace/dist/react/option";
 import SlAlert from "@shoelace-style/shoelace/dist/react/alert";
 import SlIcon from "@shoelace-style/shoelace/dist/react/icon";
+import SlDivider from "@shoelace-style/shoelace/dist/react/divider";
 import { AIProvider } from "../../ai/interfaces";
+import { LlamaSettings } from "./LlamaSettings";
+import { GoogleSettings } from "./GoogleSettings";
+import { OpenAISettings } from "./OpenAISettings";
 
 interface AIProviderSettingsProps {
     settings: AppSettings;
@@ -52,7 +56,10 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ settings
     }
 
     return (
-        <div>
+        <div
+            className="settings-container form-control"
+            style={{ padding: "20px", maxWidth: "600px", margin: "0 auto" }}
+        >
             <h2>AI Provider Settings</h2>
             {errorAlert}
 
@@ -99,6 +106,27 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ settings
                         </SlOption>
                     ))}
             </SlSelect>
+
+            {settings.tts === "openai" || settings.stt === "openai" || settings.llm === "openai" ? (
+                <>
+                    <SlDivider />
+                    <OpenAISettings settings={settings} onSettingsChange={onSettingsChange} />
+                </>
+            ) : null}
+
+            {settings.tts === "google" || settings.stt === "google" || settings.llm === "google" ? (
+                <>
+                    <SlDivider />
+                    <GoogleSettings settings={settings} onSettingsChange={onSettingsChange} />
+                </>
+            ) : null}
+
+            {settings.tts === "llama" || settings.stt === "llama" || settings.llm === "llama" ? (
+                <>
+                    <SlDivider />
+                    <LlamaSettings settings={settings} onSettingsChange={onSettingsChange} />
+                </>
+            ) : null}
         </div>
     );
 };

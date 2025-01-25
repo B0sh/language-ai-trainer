@@ -2,9 +2,10 @@ import SlDrawer from "@shoelace-style/shoelace/dist/react/drawer";
 import SlButton from "@shoelace-style/shoelace/dist/react/button";
 import SlIcon from "@shoelace-style/shoelace/dist/react/icon";
 import SlIconButton from "@shoelace-style/shoelace/dist/react/icon-button";
+import SlDivider from "@shoelace-style/shoelace/dist/react/divider";
 import * as React from "react";
 import { useState, useEffect, createRef } from "react";
-import { ErrorBoundary, useErrorBoundary } from "react-error-boundary";
+import { ErrorBoundary } from "react-error-boundary";
 import { DateTrainer } from "./date-trainer/DateTrainer";
 import { NumberTrainer } from "./number-trainer/NumberTrainer";
 import { Settings } from "./settings/Settings";
@@ -14,6 +15,7 @@ import { AppSettings } from "../models/app-settings";
 import { SettingsService } from "../services/settings-service";
 import { ErrorFallback } from "./error-fallback/ErrorFallback";
 import { Home } from "./home/Home";
+import { AIProviderSettings } from "./settings/AIProviderSettings";
 
 export const LanguageTrainerApp: React.FC = () => {
     const [open, setOpen] = useState(true);
@@ -63,6 +65,8 @@ export const LanguageTrainerApp: React.FC = () => {
                 return <NumberTrainer settings={settings} />;
             case "settings":
                 return <Settings settings={settings} onSettingsChange={handleSettingsChange} />;
+            case "ai-settings":
+                return <AIProviderSettings settings={settings} onSettingsChange={handleSettingsChange} />;
         }
         return <Home />;
     };
@@ -140,6 +144,16 @@ export const LanguageTrainerApp: React.FC = () => {
                         >
                             <SlIcon slot="prefix" name="123"></SlIcon>
                             Number Trainer
+                        </SlButton>
+                        <SlDivider />
+                        <SlButton
+                            variant="text"
+                            size="large"
+                            className={selectedMenu === "ai-settings" ? "selected" : ""}
+                            onClick={() => selectMenu("ai-settings")}
+                        >
+                            <SlIcon slot="prefix" name="stars"></SlIcon>
+                            AI Providers
                         </SlButton>
                         <SlButton
                             variant="text"

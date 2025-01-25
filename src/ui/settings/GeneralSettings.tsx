@@ -2,9 +2,8 @@ import * as React from "react";
 import { AppSettings } from "../../models/app-settings";
 import SlRadioGroup from "@shoelace-style/shoelace/dist/react/radio-group";
 import SlRadioButton from "@shoelace-style/shoelace/dist/react/radio-button";
-import SlSelect from "@shoelace-style/shoelace/dist/react/select";
-import SlOption from "@shoelace-style/shoelace/dist/react/option";
-import { APP_LANGUAGES, TARGET_LANGUAGES } from "../../shared/languages";
+import SlRange from "@shoelace-style/shoelace/dist/react/range";
+import { APP_LANGUAGES } from "../../shared/languages";
 
 interface GeneralSettingsProps {
     settings: AppSettings;
@@ -19,10 +18,13 @@ export const GeneralSettings: React.FC<GeneralSettingsProps> = ({ settings, onSe
         });
     };
 
-    const handleTargetLanguageChange = (language: string) => {
+    const handleVolumeChange = (volume: number) => {
+        if (volume < 0) return;
+        if (volume > 100) return;
+
         onSettingsChange({
             ...settings,
-            targetLanguage: language,
+            volume,
         });
     };
 
@@ -36,20 +38,6 @@ export const GeneralSettings: React.FC<GeneralSettingsProps> = ({ settings, onSe
     return (
         <div>
             <h2>App Settings</h2>
-            <SlSelect
-                label="Target Language"
-                name="targetLanguage"
-                align-right
-                value={settings.targetLanguage}
-                onSlChange={(e) => handleTargetLanguageChange((e.target as HTMLInputElement).value)}
-            >
-                {TARGET_LANGUAGES.map((lang) => (
-                    <SlOption key={lang.id} value={lang.id}>
-                        {lang.description}
-                    </SlOption>
-                ))}
-            </SlSelect>
-
             <SlRadioGroup
                 label="App Language"
                 name="appLanguage"
@@ -75,6 +63,16 @@ export const GeneralSettings: React.FC<GeneralSettingsProps> = ({ settings, onSe
                 <SlRadioButton value="dark">Dark</SlRadioButton>
                 <SlRadioButton value="auto">Auto</SlRadioButton>
             </SlRadioGroup>
+
+            <SlRange
+                label="Volume"
+                min={0}
+                max={100}
+                align-right
+                className="volume-range"
+                value={settings.volume ?? 50}
+                onSlChange={(e) => handleVolumeChange(parseInt((e.target as HTMLInputElement).value))}
+            />
         </div>
     );
 };

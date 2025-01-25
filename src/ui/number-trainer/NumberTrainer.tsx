@@ -15,20 +15,18 @@ export const NumberTrainer: React.FC<Props> = ({ settings }) => {
     const handleStop = () => setIsPlaying(false);
 
     return (
-        <div className="number-trainer">
-            <div className="number-trainer-width">
-                <div className="spacer">
-                    <h2>Number Trainer</h2>
-                </div>
-                <div className="game-container">
-                    {isPlaying ? (
-                        <NumberTrainerActivity targetLanguage={settings.targetLanguage} onStop={handleStop} />
-                    ) : (
-                        <NumberTrainerMenu onStart={handleStart} />
-                    )}
-                </div>
-                <div className="spacer"></div>
+        <div className="trainer-container">
+            <div className="spacer">
+                <h2>Number Trainer</h2>
             </div>
+            <div className="trainer-content">
+                {isPlaying ? (
+                    <NumberTrainerActivity targetLanguage={settings.targetLanguage} onStop={handleStop} />
+                ) : (
+                    <NumberTrainerMenu onStart={handleStart} />
+                )}
+            </div>
+            <div className="spacer"></div>
         </div>
     );
 };

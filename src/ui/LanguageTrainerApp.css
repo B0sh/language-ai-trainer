@@ -16,15 +16,23 @@ main.drawer-closed {
     margin-left: 0;
 }
 
-nav .selected {
-    text-align: left;
-    background-color: var(--sl-color-sky-100);
-    color: var(--sl-color-neutral-900);
-    border-radius: 0.5rem;
-    width: 100%;
-}
-nav .selected::part(base) {
-    justify-content: flex-start;
+nav {
+    .selected {
+        text-align: left;
+        background-color: var(--sl-color-sky-100);
+        color: var(--sl-color-neutral-900);
+        border-radius: 0.5rem;
+        width: 100%;
+    }
+    .selected::part(base) {
+        justify-content: flex-start;
+    }
+
+    sl-divider {
+        --color: var(--sl-color-neutral-300);
+        --width: 2px;
+        --spacing: 7px;
+    }
 }
 
 header {

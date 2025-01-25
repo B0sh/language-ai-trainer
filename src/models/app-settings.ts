@@ -4,6 +4,7 @@ export interface AppSettings {
     llm: string;
     appLanguage: string;
     targetLanguage: string;
+    volume: number;
     theme: string;
     configs: Record<string, any>;
 }
@@ -15,8 +16,10 @@ export const DEFAULT_SETTINGS: AppSettings = {
     configs: {
         openai: { apiKey: "", organization: "" },
         google: { apiKey: "" },
+        llama: { model: "" },
     },
     appLanguage: "en-US",
     targetLanguage: "en",
     theme: "light",
+    volume: 50,
 };

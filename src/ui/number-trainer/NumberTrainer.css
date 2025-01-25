@@ -1,4 +1,4 @@
-.number-trainer {
+.trainer-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -14,7 +14,7 @@
         height: 40px;
     }
 
-    .game-container {
+    .trainer-content {
         display: flex;
         flex-direction: column;
         justify-content: center;
