@@ -1,7 +1,8 @@
-import { AICapabilities, AIProvider, LLMGenerationOptions, LLMGenerationResult, TTSRequest } from "../interfaces";
+import { AICapabilities, AIProvider, LLMRequest, LLMResult, TTSRequest } from "../interfaces";
 import { GoogleTTSAudio } from "./GoogleTTSAudio";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import * as VOICE_LIST from "./google-voices.json";
+import { getRandomElement } from "../../shared/utility";
 
 interface GoogleConfig {
     apiKey: string;
@@ -47,32 +48,26 @@ export class GoogleProvider extends AIProvider {
             throw new Error(config);
         }
 
+        const availableVoices = VOICE_LIST.voices.filter((v) => v.languageCodes.includes(request.language));
+
+        if (availableVoices.length === 0) {
+            throw new Error(`No google voice found for language ${request.language}`);
+        }
+
         let voice = "";
         if (request.voice) {
-            const data = VOICE_LIST.voices.find((v) => v.name === request.voice);
-            if (data) {
-                voice = data.name;
+            if (request.voice === "default") {
+                voice = availableVoices[0].name;
+            } else if (request.voice === "random") {
+                voice = getRandomElement(availableVoices).name;
+            } else {
+                voice = availableVoices.find((v) => v.name === request.voice)?.name;
             }
         }
 
         if (!voice) {
-            const data = VOICE_LIST.voices.find((v) => v.languageCodes.includes(request.language));
-            if (data) {
-                voice = data.name;
-            } else {
-                throw new Error(`No google voice found for language ${request.language}`);
-            }
+            voice = availableVoices[0].name;
         }
-
-        // const voice = this.weightedRandom([
-        //     { value: "ja-JP-Neural2-B", weight: 10 },
-        //     { value: "ja-JP-Neural2-C", weight: 10 },
-        //     { value: "ja-JP-Neural2-D", weight: 10 },
-        //     { value: "ja-JP-Wavenet-A", weight: 10 },
-        //     { value: "ja-JP-Wavenet-B", weight: 10 },
-        //     { value: "ja-JP-Wavenet-C", weight: 10 },
-        //     { value: "ja-JP-Wavenet-D", weight: 10000 },
-        // ]);
 
         const dto = {
             audioConfig: {
@@ -102,7 +97,7 @@ export class GoogleProvider extends AIProvider {
         return new GoogleTTSAudio(request.text, data.audioContent);
     }
 
-    async generateText(prompt: string, options: LLMGenerationOptions = {}): Promise<LLMGenerationResult> {
+    async generateText(request: LLMRequest): Promise<LLMResult> {
         const validation = this.validateConfig();
         if (validation) {
             throw new Error(validation);
@@ -112,16 +107,18 @@ export class GoogleProvider extends AIProvider {
             throw new Error("Gemini API not initialized");
         }
 
+        const model = "gemini-1.0";
+
         try {
-            const model = this.genAI.getGenerativeModel({ model: "gemini-pro" });
-            const result = await model.generateContent(prompt);
+            const genModel = this.genAI.getGenerativeModel({ model });
+            const result = await genModel.generateContent(request.prompt);
             const response = await result.response;
             const text = response.text();
 
             return {
-                text,
+                response: text,
                 metadata: {
-                    model: "gemini-pro",
+                    model,
                 },
             };
         } catch (error) {

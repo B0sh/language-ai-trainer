@@ -1,3 +1,4 @@
+import { getRandomElement } from "../../shared/utility";
 import { AIProvider, AICapabilities, TTSRequest } from "../interfaces";
 import { BrowserTTS } from "./BrowserTTS";
 
@@ -31,12 +32,21 @@ export class BrowserProvider extends AIProvider {
         if (request.pitch) utterance.pitch = request.pitch;
         if (request.language) utterance.lang = request.language;
 
-        const voices = this.speechSynthesis.getVoices();
+        const voices = this.speechSynthesis.getVoices().filter((v) => v.lang === request.language);
+
         if (request.voice) {
-            const voice = voices.find((v) => v.name === request.voice);
-            if (voice) utterance.voice = voice;
-        } else {
-            utterance.voice = voices.find((v) => v.lang === request.language);
+            if (request.voice === "default") {
+                utterance.voice = voices.find((v) => v.default);
+            } else if (request.voice === "random") {
+                utterance.voice = getRandomElement(voices);
+            } else {
+                const voice = voices.find((v) => v.name === request.voice);
+                if (voice) utterance.voice = voice;
+            }
+        }
+
+        if (!utterance.voice) {
+            utterance.voice = voices[0];
         }
 
         return new BrowserTTS(utterance);

@@ -3,7 +3,7 @@
 export interface TTSRequest {
     text: string;
     language: string;
-    voice?: string;
+    voice?: "default" | "random" | string;
     speed?: number;
     pitch?: number;
 }
@@ -21,16 +21,16 @@ export interface SpeechToTextResult {
     metadata?: Record<string, any>;
 }
 
-export interface LLMGenerationOptions {
+export interface LLMRequest {
+    prompt: string;
+    systemPrompt?: string;
     temperature?: number;
     maxTokens?: number;
-    stop?: string[];
     model?: string;
-    systemPrompt?: string;
 }
 
-export interface LLMGenerationResult {
-    text: string;
+export interface LLMResult {
+    response: string;
     tokens?: number;
     metadata?: Record<string, any>;
 }
@@ -58,7 +58,7 @@ export abstract class AIProvider {
         throw new Error("Speech to text not supported by this provider");
     }
 
-    generateText?(prompt: string, options?: LLMGenerationOptions): Promise<LLMGenerationResult> {
+    llm?(request: LLMRequest): Promise<LLMResult> {
         throw new Error("Text generation not supported by this provider");
     }
 

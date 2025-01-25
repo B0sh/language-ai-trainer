@@ -24,33 +24,39 @@ export const NumberTrainer: React.FC<Props> = ({ settings, onSettingsChange }) =
 
     return (
         <div className="trainer-container">
-            <div className="spacer trainer-header">
-                <div>
-                    <h2>Number Trainer</h2>
-                </div>
-                <div>
-                    {config && (
-                        <SlBadge
-                            variant="primary"
-                            pill
-                            style={{ fontSize: "0.75rem", verticalAlign: "middle", marginRight: "4px" }}
-                        >
-                            {config.label}
+            <div>
+                <div className="spacer trainer-header">
+                    <div>
+                        <h2>Number Trainer</h2>
+                    </div>
+                    <div>
+                        {config && (
+                            <SlBadge
+                                variant="primary"
+                                pill
+                                style={{ fontSize: "0.75rem", verticalAlign: "middle", marginRight: "4px" }}
+                            >
+                                {config.label}
+                            </SlBadge>
+                        )}
+                        <SlBadge variant="primary" pill style={{ fontSize: "0.75rem", verticalAlign: "middle" }}>
+                            {TARGET_LANGUAGES.find((l) => l.id === settings.targetLanguage)?.description}
                         </SlBadge>
-                    )}
-                    <SlBadge variant="primary" pill style={{ fontSize: "0.75rem", verticalAlign: "middle" }}>
-                        {TARGET_LANGUAGES.find((l) => l.id === settings.targetLanguage)?.description}
-                    </SlBadge>
+                    </div>
                 </div>
+                <div className="trainer-content">
+                    {isPlaying ? (
+                        <NumberTrainerActivity settings={settings} config={config} onStop={handleStop} />
+                    ) : (
+                        <NumberTrainerMenu
+                            settings={settings}
+                            onStart={handleStart}
+                            onSettingsChange={onSettingsChange}
+                        />
+                    )}
+                </div>
+                <div className="spacer"></div>
             </div>
-            <div className="trainer-content">
-                {isPlaying ? (
-                    <NumberTrainerActivity settings={settings} config={config} onStop={handleStop} />
-                ) : (
-                    <NumberTrainerMenu settings={settings} onStart={handleStart} onSettingsChange={onSettingsChange} />
-                )}
-            </div>
-            <div className="spacer"></div>
         </div>
     );
 };

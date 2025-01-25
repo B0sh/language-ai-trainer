@@ -1,4 +1,4 @@
-import { AIProvider, TTSAudio, TTSRequest } from "./interfaces";
+import { AIProvider, LLMRequest, TTSAudio, TTSRequest } from "./interfaces";
 import { BrowserProvider } from "./browser/BrowserProvider";
 import { OpenAIProvider } from "./openai/OpenAIProvider";
 import { GoogleProvider } from "./google/GoogleProvider";
@@ -91,12 +91,12 @@ export class AIProviderRegistry {
         return provider.speechToText(audioData, options);
     }
 
-    static async generateText(prompt: string, options?: any) {
+    static async llm(request: LLMRequest) {
         const provider = this.getActiveProvider("llm");
-        if (!provider.generateText) {
+        if (!provider.llm) {
             throw new Error(`Provider ${provider.name} does not support text generation`);
         }
-        return provider.generateText(prompt, options);
+        return provider.llm(request);
     }
 }
 AIProviderRegistry.registerDefaults();

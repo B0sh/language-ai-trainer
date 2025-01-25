@@ -1,10 +1,6 @@
-import {
-    AIProvider,
-    LLMGenerationOptions,
-    LLMGenerationResult,
-    SpeechToTextResult,
-    AICapabilities,
-} from "../interfaces";
+import { ChatCompletion, ChatCompletionMessageParam } from "openai/resources/chat/completions";
+import { AIProvider, AICapabilities, LLMRequest, LLMResult } from "../interfaces";
+import OpenAI from "openai";
 
 export interface OpenAIConfig {
     apiKey: string;
@@ -24,6 +20,7 @@ export class OpenAIProvider extends AIProvider {
 
     private apiKey?: string;
     private organization?: string;
+    private openai?: OpenAI;
 
     constructor(config?: OpenAIConfig) {
         super();
@@ -35,6 +32,20 @@ export class OpenAIProvider extends AIProvider {
     configure(config: OpenAIConfig): void {
         this.apiKey = config.apiKey;
         this.organization = config.organization;
+
+        if (this.openai) {
+            this.openai.apiKey = this.apiKey;
+            this.openai.organization = this.organization;
+        } else {
+            this.openai = new OpenAI({
+                apiKey: this.apiKey,
+                organization: this.organization,
+                // Since your open API key is stored in localStorage, we need to enable this.
+                // Perhaps in the future we could run AI logic this in the main electron process,
+                // however that would make impossible to port to a browser in the future
+                dangerouslyAllowBrowser: true,
+            });
+        }
     }
 
     validateConfig(): string {
@@ -45,78 +56,60 @@ export class OpenAIProvider extends AIProvider {
         return "";
     }
 
-    async generateText(prompt: string, options: LLMGenerationOptions = {}): Promise<LLMGenerationResult> {
+    async llm(request: LLMRequest): Promise<LLMResult> {
         const validation = this.validateConfig();
         if (validation) {
             throw new Error(validation);
         }
 
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${this.apiKey}`,
-                "Content-Type": "application/json",
-                ...(this.organization && { "OpenAI-Organization": this.organization }),
-            },
-            body: JSON.stringify({
-                model: options.model || "gpt-4",
-                messages: [
-                    ...(options.systemPrompt ? [{ role: "system", content: options.systemPrompt }] : []),
-                    { role: "user", content: prompt },
-                ],
-                temperature: options.temperature ?? 0.7,
-                max_tokens: options.maxTokens,
-                stop: options.stop,
-            }),
-        });
-
-        if (!response.ok) {
-            throw new Error(`OpenAI API error: ${response.statusText}`);
+        if (!this.openai) {
+            throw new Error("OpenAI API client is not initialized");
         }
 
-        const data = await response.json();
-        return {
-            text: data.choices[0].message.content,
-            tokens: data.usage.total_tokens,
-            metadata: {
-                model: data.model,
-                usage: data.usage,
+        const messages: ChatCompletionMessageParam[] = [];
+        if (request.systemPrompt) {
+            messages.push({ role: "system", content: request.systemPrompt });
+        }
+
+        messages.push({ role: "user", content: request.prompt });
+
+        const completion: ChatCompletion = await this.openai.chat.completions.create(
+            {
+                model: request.model || "gpt-4o-mini",
+                messages,
             },
+            {
+                stream: false,
+            }
+        );
+        return {
+            response: completion.choices[0].message.content,
+            tokens: completion.usage.total_tokens,
         };
     }
 
-    async speechToText(audioData: ArrayBuffer): Promise<SpeechToTextResult> {
-        const validation = this.validateConfig();
-        if (validation) {
-            throw new Error(validation);
-        }
+    // async speechToText(audioData: ArrayBuffer): Promise<SpeechToTextResult> {
+    //     const validation = this.validateConfig();
+    //     if (validation) {
+    //         throw new Error(validation);
+    //     }
 
-        const formData = new FormData();
-        const audioBlob = new Blob([audioData], { type: "audio/wav" });
-        formData.append("file", audioBlob, "audio.wav");
-        formData.append("model", "whisper-1");
+    //     if (!this.openai) {
+    //         throw new Error("OpenAI API client is not initialized");
+    //     }
 
-        const response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${this.apiKey}`,
-                ...(this.organization && { "OpenAI-Organization": this.organization }),
-            },
-            body: formData,
-        });
+    //     const formData = new FormData();
+    //     const audioBlob = new Blob([audioData], { type: "audio/wav" });
+    //     formData.append("file", audioBlob, "audio.wav");
+    //     formData.append("model", "whisper-1");
 
-        if (!response.ok) {
-            throw new Error(`OpenAI API error: ${response.statusText}`);
-        }
+    //     const response = await this.openai.audio.transcriptions.create({
+    //         file: audioBlob,
+    //         model: "whisper-1",
+    //     });
 
-        const data = await response.json();
-        return {
-            text: data.text,
-            confidence: 1, // OpenAI doesn't provide confidence scores
-            isFinal: true,
-            metadata: {
-                model: "whisper-1",
-            },
-        };
-    }
+    //     return {
+    //         text: response.text,
+    //     };
+    // }
 }
