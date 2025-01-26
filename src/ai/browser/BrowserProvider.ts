@@ -49,6 +49,13 @@ export class BrowserProvider extends AIProvider {
             utterance.voice = voices[0];
         }
 
-        return new BrowserTTS(utterance);
+        const metadata = {
+            voice: utterance.voice?.name,
+            language: utterance.lang,
+            speed: utterance.rate,
+            pitch: utterance.pitch,
+        };
+
+        return new BrowserTTS(utterance, metadata);
     }
 }

@@ -1,11 +1,14 @@
-import { AIProvider, LLMRequest, TTSAudio, TTSRequest } from "./interfaces";
+import { AICapabilities, AIProvider, LLMRequest, LLMResult, TTSAudio, TTSRequest } from "./interfaces";
 import { BrowserProvider } from "./browser/BrowserProvider";
 import { OpenAIProvider } from "./openai/OpenAIProvider";
 import { GoogleProvider } from "./google/GoogleProvider";
 import { LlamaProvider } from "./llama/LlamaProvider";
+import { aiRequestDB } from "./db";
+
+type AiProviderFactory = new (...args: any[]) => AIProvider;
 
 export class AIProviderRegistry {
-    private static providers = new Map<string, new (...args: any[]) => AIProvider>();
+    private static providers = new Map<string, AiProviderFactory>();
     private static activeProviders = new Map<string, AIProvider>();
     private static sttProcessing = false;
     private static llmProcessing = false;
@@ -18,11 +21,11 @@ export class AIProviderRegistry {
         this.registerProvider("llama", LlamaProvider);
     }
 
-    static registerProvider(id: string, providerClass: new (...args: any[]) => AIProvider) {
+    static registerProvider(id: string, providerClass: AiProviderFactory) {
         this.providers.set(id, providerClass);
     }
 
-    static getProviderClass(id: string): new (...args: any[]) => AIProvider {
+    static getProviderClass(id: string): AiProviderFactory {
         const provider = this.providers.get(id);
         if (!provider) {
             throw new Error(`Provider ${id} not found`);
@@ -30,7 +33,12 @@ export class AIProviderRegistry {
         return provider;
     }
 
-    static getAvailableProviders(): Array<{ id: string; name: string; description: string; capabilities: any }> {
+    static getAvailableProviders(): Array<{
+        id: string;
+        name: string;
+        description: string;
+        capabilities: AICapabilities;
+    }> {
         return Array.from(this.providers.entries()).map(([id, Provider]) => {
             const instance = new Provider();
             return {
@@ -73,16 +81,30 @@ export class AIProviderRegistry {
         }
 
         this.ttsProcessing = true;
-        return provider
-            .textToSpeech(request)
-            .then((tts) => {
-                this.ttsProcessing = false;
-                return tts;
-            })
-            .catch((error) => {
-                this.ttsProcessing = false;
-                throw error;
+        try {
+            const result = await provider.textToSpeech(request);
+
+            await aiRequestDB.logRequest({
+                provider: provider.name,
+                requestType: "tts",
+                inputText: request.text,
+                metadata: result.metadata,
+                response: "success",
             });
+
+            return result;
+        } catch (error) {
+            await aiRequestDB.logRequest({
+                provider: provider.name,
+                requestType: "tts",
+                inputText: request.text,
+                response: error instanceof Error ? error.message : "Unknown error",
+            });
+
+            throw error;
+        } finally {
+            this.ttsProcessing = false;
+        }
     }
 
     static async speechToText(audioData: ArrayBuffer | MediaStream, options?: any) {
@@ -91,22 +113,35 @@ export class AIProviderRegistry {
             throw new Error(`Provider ${provider.name} does not support speech-to-text`);
         }
         if (this.sttProcessing) {
-            return;
+            return "";
         }
         this.sttProcessing = true;
-        return provider
-            .speechToText(audioData, options)
-            .then((stt) => {
-                this.sttProcessing = false;
-                return stt;
-            })
-            .catch((error) => {
-                this.sttProcessing = false;
-                throw error;
+        try {
+            const result = await provider.speechToText(audioData, options);
+
+            // await aiRequestDB.logRequest({
+            //     provider: provider.name,
+            //     requestType: "stt",
+            //     outputText: result,
+            //     options: { blobSize: audio.size },
+            //     response: "success",
+            // });
+
+            return result;
+        } catch (error) {
+            await aiRequestDB.logRequest({
+                provider: provider.name,
+                requestType: "stt",
+                response: error instanceof Error ? error.message : "Unknown error",
             });
+
+            throw error;
+        } finally {
+            this.sttProcessing = false;
+        }
     }
 
-    static async llm(request: LLMRequest) {
+    static async llm(request: LLMRequest): Promise<LLMResult> {
         const provider = this.getActiveProvider("llm");
         if (!provider.llm) {
             throw new Error(`Provider ${provider.name} does not support text generation`);
@@ -114,17 +149,33 @@ export class AIProviderRegistry {
         if (this.llmProcessing) {
             return;
         }
+
         this.llmProcessing = true;
-        return provider
-            .llm(request)
-            .then((llm) => {
-                this.llmProcessing = false;
-                return llm;
-            })
-            .catch((error) => {
-                this.llmProcessing = false;
-                throw error;
+        try {
+            const result = await provider.llm(request);
+
+            await aiRequestDB.logRequest({
+                provider: provider.name,
+                requestType: "llm",
+                inputText: request.prompt,
+                outputText: result.response,
+                metadata: result.metadata,
+                response: "success",
             });
+
+            return result;
+        } catch (error) {
+            await aiRequestDB.logRequest({
+                provider: provider.name,
+                requestType: "llm",
+                inputText: request.prompt,
+                response: error instanceof Error ? error.message : "Unknown error",
+            });
+
+            throw error;
+        } finally {
+            this.llmProcessing = false;
+        }
     }
 }
 AIProviderRegistry.registerDefaults();

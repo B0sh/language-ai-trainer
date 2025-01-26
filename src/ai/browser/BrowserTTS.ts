@@ -3,9 +3,10 @@ import { TTSAudio } from "../interfaces";
 export class BrowserTTS extends TTSAudio {
     private speechSynthesis = window.speechSynthesis;
 
-    constructor(private speech: SpeechSynthesisUtterance) {
+    constructor(private speech: SpeechSynthesisUtterance, metadata?: Record<string, unknown>) {
         super();
         this.text = speech.text;
+        this.metadata = metadata;
     }
 
     async play(volume?: number): Promise<void> {

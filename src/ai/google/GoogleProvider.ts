@@ -79,7 +79,7 @@ export class GoogleProvider extends AIProvider {
             input: { text: request.text },
             voice: {
                 languageCode: request.language,
-                name: request.voice,
+                name: voice,
             },
         };
 
@@ -94,7 +94,14 @@ export class GoogleProvider extends AIProvider {
         }
 
         const data = await response.json();
-        return new GoogleTTSAudio(request.text, data.audioContent);
+        const metadata = {
+            pitch: dto.audioConfig.pitch,
+            speed: dto.audioConfig.speakingRate,
+            language: dto.voice.languageCode,
+            voice,
+        };
+
+        return new GoogleTTSAudio(request.text, data.audioContent, metadata);
     }
 
     async generateText(request: LLMRequest): Promise<LLMResult> {
@@ -119,6 +126,10 @@ export class GoogleProvider extends AIProvider {
                 response: text,
                 metadata: {
                     model,
+                    promptTokenCount: response.usageMetadata.promptTokenCount,
+                    candidatesTokenCount: response.usageMetadata.candidatesTokenCount,
+                    totalTokenCount: response.usageMetadata.totalTokenCount,
+                    cachedContentTokenCount: response.usageMetadata.cachedContentTokenCount,
                 },
             };
         } catch (error) {

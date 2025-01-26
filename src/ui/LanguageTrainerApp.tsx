@@ -17,6 +17,7 @@ import { ErrorFallback } from "./error-fallback/ErrorFallback";
 import { Home } from "./home/Home";
 import { AIProviderSettings } from "./settings/AIProviderSettings";
 import { CompTrainer } from "./comp-trainer/CompTrainer";
+import { AiLog } from "./ai-log/AiLog";
 
 export const LanguageTrainerApp: React.FC = () => {
     const [open, setOpen] = useState(true);
@@ -70,6 +71,8 @@ export const LanguageTrainerApp: React.FC = () => {
                 return <Settings settings={settings} onSettingsChange={handleSettingsChange} />;
             case "ai-settings":
                 return <AIProviderSettings settings={settings} onSettingsChange={handleSettingsChange} />;
+            case "ai-logs":
+                return <AiLog settings={settings} />;
         }
         return <Home />;
     };
@@ -166,6 +169,15 @@ export const LanguageTrainerApp: React.FC = () => {
                         >
                             <SlIcon slot="prefix" name="stars"></SlIcon>
                             AI Providers
+                        </SlButton>
+                        <SlButton
+                            variant="text"
+                            size="large"
+                            className={selectedMenu === "ai-logs" ? "selected" : ""}
+                            onClick={() => selectMenu("ai-logs")}
+                        >
+                            <SlIcon slot="prefix" name="list-ul"></SlIcon>
+                            AI Logs
                         </SlButton>
                         <SlButton
                             variant="text"

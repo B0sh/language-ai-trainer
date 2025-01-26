@@ -88,3 +88,8 @@ sl-select[align-right]::part(form-control-input) {
     order: 1;
     margin-left: auto;
 }
+
+sl-spinner.large-spinner {
+    --track-width: 0.5rem;
+    font-size: 4rem;
+}

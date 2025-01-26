@@ -15,7 +15,7 @@ export const CompTrainerRound: React.FC<Props> = ({ playbackStatus, status, stre
     const inputRef = useRef<SlInputElement>(null);
 
     if (playbackStatus === "loading") {
-        return <SlSpinner className="comp-spinner" />;
+        return <SlSpinner className="large-spinner" />;
     }
 
     inputRef.current?.focus();

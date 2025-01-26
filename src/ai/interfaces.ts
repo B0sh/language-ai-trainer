@@ -70,6 +70,8 @@ export abstract class AIProvider {
 
 export abstract class TTSAudio {
     text: string;
+    metadata?: Record<string, unknown>;
+
     abstract play(volume?: number): Promise<void>;
     abstract stop(): Promise<void>;
     abstract pause(): Promise<void>;
