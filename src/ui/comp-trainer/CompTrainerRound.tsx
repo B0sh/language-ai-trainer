@@ -14,20 +14,18 @@ interface Props {
 export const CompTrainerRound: React.FC<Props> = ({ playbackStatus, status, streak, onSubmit }) => {
     const inputRef = useRef<SlInputElement>(null);
 
-    const getStatusIcon = () => {
-        if (playbackStatus === "loading") {
-            return <SlSpinner style={{ fontSize: "2rem" }} />;
-        }
-
-        return <SlIcon style={{ fontSize: "2rem" }} name="soundwave" />;
-    };
+    if (playbackStatus === "loading") {
+        return <SlSpinner className="comp-spinner" />;
+    }
 
     inputRef.current?.focus();
 
     return (
         <>
             <div className="number-trainer-input-row">
-                <div className="status-icon">{getStatusIcon()}</div>
+                <div className="status-icon">
+                    <SlIcon style={{ fontSize: "2rem" }} name="soundwave" />
+                </div>
                 {playbackStatus}
                 <SlInput
                     ref={inputRef}

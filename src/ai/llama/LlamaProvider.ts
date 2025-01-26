@@ -1,8 +1,7 @@
 import { AIProvider, AICapabilities, LLMRequest, LLMResult } from "../interfaces";
-import { LlamaListModelsResponse } from "./LlamaModel";
 // https://github.com/ollama/ollama-js/issues/151
 // must be manually imported from dist file because of upstream issue with ollama bundling
-import ollama, { ChatRequest, ChatResponse, Message } from "ollama/dist/browser.cjs";
+import ollama, { ChatRequest, ChatResponse, ListResponse, Message, ModelResponse } from "ollama/dist/browser.cjs";
 
 interface LlamaConfig {
     model: string;
@@ -69,19 +68,9 @@ export class LlamaProvider extends AIProvider {
         };
     }
 
-    static async listModels(): Promise<LlamaListModelsResponse> {
-        const response = await fetch("http://localhost:11434/api/tags", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+    static async listModels(): Promise<ModelResponse[]> {
+        const response: ListResponse = await ollama.list();
 
-        if (!response.ok) {
-            throw new Error(`Ollama API error: ${response.statusText}`);
-        }
-
-        const data: LlamaListModelsResponse = await response.json();
-        return data;
+        return response.models;
     }
 }

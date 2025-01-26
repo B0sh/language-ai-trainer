@@ -16,29 +16,35 @@ export const CompTrainerActivity: React.FC<Props> = ({ settings, onStop }) => {
     const [, forceUpdate] = useState({});
 
     const handleSubmit = useCallback(
-        (userInput: string) => {
-            const isCorrect = challenge.checkComprehension(userInput);
-            console.log(isCorrect);
+        async (userInput: string) => {
+            const response = await challenge.checkComprehension(userInput);
+            console.log(response);
 
-            if (isCorrect) {
-                challenge.setStatus("correct");
-            } else {
-                challenge.setStatus("incorrect");
-                challenge.playAudio();
+            if (response) {
+                if (response.valid) {
+                    challenge.setStatus("correct");
+                } else {
+                    challenge.setStatus("incorrect");
+                    // challenge.playAudio();
+                }
+
+                forceUpdate({});
             }
-
-            forceUpdate({});
         },
         [challenge]
     );
 
     const generateProblem = useCallback(async () => {
         setPlaybackStatus("loading");
+        console.log("Generating problem", playbackStatus);
         try {
-            await challenge.generateProblem();
-            setPlaybackStatus("playing");
-            await challenge.playAudio();
-            setPlaybackStatus("finished");
+            const success = await challenge.generateProblem();
+            if (success) {
+                console.log("Finished generating problem", playbackStatus);
+                setPlaybackStatus("playing");
+                await challenge.playAudio();
+                setPlaybackStatus("finished");
+            }
         } catch (error) {
             // Can I show error for which part that failed?
             const provider = AIProviderRegistry.getActiveProvider("tts");

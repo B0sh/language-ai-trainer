@@ -1,7 +1,6 @@
 import * as React from "react";
 import { AppSettings } from "../../models/app-settings";
 import { LlamaProvider } from "../../ai/llama/LlamaProvider";
-import { LlamaModel } from "../../ai/llama/LlamaModel";
 import { openUrl } from "../../shared/utility";
 import SlSpinner from "@shoelace-style/shoelace/dist/react/spinner";
 import SlIconButton from "@shoelace-style/shoelace/dist/react/icon-button";
@@ -11,6 +10,7 @@ import SlOption from "@shoelace-style/shoelace/dist/react/option";
 import SlAlert from "@shoelace-style/shoelace/dist/react/alert";
 import SlIcon from "@shoelace-style/shoelace/dist/react/icon";
 import ExternalLink from "../shared/ExternalLink";
+import { ModelResponse } from "ollama/dist/browser.cjs";
 
 interface LlamaSettingsProps {
     settings: AppSettings;
@@ -18,7 +18,7 @@ interface LlamaSettingsProps {
 }
 
 export const LlamaSettings: React.FC<LlamaSettingsProps> = ({ settings, onSettingsChange }) => {
-    const [models, setModels] = React.useState<LlamaModel[]>([]);
+    const [models, setModels] = React.useState<ModelResponse[]>([]);
     const [error, setError] = React.useState<string>("");
     const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -35,9 +35,9 @@ export const LlamaSettings: React.FC<LlamaSettingsProps> = ({ settings, onSettin
             const response = await LlamaProvider.listModels();
 
             setLoading(false);
-            setModels(response.models);
+            setModels(response);
 
-            if (response.models.length === 0) {
+            if (response.length === 0) {
                 setError(
                     "No Llama models are available. To use Llama locally, install Ollama and install a Llama model."
                 );
