@@ -70,7 +70,23 @@ class AIRequestDatabase {
             const store = transaction.objectStore(this.STORE_NAME);
             const request = store.getAll();
 
-            request.onsuccess = () => resolve(request.result);
+            request.onsuccess = () =>
+                resolve(request.result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
+            request.onerror = () => reject(request.error);
+        });
+    }
+
+    async clearLogs(): Promise<void> {
+        if (!this.db) {
+            await this.init();
+        }
+
+        return new Promise((resolve, reject) => {
+            const transaction = this.db!.transaction([this.STORE_NAME], "readwrite");
+            const store = transaction.objectStore(this.STORE_NAME);
+            const request = store.clear();
+
+            request.onsuccess = () => resolve();
             request.onerror = () => reject(request.error);
         });
     }
