@@ -1,3 +1,7 @@
+.number-trainer .trainer-content {
+    background-color: var(--sl-color-emerald-50);
+}
+
 .trainer-container {
     display: flex;
     flex-direction: column;
@@ -23,7 +27,6 @@
         min-height: 300px;
         padding: 2rem;
         border-radius: 1rem;
-        background-color: var(--sl-color-emerald-50);
         box-shadow: var(--sl-shadow-large);
     }
 

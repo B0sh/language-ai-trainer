@@ -4,6 +4,7 @@ import { AppSettings } from "../../models/app-settings";
 import { AIProviderRegistry } from "../../ai/registry";
 import { CompChallenge } from "./CompChallenge";
 import { CompTrainerRound } from "./CompTrainerRound";
+import { useErrorBoundary } from "react-error-boundary";
 
 interface Props {
     settings: AppSettings;
@@ -14,9 +15,12 @@ export const CompTrainerActivity: React.FC<Props> = ({ settings, onStop }) => {
     const [challenge] = useState(() => new CompChallenge(settings.targetLanguage));
     const [playbackStatus, setPlaybackStatus] = useState<string>("");
     const [, forceUpdate] = useState({});
+    const { showBoundary } = useErrorBoundary();
 
     const handleSubmit = useCallback(
         async (userInput: string) => {
+            challenge.setStatus("evaluating");
+            forceUpdate({});
             const response = await challenge.checkComprehension(userInput);
             console.log(response);
 
@@ -36,21 +40,19 @@ export const CompTrainerActivity: React.FC<Props> = ({ settings, onStop }) => {
 
     const generateProblem = useCallback(async () => {
         setPlaybackStatus("loading");
-        console.log("Generating problem", playbackStatus);
+
         try {
             const success = await challenge.generateProblem();
             if (success) {
-                console.log("Finished generating problem", playbackStatus);
                 setPlaybackStatus("playing");
                 await challenge.playAudio();
                 setPlaybackStatus("finished");
             }
         } catch (error) {
-            // Can I show error for which part that failed?
             const provider = AIProviderRegistry.getActiveProvider("tts");
-            throw new Error(`Failed to generate speech with ${provider.name}.\n${error}`);
+            showBoundary(`Failed to perform Text-to-Speech with ${provider.name}.\n\n${error.message}`);
         }
-    }, [challenge]);
+    }, [challenge, showBoundary]);
 
     useEffect(() => {
         generateProblem();
@@ -68,12 +70,18 @@ export const CompTrainerActivity: React.FC<Props> = ({ settings, onStop }) => {
 
     return (
         <>
-            {challenge.storyText}
-
             {challenge.status === "correct" || challenge.status === "incorrect" ? (
                 <TrainerFeedback
                     playbackStatus={playbackStatus}
-                    message={<div>{challenge.storyText}</div>}
+                    message={
+                        <div>
+                            Here's what the AI had to say about your response:
+                            <br />
+                            <small>
+                                {challenge.comprehensionResponse?.explanation}
+                            </small>
+                        </div>
+                    }
                     status={challenge.status}
                     onNextRound={handleNextRound}
                     onReplayAudio={generateProblem}

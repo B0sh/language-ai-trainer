@@ -5,7 +5,6 @@ import { LanguageTrainerApp } from "./LanguageTrainerApp";
 
 import "@shoelace-style/shoelace/dist/themes/dark.css";
 import "@shoelace-style/shoelace/dist/themes/light.css";
-import "./index.css";
 
 setBasePath("/dist/shoelace");
 

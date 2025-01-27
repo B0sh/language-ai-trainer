@@ -36,7 +36,7 @@ export class GoogleProvider extends AIProvider {
 
     validateConfig(): string {
         if (!this.apiKey) {
-            return "Google API key not configured";
+            return "There is no API key configured for Google";
         }
 
         return "";
@@ -90,7 +90,8 @@ export class GoogleProvider extends AIProvider {
         });
 
         if (!response.ok) {
-            throw new Error(`Google TTS API error: ${response.statusText}`);
+            const errorData = await response.json();
+            throw new Error(`Google Text-to-Speech: ${errorData.error.message}`);
         }
 
         const data = await response.json();
@@ -118,18 +119,22 @@ export class GoogleProvider extends AIProvider {
 
         try {
             const genModel = this.genAI.getGenerativeModel({ model });
+            const startTime = performance.now();
             const result = await genModel.generateContent(request.prompt);
+            const endTime = performance.now();
             const response = await result.response;
             const text = response.text();
 
             return {
                 response: text,
                 metadata: {
+                    temperature: request.temperature,
                     model,
                     promptTokenCount: response.usageMetadata.promptTokenCount,
                     candidatesTokenCount: response.usageMetadata.candidatesTokenCount,
                     totalTokenCount: response.usageMetadata.totalTokenCount,
                     cachedContentTokenCount: response.usageMetadata.cachedContentTokenCount,
+                    executionTime: endTime - startTime,
                 },
             };
         } catch (error) {

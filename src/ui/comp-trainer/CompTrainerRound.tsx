@@ -14,7 +14,7 @@ interface Props {
 export const CompTrainerRound: React.FC<Props> = ({ playbackStatus, status, streak, onSubmit }) => {
     const inputRef = useRef<SlInputElement>(null);
 
-    if (playbackStatus === "loading") {
+    if (playbackStatus === "loading" || status === "evaluating") {
         return <SlSpinner className="large-spinner" />;
     }
 
@@ -26,23 +26,32 @@ export const CompTrainerRound: React.FC<Props> = ({ playbackStatus, status, stre
                 <div className="status-icon">
                     <SlIcon style={{ fontSize: "2rem" }} name="soundwave" />
                 </div>
-                {playbackStatus}
-                <SlInput
-                    ref={inputRef}
-                    pill
-                    className="trainer-input"
-                    size="large"
-                    autoFocus
-                    autocomplete="off"
-                    autoCorrect="off"
-                    disabled={status === "correct" || status === "incorrect" ? true : false}
-                    onKeyDown={(e) => e.key === "Enter" && onSubmit((e.target as HTMLInputElement).value)}
-                />
+
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        onSubmit(inputRef.current?.value);
+                        return false;
+                    }}
+                >
+                    <SlInput
+                        ref={inputRef}
+                        pill
+                        className="trainer-input"
+                        size="large"
+                        autoFocus
+                        autocomplete="off"
+                        autoCorrect="off"
+                        disabled={status === "correct" || status === "incorrect" ? true : false}
+                    />
+                </form>
             </div>
 
+            <i>Give a breif summary of the spoken audio.</i>
+            {/* 
             <div className="stats">
                 Your streak is <strong>{streak}</strong>.
-            </div>
+            </div> */}
         </>
     );
 };

@@ -5,6 +5,7 @@ import { TrainerFeedback } from "../shared/Trainer/TrainerFeedback";
 import SlFormatNumber from "@shoelace-style/shoelace/dist/react/format-number";
 import { AppSettings } from "../../models/app-settings";
 import { AIProviderRegistry } from "../../ai/registry";
+import { useErrorBoundary } from "react-error-boundary";
 
 interface NumberTrainerActivityProps {
     settings: AppSettings;
@@ -16,6 +17,7 @@ export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ se
     const [challenge] = useState(() => new NumberChallenge(config));
     const [playbackStatus, setPlaybackStatus] = useState<string>("");
     const [, forceUpdate] = useState({});
+    const { showBoundary } = useErrorBoundary();
 
     const handleSubmit = useCallback(
         (userInput: string) => {
@@ -40,9 +42,9 @@ export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ se
             setPlaybackStatus("finished");
         } catch (error) {
             const provider = AIProviderRegistry.getActiveProvider("tts");
-            throw new Error(`Failed to generate speech with ${provider.name}.\n${error}`);
+            showBoundary(`Failed to perform Text-to-Speech with ${provider.name}.\n\n${error.message}`);
         }
-    }, [challenge, settings.targetLanguage]);
+    }, [challenge, settings.targetLanguage, showBoundary]);
 
     useEffect(() => {
         speakNumber();

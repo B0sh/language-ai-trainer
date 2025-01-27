@@ -1,4 +1,4 @@
-import { LLMRequest, TTSAudio } from "../../ai/interfaces";
+import { LLMRequest, LLMResult, TTSAudio } from "../../ai/interfaces";
 import { PROMPT_COMP_SENTENCE, PROMPT_COMP_VALIDATE } from "../../ai/prompts/comp-prompts";
 import { AIProviderRegistry } from "../../ai/registry";
 import { TARGET_LANGUAGES } from "../../shared/languages";
@@ -15,6 +15,7 @@ export class CompChallenge {
     public streak = 0;
     public status = "active";
     public storyText = "";
+    public comprehensionResponse: ComprehensionCheckResponse | null = null;
 
     constructor(language: string) {
         this.language = language;
@@ -55,23 +56,27 @@ export class CompChallenge {
             throw new Error("Invalid language configuration");
         }
 
+        let response: LLMResult | null = null;
         try {
             const request: LLMRequest = PROMPT_COMP_VALIDATE(language, this.storyText, input);
-            const response = await AIProviderRegistry.llm(request);
-
-            if (response) {
-                try {
-                    const parsedResponse = JSON.parse(response.response);
-                    if (typeof parsedResponse.valid !== "boolean" || typeof parsedResponse.explanation !== "string") {
-                        throw new Error("Invalid response format from LLM");
-                    }
-                    return parsedResponse;
-                } catch (parseError) {
-                    throw new Error("Failed to parse LLM response");
-                }
-            }
+            response = await AIProviderRegistry.llm(request);
         } catch (error) {
             throw new Error(`Comprehension check failed: ${error.message}`);
+        }
+
+        if (response) {
+            try {
+                const parsedResponse = JSON.parse(response.response);
+                if (typeof parsedResponse.valid !== "boolean" || typeof parsedResponse.explanation !== "string") {
+                    throw new Error();
+                }
+
+                this.comprehensionResponse = parsedResponse;
+
+                return parsedResponse;
+            } catch (parseError) {
+                throw new Error("Comprehension check failed: Unable to parse LLM response.");
+            }
         }
     }
 

@@ -18,7 +18,7 @@ export const CompTrainer: React.FC<Props> = ({ settings, onSettingsChange }) => 
     const handleStop = () => setIsPlaying(false);
 
     return (
-        <div className="trainer-container">
+        <div className="trainer-container comp-trainer">
             <div>
                 <div className="spacer trainer-header">
                     <div>
@@ -41,6 +41,7 @@ export const CompTrainer: React.FC<Props> = ({ settings, onSettingsChange }) => 
                         />
                     )}
                 </div>
+                <div className="spacer"></div>
             </div>
         </div>
     );

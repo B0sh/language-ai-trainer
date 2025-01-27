@@ -16,7 +16,7 @@ export const PROMPT_COMP_VALIDATE = function (language: string, sentence: string
         prompt: `Given the following sentences in ${language}:
         ${sentence}
         
-        Does the following statement show that the user had some comprehension of the above text?
+        Does the following statement show that the user had some comprehension of the above text? The statement may be brief and does not need to be very detailed. The statement may also be in a single sentence. The statement is:
         ${input}
         
         Repsond using JSON format. The JSON format is as follows:

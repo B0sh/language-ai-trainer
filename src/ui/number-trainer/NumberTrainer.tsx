@@ -23,7 +23,7 @@ export const NumberTrainer: React.FC<Props> = ({ settings, onSettingsChange }) =
     );
 
     return (
-        <div className="trainer-container">
+        <div className="trainer-container number-trainer">
             <div>
                 <div className="spacer trainer-header">
                     <div>

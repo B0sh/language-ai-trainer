@@ -36,13 +36,13 @@ export const TrainerFeedback: React.FC<Props> = ({ playbackStatus, status, messa
     return (
         <div className="feedback-container" style={{ textAlign: "center" }}>
             {status === "correct" ? (
-                <SlAlert variant="success" open>
+                <SlAlert variant="success" open style={{ textAlign: "left" }}>
                     <SlIcon slot="icon" name="check-circle-fill" />
                     <h3>Correct!</h3>
                     {message}
                 </SlAlert>
             ) : (
-                <SlAlert variant="danger" open>
+                <SlAlert variant="danger" open style={{ textAlign: "left" }}>
                     <SlIcon slot="icon" name="x-circle-fill" />
                     <h3>Incorrect</h3>
                     {message}
