@@ -9,6 +9,7 @@ import { AppSettings } from "../../models/app-settings";
 import { AiLogTable } from "./AiLogTable";
 import { AiLogDetail } from "./AiLogDetail";
 import "./AiLog.css";
+import { useErrorBoundary } from "react-error-boundary";
 
 interface Props {
     settings: AppSettings;
@@ -19,20 +20,35 @@ export const AiLog: React.FC<Props> = ({ settings }) => {
     const [loading, setLoading] = useState(true);
     const [selectedLog, setSelectedLog] = useState<AIRequestLog | null>(null);
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+    const { showBoundary } = useErrorBoundary();
 
     const fetchLogs = async () => {
         setLoading(true);
-        const results = await aiRequestDB.getRequests();
-        setLogs(results);
-        setLoading(false);
+
+        try {
+            const results = await aiRequestDB.getRequests();
+            setLogs(results);
+        } catch (error) {
+            console.error(error);
+            showBoundary("Could not retrieve AI request logs.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleWipeLogs = async () => {
         setShowConfirmDialog(false);
         setLoading(true);
-        await aiRequestDB.clearLogs();
-        setLogs([]);
-        setLoading(false);
+
+        try {
+            await aiRequestDB.clearLogs();
+            setLogs([]);
+        } catch (error) {
+            console.error(error);
+            showBoundary("Could not wipe AI request logs.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
