@@ -1,8 +1,9 @@
 import React, { useRef } from "react";
-import SlInput from "@shoelace-style/shoelace/dist/react/input";
+import SlTextarea from "@shoelace-style/shoelace/dist/react/textarea";
 import SlSpinner from "@shoelace-style/shoelace/dist/react/spinner";
 import SlIcon from "@shoelace-style/shoelace/dist/react/icon";
-import type SlInputElement from "@shoelace-style/shoelace/dist/components/input/input";
+import SlButton from "@shoelace-style/shoelace/dist/react/button";
+import type SlTextareaElement from "@shoelace-style/shoelace/dist/components/textarea/textarea";
 
 interface Props {
     playbackStatus: string;
@@ -12,7 +13,7 @@ interface Props {
 }
 
 export const CompTrainerRound: React.FC<Props> = ({ playbackStatus, status, streak, onSubmit }) => {
-    const inputRef = useRef<SlInputElement>(null);
+    const inputRef = useRef<SlTextareaElement>(null);
 
     if (playbackStatus === "loading" || status === "evaluating") {
         return <SlSpinner className="large-spinner" />;
@@ -21,37 +22,46 @@ export const CompTrainerRound: React.FC<Props> = ({ playbackStatus, status, stre
     inputRef.current?.focus();
 
     return (
-        <>
-            <div className="number-trainer-input-row">
-                <div className="status-icon">
-                    <SlIcon style={{ fontSize: "2rem" }} name="soundwave" />
-                </div>
+        <div className="comp-trainer-round">
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    onSubmit(inputRef.current?.value);
+                    return false;
+                }}
+            >
+                <SlTextarea
+                    ref={inputRef}
+                    className="trainer-input"
+                    size="large"
+                    autoFocus
+                    rows={2}
+                    autocomplete="off"
+                    autoCorrect="off"
+                    disabled={status === "correct" || status === "incorrect" ? true : false}
+                />
 
-                <form
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        onSubmit(inputRef.current?.value);
-                        return false;
+                <br />
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
                     }}
                 >
-                    <SlInput
-                        ref={inputRef}
-                        pill
-                        className="trainer-input"
-                        size="large"
-                        autoFocus
-                        autocomplete="off"
-                        autoCorrect="off"
-                        disabled={status === "correct" || status === "incorrect" ? true : false}
-                    />
-                </form>
-            </div>
-
-            <i>Give a breif summary of the spoken audio.</i>
+                    <div>Give a breif summary of what was said.</div>
+                    <div>
+                        <SlButton type="submit" variant="primary" pill>
+                            <SlIcon slot="prefix" name="book" />
+                            Submit
+                        </SlButton>
+                    </div>
+                </div>
+            </form>
             {/* 
             <div className="stats">
                 Your streak is <strong>{streak}</strong>.
             </div> */}
-        </>
+        </div>
     );
 };

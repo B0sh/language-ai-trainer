@@ -1,3 +1,7 @@
 .comp-trainer .trainer-content {
     background-color: var(--sl-color-violet-100);
 }
+
+.comp-trainer-round {
+    width: 100%;
+}
