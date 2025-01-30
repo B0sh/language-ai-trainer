@@ -88,6 +88,12 @@ export class NumberChallenge {
         }
     }
 
+    public async stopAudio(): Promise<void> {
+        if (this.ttsAudio) {
+            await this.ttsAudio.stop();
+        }
+    }
+
     public setStatus(status: NumberChallengeStatus): void {
         this.status = status;
     }

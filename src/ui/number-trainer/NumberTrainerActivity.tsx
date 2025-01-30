@@ -60,6 +60,9 @@ export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ se
 
     useEffect(() => {
         speakNumber();
+        return () => {
+            challenge.stopAudio();
+        };
     }, [speakNumber]);
 
     const handleNextRound = useCallback(() => {

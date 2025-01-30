@@ -97,6 +97,7 @@ export const CompTrainerActivity: React.FC<Props> = ({ settings, onStop }) => {
                             <small>{challenge.comprehensionResponse?.explanation}</small>
                         </div>
                     }
+                    message={challenge.storyText}
                     status={challenge.status}
                     onNextRound={handleNextRound}
                     onReplayAudio={generateProblem}
