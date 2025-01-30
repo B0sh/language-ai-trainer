@@ -57,8 +57,11 @@ export class LlamaProvider extends AIProvider {
             options: {
                 temperature: request.temperature ?? 0.7,
             },
-            format: request.format ?? undefined,
         };
+
+        if (request.format == "json") {
+            dto.format = "json";
+        }
 
         const response: ChatResponse = await ollama.chat(dto);
 

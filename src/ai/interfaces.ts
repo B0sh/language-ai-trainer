@@ -27,7 +27,7 @@ export interface LLMRequest {
     temperature?: number;
     maxTokens?: number;
     model?: string;
-    format?: string;
+    format?: "json" | "text";
 }
 
 export interface LLMResult {

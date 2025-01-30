@@ -57,6 +57,7 @@ export class OpenAIProvider extends AIProvider {
     }
 
     async llm(request: LLMRequest): Promise<LLMResult> {
+        const startTime = performance.now();
         const validation = this.validateConfig();
         if (validation) {
             throw new Error(validation);
@@ -82,9 +83,15 @@ export class OpenAIProvider extends AIProvider {
                 stream: false,
             }
         );
+        const endTime = performance.now();
+        const duration = endTime - startTime;
+
         return {
             response: completion.choices[0].message.content,
             tokens: completion.usage.total_tokens,
+            metadata: {
+                duration,
+            },
         };
     }
 

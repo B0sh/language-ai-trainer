@@ -1,6 +1,6 @@
 import { AICapabilities, AIProvider, LLMRequest, LLMResult, TTSRequest } from "../interfaces";
 import { GoogleTTSAudio } from "./GoogleTTSAudio";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, ModelParams } from "@google/generative-ai";
 import * as VOICE_LIST from "./google-voices.json";
 import { getRandomElement } from "../../shared/utility";
 
@@ -105,7 +105,7 @@ export class GoogleProvider extends AIProvider {
         return new GoogleTTSAudio(request.text, data.audioContent, metadata);
     }
 
-    async generateText(request: LLMRequest): Promise<LLMResult> {
+    async llm(request: LLMRequest): Promise<LLMResult> {
         const validation = this.validateConfig();
         if (validation) {
             throw new Error(validation);
@@ -115,25 +115,32 @@ export class GoogleProvider extends AIProvider {
             throw new Error("Gemini API not initialized");
         }
 
-        const model = "gemini-1.0";
+        const model = "gemini-1.5-flash";
 
         try {
-            const genModel = this.genAI.getGenerativeModel({ model });
+            const modelParams: ModelParams = {
+                model,
+            };
+            if (request.format == "json") {
+                modelParams.generationConfig = {
+                    responseMimeType: "application/json",
+                };
+            }
+
+            const genModel = this.genAI.getGenerativeModel(modelParams);
             const startTime = performance.now();
             const result = await genModel.generateContent(request.prompt);
             const endTime = performance.now();
-            const response = await result.response;
-            const text = response.text();
 
             return {
-                response: text,
+                response: result.response.text(),
                 metadata: {
                     temperature: request.temperature,
                     model,
-                    promptTokenCount: response.usageMetadata.promptTokenCount,
-                    candidatesTokenCount: response.usageMetadata.candidatesTokenCount,
-                    totalTokenCount: response.usageMetadata.totalTokenCount,
-                    cachedContentTokenCount: response.usageMetadata.cachedContentTokenCount,
+                    promptTokenCount: result.response.usageMetadata.promptTokenCount,
+                    candidatesTokenCount: result.response.usageMetadata.candidatesTokenCount,
+                    totalTokenCount: result.response.usageMetadata.totalTokenCount,
+                    cachedContentTokenCount: result.response.usageMetadata.cachedContentTokenCount,
                     executionTime: endTime - startTime,
                 },
             };
