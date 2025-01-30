@@ -53,7 +53,7 @@ export const CompTrainerRound: React.FC<Props> = ({ playbackStatus, status, stre
                     <div>
                         <SlButton type="submit" variant="primary" pill>
                             <SlIcon slot="prefix" name="book" />
-                            Submit
+                            Next Problem
                         </SlButton>
                     </div>
                 </div>

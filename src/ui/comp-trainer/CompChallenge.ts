@@ -1,4 +1,5 @@
 import { LLMRequest, LLMResult, TTSAudio } from "../../ai/interfaces";
+import { generateAIInspirationWord } from "../../ai/prompts/ai-inspiration-words";
 import { PROMPT_COMP_SENTENCE, PROMPT_COMP_VALIDATE } from "../../ai/prompts/comp-prompts";
 import { AIProviderRegistry } from "../../ai/registry";
 import { TARGET_LANGUAGES } from "../../shared/languages";
@@ -15,6 +16,7 @@ export class CompChallenge {
     public streak = 0;
     public status = "active";
     public storyText = "";
+    public inspirationWord = "";
     public comprehensionResponse: ComprehensionCheckResponse | null = null;
 
     constructor(language: string) {
@@ -34,20 +36,43 @@ export class CompChallenge {
         this.loading = true;
         const language = TARGET_LANGUAGES.find((l) => l.id === this.language)?.description;
 
-        try {
-            const request = PROMPT_COMP_SENTENCE(language);
-            const response = await AIProviderRegistry.llm(request);
+        this.inspirationWord = generateAIInspirationWord();
 
-            this.storyText = response.response;
+        const request = PROMPT_COMP_SENTENCE(language, this.inspirationWord);
+        const response = await AIProviderRegistry.llm(request);
 
-            await this.generateAudio(this.storyText);
-            this.loading = false;
+        this.storyText = response.response;
+        this.loading = false;
 
-            return true;
-        } catch (error) {
-            this.loading = false;
-            throw new Error("Failed to generate comprehension story");
+        return true;
+    }
+
+    public async generateProblemAudio(): Promise<boolean> {
+        if (this.loading) {
+            return false;
         }
+
+        if (this.ttsAudio) {
+            this.ttsAudio.stop();
+            return false;
+        }
+
+        const ttsRequest = {
+            text: this.storyText,
+            language: this.language,
+        };
+
+        this.loading = true;
+        const result = await AIProviderRegistry.textToSpeech(ttsRequest);
+        this.loading = false;
+
+        if (result) {
+            this.ttsAudio = result;
+        } else {
+            throw new Error("Failed to generate audio");
+        }
+
+        return true;
     }
 
     public async checkComprehension(input: string): Promise<ComprehensionCheckResponse> {
@@ -77,22 +102,6 @@ export class CompChallenge {
             } catch (parseError) {
                 throw new Error("Comprehension check failed: Unable to parse LLM response.");
             }
-        }
-    }
-
-    public async generateAudio(text: string): Promise<void> {
-        if (this.ttsAudio) {
-            return this.ttsAudio.stop();
-        }
-
-        const ttsRequest = {
-            text,
-            language: this.language,
-        };
-
-        const result = await AIProviderRegistry.textToSpeech(ttsRequest);
-        if (result) {
-            this.ttsAudio = result;
         }
     }
 

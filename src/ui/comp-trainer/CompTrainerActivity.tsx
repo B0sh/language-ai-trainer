@@ -21,18 +21,23 @@ export const CompTrainerActivity: React.FC<Props> = ({ settings, onStop }) => {
         async (userInput: string) => {
             challenge.setStatus("evaluating");
             forceUpdate({});
-            const response = await challenge.checkComprehension(userInput);
-            console.log(response);
 
-            if (response) {
-                if (response.valid) {
-                    challenge.setStatus("correct");
-                } else {
-                    challenge.setStatus("incorrect");
-                    // challenge.playAudio();
+            try {
+                const response = await challenge.checkComprehension(userInput);
+
+                if (response) {
+                    if (response.valid) {
+                        challenge.setStatus("correct");
+                    } else {
+                        challenge.setStatus("incorrect");
+                        // challenge.playAudio();
+                    }
+
+                    forceUpdate({});
                 }
-
-                forceUpdate({});
+            } catch (error) {
+                const provider = AIProviderRegistry.getActiveProvider("llm");
+                showBoundary(`Failed to request LLM with ${provider.name}.\n\n${error.message}`);
             }
         },
         [challenge]
@@ -41,8 +46,20 @@ export const CompTrainerActivity: React.FC<Props> = ({ settings, onStop }) => {
     const generateProblem = useCallback(async () => {
         setPlaybackStatus("loading");
 
+        let success = false;
         try {
-            const success = await challenge.generateProblem();
+            success = await challenge.generateProblem();
+        } catch (error) {
+            const provider = AIProviderRegistry.getActiveProvider("llm");
+            showBoundary(`Failed to request LLM with ${provider.name}.\n\n${error.message}`);
+        }
+
+        if (!success) {
+            return;
+        }
+
+        try {
+            success = await challenge.generateProblemAudio();
             if (success) {
                 setPlaybackStatus("playing");
                 await challenge.playAudio();
@@ -77,9 +94,7 @@ export const CompTrainerActivity: React.FC<Props> = ({ settings, onStop }) => {
                         <div>
                             Here's what the AI had to say about your response:
                             <br />
-                            <small>
-                                {challenge.comprehensionResponse?.explanation}
-                            </small>
+                            <small>{challenge.comprehensionResponse?.explanation}</small>
                         </div>
                     }
                     status={challenge.status}
