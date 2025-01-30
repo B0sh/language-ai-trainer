@@ -7,12 +7,20 @@ import { useKeypress } from "../../../shared/useKeypress";
 interface Props {
     playbackStatus: string;
     status: string;
+    statusMessage: React.ReactNode;
     message: React.ReactNode;
     onReplayAudio: () => void;
     onNextRound: () => void;
 }
 
-export const TrainerFeedback: React.FC<Props> = ({ playbackStatus, status, message, onReplayAudio, onNextRound }) => {
+export const TrainerFeedback: React.FC<Props> = ({
+    playbackStatus,
+    status,
+    statusMessage,
+    message,
+    onReplayAudio,
+    onNextRound,
+}) => {
     useKeypress(["Enter", " "], (event) => {
         // Since you use enter to submit too, stop processing if the event is from the input
         const target = event.target;
@@ -39,17 +47,23 @@ export const TrainerFeedback: React.FC<Props> = ({ playbackStatus, status, messa
                 <SlAlert variant="success" open style={{ textAlign: "left" }}>
                     <SlIcon slot="icon" name="check-circle-fill" />
                     <h3>Correct!</h3>
-                    {message}
+                    {statusMessage}
                 </SlAlert>
             ) : (
                 <SlAlert variant="danger" open style={{ textAlign: "left" }}>
                     <SlIcon slot="icon" name="x-circle-fill" />
                     <h3>Incorrect</h3>
-                    {message}
+                    {statusMessage}
                 </SlAlert>
             )}
 
-            <br />
+            {message ? (
+                <p>
+                    <small>{message}</small>
+                </p>
+            ) : (
+                <br />
+            )}
 
             <SlButton
                 variant="neutral"
@@ -61,7 +75,7 @@ export const TrainerFeedback: React.FC<Props> = ({ playbackStatus, status, messa
             </SlButton>
 
             <SlButton variant="primary" onClick={onNextRound}>
-                Restart
+                Next Round
             </SlButton>
 
             <p style={{ fontStyle: "italic" }}>

@@ -1,5 +1,8 @@
 import { TTSAudio, TTSRequest } from "../../ai/interfaces";
+import { generateAIInspirationWord } from "../../ai/prompts/ai-inspiration-words";
+import { PROMPT_NUMBER_TRAINER_SENTENCE } from "../../ai/prompts/number-trainer-prompts";
 import { AIProviderRegistry } from "../../ai/registry";
+import { TARGET_LANGUAGES } from "../../shared/languages";
 import { getRandomInt } from "../../shared/utility";
 import { Weighter } from "../../shared/weighter";
 
@@ -23,27 +26,53 @@ export class NumberChallenge {
     public currentNumber: number;
     public status: NumberChallengeStatus;
     public streak: number;
+    public text: string;
+    public language: string;
+    public sentenceMode: boolean;
+    public inspirationWord: string;
     public config: NumberChallengeRoundConfig;
     private ttsAudio: TTSAudio | null;
 
-    constructor(config: NumberChallengeRoundConfig) {
+    constructor(config: NumberChallengeRoundConfig, language: string, sentenceMode: boolean) {
         this.config = config;
 
         this.currentNumber = this.generateNumber();
         this.status = "active";
         this.streak = 0;
         this.ttsAudio = null;
+        this.language = language;
+        this.sentenceMode = sentenceMode;
+        console.log(this);
     }
 
-    public async generateAudio(language: string): Promise<void> {
+    loading = false;
+    public async generateSentence(): Promise<void> {
+        if (!this.sentenceMode) {
+            this.text = this.currentNumber.toString();
+        } else {
+            this.loading = true;
+            const language = TARGET_LANGUAGES.find((l) => l.id === this.language)?.description;
+
+            this.inspirationWord = generateAIInspirationWord();
+
+            const prompt = PROMPT_NUMBER_TRAINER_SENTENCE(language, this.currentNumber, this.inspirationWord);
+            const result = await AIProviderRegistry.llm(prompt);
+
+            this.loading = false;
+
+            this.text = result.response;
+        }
+    }
+
+    public async generateAudio(): Promise<void> {
         if (this.ttsAudio) {
             await this.ttsAudio.stop();
             this.ttsAudio = null;
         }
 
         const ttsRequest: TTSRequest = {
-            text: this.currentNumber.toString(),
-            language: language,
+            text: this.text,
+            language: this.language,
         };
 
         const result = await AIProviderRegistry.textToSpeech(ttsRequest);

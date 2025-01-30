@@ -90,7 +90,7 @@ export const CompTrainerActivity: React.FC<Props> = ({ settings, onStop }) => {
             {challenge.status === "correct" || challenge.status === "incorrect" ? (
                 <TrainerFeedback
                     playbackStatus={playbackStatus}
-                    message={
+                    statusMessage={
                         <div>
                             Here's what the AI had to say about your response:
                             <br />

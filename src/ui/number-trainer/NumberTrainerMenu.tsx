@@ -3,6 +3,8 @@ import SlButton from "@shoelace-style/shoelace/dist/react/button";
 import SlIcon from "@shoelace-style/shoelace/dist/react/icon";
 import SlRadioGroup from "@shoelace-style/shoelace/dist/react/radio-group";
 import SlRadioButton from "@shoelace-style/shoelace/dist/react/radio-button";
+import SlSwitch from "@shoelace-style/shoelace/dist/react/switch";
+import type SlSwitchElement from "@shoelace-style/shoelace/dist/components/switch/switch";
 import { AppSettings } from "../../models/app-settings";
 import { TARGET_LANGUAGES } from "../../shared/languages";
 import { NUMBER_CHALLENGE_DEFAULT_DIFFICULTY } from "./NumberChallengeDefaults";
@@ -22,9 +24,13 @@ export const NumberTrainerMenu: React.FC<Props> = ({ settings, onStart, onSettin
         onSettingsChange({ ...settings, numberTrainerDifficulty: value });
     };
 
+    const handleGenSentenceChange = (value: boolean) => {
+        onSettingsChange({ ...settings, numberTrainerGenSentence: value });
+    };
+
     if (!language) {
         throw new Error(
-            "You do not have a target selection set!\n\nPlease select a target language in the settings panel."
+            "You do not have a target language set!\n\nPlease select a target language in the settings panel."
         );
     }
 
@@ -56,6 +62,15 @@ export const NumberTrainerMenu: React.FC<Props> = ({ settings, onStart, onSettin
                             </SlRadioButton>
                         ))}
                     </SlRadioGroup>
+                    <br />
+
+                    <SlSwitch
+                        checked={settings.numberTrainerGenSentence}
+                        helpText="If enabled, a sentence containing the number will be generated."
+                        onSlChange={(e) => handleGenSentenceChange((e.target as SlSwitchElement).checked)}
+                    >
+                        Sentence Mode
+                    </SlSwitch>
                 </div>
                 <div>
                     <SlButton variant="success" size="large" className="play-button" pill onClick={onStart}>

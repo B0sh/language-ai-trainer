@@ -38,8 +38,8 @@ export class CompChallenge {
 
         this.inspirationWord = generateAIInspirationWord();
 
-        const request = PROMPT_COMP_SENTENCE(language, this.inspirationWord);
-        const response = await AIProviderRegistry.llm(request);
+        const prompt = PROMPT_COMP_SENTENCE(language, this.inspirationWord);
+        const response = await AIProviderRegistry.llm(prompt);
 
         this.storyText = response.response;
         this.loading = false;

@@ -14,7 +14,9 @@ interface NumberTrainerActivityProps {
 }
 
 export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ settings, config, onStop }) => {
-    const [challenge] = useState(() => new NumberChallenge(config));
+    const [challenge] = useState(
+        () => new NumberChallenge(config, settings.targetLanguage, settings.numberTrainerGenSentence)
+    );
     const [playbackStatus, setPlaybackStatus] = useState<string>("");
     const [, forceUpdate] = useState({});
     const { showBoundary } = useErrorBoundary();
@@ -35,8 +37,18 @@ export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ se
 
     const speakNumber = useCallback(async () => {
         setPlaybackStatus("loading");
+        if (challenge.loading) return;
+
         try {
-            await challenge.generateAudio(settings.targetLanguage);
+            await challenge.generateSentence();
+        } catch (error) {
+            const provider = AIProviderRegistry.getActiveProvider("llm");
+            showBoundary(`Failed to request LLM with ${provider.name}.\n\n${error.message}`);
+            return;
+        }
+
+        try {
+            await challenge.generateAudio();
             setPlaybackStatus("playing");
             await challenge.playAudio();
             setPlaybackStatus("finished");
@@ -44,7 +56,7 @@ export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ se
             const provider = AIProviderRegistry.getActiveProvider("tts");
             showBoundary(`Failed to perform Text-to-Speech with ${provider.name}.\n\n${error.message}`);
         }
-    }, [challenge, settings.targetLanguage, showBoundary]);
+    }, [challenge, showBoundary]);
 
     useEffect(() => {
         speakNumber();
@@ -65,12 +77,13 @@ export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ se
             {challenge.status === "correct" || challenge.status === "incorrect" ? (
                 <TrainerFeedback
                     playbackStatus={playbackStatus}
-                    message={
+                    statusMessage={
                         <div>
                             The number was{" "}
                             <SlFormatNumber value={challenge.currentNumber} lang={settings.appLanguage} />.
                         </div>
                     }
+                    message={challenge.sentenceMode ? challenge.text : null}
                     status={challenge.status}
                     onNextRound={handleNextRound}
                     onReplayAudio={replayAudio}
