@@ -7,6 +7,7 @@ export interface AppSettings {
     volume: number;
     theme: string;
     numberTrainerDifficulty: string;
+    microphoneDeviceId: string | null;
     configs: Record<string, any>;
 }
 
@@ -24,4 +25,5 @@ export const DEFAULT_SETTINGS: AppSettings = {
     theme: "light",
     numberTrainerDifficulty: "easy",
     volume: 50,
+    microphoneDeviceId: null,
 };

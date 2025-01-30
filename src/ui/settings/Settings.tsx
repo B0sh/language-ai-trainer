@@ -4,6 +4,7 @@ import { AppSettings } from "../../models/app-settings";
 import { GeneralSettings } from "./GeneralSettings";
 import { LanguageSettings } from "./LanguageSettings";
 import "./Settings.css";
+import { MicrophoneSettings } from "./MicrophoneSettings";
 
 interface SettingsProps {
     settings: AppSettings;
@@ -21,6 +22,10 @@ export const Settings: React.FC<SettingsProps> = ({ settings, onSettingsChange }
             <SlDivider />
 
             <LanguageSettings settings={settings} onSettingsChange={onSettingsChange} />
+
+            <SlDivider />
+
+            <MicrophoneSettings settings={settings} onSettingsChange={onSettingsChange} />
         </div>
     );
 };
