@@ -7,7 +7,7 @@ export interface AppSettings {
     appLanguage: string;
     targetLanguage: string;
     volume: number;
-    theme: string;
+    theme: "light" | "dark" | "auto";
     numberTrainerDifficulty: string;
     numberTrainerGenSentence: boolean;
     numberTrainerCustomConfig: NumberChallengeRoundConfig | null;
@@ -26,7 +26,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
     },
     appLanguage: "en-US",
     targetLanguage: "en",
-    theme: "light",
+    theme: "auto",
     numberTrainerDifficulty: "easy",
     numberTrainerGenSentence: false,
     numberTrainerCustomConfig: null,

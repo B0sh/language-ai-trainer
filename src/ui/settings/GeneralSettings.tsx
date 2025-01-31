@@ -29,10 +29,12 @@ export const GeneralSettings: React.FC<GeneralSettingsProps> = ({ settings, onSe
     };
 
     const handleThemeChange = (theme: string) => {
-        onSettingsChange({
-            ...settings,
-            theme,
-        });
+        if (theme === "light" || theme === "dark" || theme === "auto") {
+            onSettingsChange({
+                ...settings,
+                theme,
+            });
+        }
     };
 
     return (

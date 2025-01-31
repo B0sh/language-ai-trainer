@@ -3,6 +3,7 @@ import SlInput from "@shoelace-style/shoelace/dist/react/input";
 import "./DateTrainer.css";
 
 export const DateTrainer = () => {
+    throw new Error("Not implemented yet!");
     return (
         <div className="date-trainer">
             <div className="date-section">Section 1</div>
