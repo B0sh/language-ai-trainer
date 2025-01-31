@@ -75,11 +75,12 @@ const createWindow = (): void => {
 // Some APIs can only be used after this event occurs.
 app.on("ready", createWindow);
 
-if (isDevMode) {
-    app.whenReady().then(() => {
+app.whenReady().then(() => {
+    setupAboutPanel();
+    if (isDevMode) {
         installExtension(REACT_DEVELOPER_TOOLS);
-    });
-}
+    }
+});
 
 // Handle opening external URLs
 ipcMain.handle("open-external-url", async (_event, url: string) => {
