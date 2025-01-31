@@ -6,7 +6,7 @@ import { LanguageTrainerApp } from "./LanguageTrainerApp";
 import "@shoelace-style/shoelace/dist/themes/dark.css";
 import "@shoelace-style/shoelace/dist/themes/light.css";
 
-setBasePath("/dist/shoelace");
+setBasePath("../dist/shoelace");
 
 const root = createRoot(document.body);
 root.render(

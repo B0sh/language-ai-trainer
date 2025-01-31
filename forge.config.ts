@@ -3,6 +3,7 @@ import { MakerSquirrel } from "@electron-forge/maker-squirrel";
 import { MakerZIP } from "@electron-forge/maker-zip";
 import { MakerDeb } from "@electron-forge/maker-deb";
 import { MakerRpm } from "@electron-forge/maker-rpm";
+import { MakerDMG } from "@electron-forge/maker-dmg";
 import { AutoUnpackNativesPlugin } from "@electron-forge/plugin-auto-unpack-natives";
 import { WebpackPlugin } from "@electron-forge/plugin-webpack";
 import { FusesPlugin } from "@electron-forge/plugin-fuses";
@@ -11,28 +12,42 @@ import * as path from "path";
 
 import { mainConfig } from "./webpack.main.config";
 import { rendererConfig } from "./webpack.renderer.config";
+import PublisherGithub from "@electron-forge/publisher-github";
 
 const iconDir = path.join(__dirname, "src", "assets", "icons");
+
+// 10$/month for azure trusted signing certificate
+// https://azure.microsoft.com/en-us/products/trusted-signing
+
+// 100$/year for apple developer account for mac certificate
+// https://developer.apple.com/account/resources/
 
 const config: ForgeConfig = {
     packagerConfig: {
         asar: true,
         icon: path.join(iconDir, "AppIcon"),
+        executableName: "language-ai-trainer",
         // appBundleId: "world.waldens.langtrainer",
         // osxSign: {},
     },
     rebuildConfig: {},
     makers: [
         new MakerSquirrel({
+            name: "language-ai-trainer",
             iconUrl: path.join(iconDir, "AppIcon.ico"),
             setupIcon: path.join(iconDir, "AppIcon.ico"),
         }),
-        new MakerZIP({}, ["darwin"]),
+        // new MakerZIP({}, ["darwin"]),
         new MakerRpm({}),
         new MakerDeb({
             options: {
                 icon: path.join(iconDir, "AppIcon.png"),
             },
+        }),
+        new MakerDMG({
+            name: "language-ai-trainer",
+            icon: path.join(iconDir, "AppIcon.icns"),
+            format: "ULFO",
         }),
     ],
     plugins: [
@@ -66,17 +81,14 @@ const config: ForgeConfig = {
         }),
     ],
     publishers: [
-        {
-            name: "@electron-forge/publisher-github",
-            config: {
-                repository: {
-                    owner: "B0sh",
-                    name: "language-ai-trainer",
-                },
-                prerelease: false,
-                draft: true,
+        new PublisherGithub({
+            repository: {
+                owner: "B0sh",
+                name: "testtesttest",
             },
-        },
+            prerelease: false,
+            draft: true,
+        }),
     ],
 };
 

@@ -12,6 +12,13 @@ interface Props {
 
 export const CompTrainerMenu: React.FC<Props> = ({ settings, onStart, onSettingsChange }) => {
     const language = TARGET_LANGUAGES.find((l) => l.id === settings.targetLanguage)?.description;
+
+    if (!language) {
+        throw new Error(
+            "You do not have a target language set!\n\nPlease select a target language in the settings panel."
+        );
+    }
+
     return (
         <>
             <div>

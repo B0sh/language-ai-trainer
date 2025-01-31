@@ -29,6 +29,10 @@ export const rules: Required<ModuleOptions>["rules"] = [
         },
     },
     {
+        test: /\.(gif|icns|ico|jpg|png|otf|eot|woff|woff2|ttf|svg)$/,
+        type: "asset/resource",
+    },
+    {
         test: /\.txt/,
         type: "asset/source",
     },

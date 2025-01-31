@@ -3,5 +3,11 @@
     "[markdown]": {
         "editor.formatOnSave": false
     },
+    "[yaml]": {
+        "editor.formatOnSave": false
+    },
+    "[github-actions-workflow]": {
+        "editor.formatOnSave": false
+    },
     "typescript.preferences.importModuleSpecifier": "relative"
 }
