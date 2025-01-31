@@ -1,4 +1,7 @@
 {
     "editor.formatOnSave": true,
+    "[markdown]": {
+        "editor.formatOnSave": false
+    },
     "typescript.preferences.importModuleSpecifier": "relative"
 }
