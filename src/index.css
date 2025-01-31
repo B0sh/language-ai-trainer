@@ -1,0 +1,123 @@
+body {
+    font-family: "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: auto;
+    background-color: var(--sl-color-neutral-0);
+    color: var(--sl-color-neutral-900);
+}
+
+@font-face {
+    font-family: "Noto Sans JP";
+    src: url("assets/NotoSansJP-VariableFont_wght.ttf");
+}
+@font-face {
+    font-family: "Noto Sans";
+    src: url("assets/NotoSans-VariableFont_wdth,wght.ttf");
+}
+@font-face {
+    font-family: "keifont";
+    src: url("assets/keifont.ttf");
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+}
+/* @font-face {
+    font-family: "Rampart One";
+    src: url("assets/RampartOne-Regular.ttf");
+}
+
+.rampart-one {
+    font-family: "Rampart One", serif;
+    font-weight: 400;
+    font-style: normal;
+} */
+
+.form-control {
+    sl-radio-group,
+    sl-input,
+    sl-select,
+    sl-range {
+        margin-top: 0.5rem;
+    }
+}
+
+sl-radio-group[align-right]::part(form-control) {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: var(--sl-spacing-3x-small) var(--gap-width);
+    align-items: center;
+}
+
+sl-radio-group[align-right]::part(form-control-label) {
+    display: contents;
+    order: 2;
+}
+
+sl-radio-group[align-right]::part(button-group) {
+    order: 1;
+    margin-left: auto;
+}
+
+sl-range[align-right]::part(form-control),
+sl-input[align-right]::part(form-control),
+sl-select[align-right]::part(form-control) {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: var(--sl-spacing-3x-small) var(--gap-width);
+    align-items: center;
+}
+
+sl-range[align-right]::part(form-control-label),
+sl-input[align-right]::part(form-control-label),
+sl-select[align-right]::part(form-control-label) {
+    display: contents;
+    order: 2;
+}
+
+sl-range[align-right]::part(form-control-input),
+sl-input[align-right]::part(form-control-input),
+sl-select[align-right]::part(form-control-input) {
+    width: 50%;
+    order: 1;
+    margin-left: auto;
+}
+
+sl-spinner.large-spinner {
+    --track-width: 0.5rem;
+    font-size: 4rem;
+}
+
+sl-dialog::part(panel) {
+    border-radius: var(--sl-border-radius-large);
+}
+
+.label-on-left {
+    --label-width: 6rem;
+    --gap-width: 1rem;
+}
+
+.label-on-left + .label-on-left {
+    margin-top: var(--sl-spacing-medium);
+}
+
+.label-on-left::part(form-control) {
+    display: grid;
+    grid: auto / var(--label-width) 1fr;
+    gap: var(--sl-spacing-3x-small) var(--gap-width);
+    align-items: center;
+}
+
+.label-on-left::part(form-control-label) {
+    text-align: right;
+}
+
+.label-on-left::part(form-control-help-text) {
+    grid-column-start: 2;
+}

@@ -1,0 +1,77 @@
+.number-trainer .trainer-content {
+    background-color: var(--sl-color-emerald-50);
+}
+
+.trainer-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+
+    > div {
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .spacer {
+        height: 40px;
+    }
+
+    .trainer-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        min-height: 300px;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: var(--sl-shadow-large);
+    }
+
+    .trainer-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .controls {
+        display: flex;
+        gap: 1rem;
+        width: 100%;
+        align-items: center;
+    }
+
+    .result {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+        align-items: center;
+    }
+
+    .number-trainer-input-row {
+        display: flex;
+        gap: 1rem;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+    }
+    .trainer-input::part(input) {
+        text-align: center;
+    }
+}
+
+.play-icon {
+    font-size: 4rem;
+}
+
+.play-button {
+    --sl-input-height-large: 4rem;
+    --sl-button-font-size-large: 2rem;
+    border-radius: 8px;
+}
+.play-button::part(base) {
+    box-shadow: var(--sl-shadow-large);
+}
