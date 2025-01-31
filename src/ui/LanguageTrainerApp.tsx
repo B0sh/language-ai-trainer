@@ -111,7 +111,9 @@ export const LanguageTrainerApp: React.FC = () => {
                     onClick={() => setOpen(!open)}
                 ></SlIconButton>
 
-                <span className="title">Walden's AI Language Trainer</span>
+                <span className="title" onClick={() => selectMenu("home")}>
+                    Walden's AI Language Trainer
+                </span>
             </header>
             <div className="container">
                 <nav>
