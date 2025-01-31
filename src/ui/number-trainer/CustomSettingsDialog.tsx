@@ -20,8 +20,6 @@ export const CustomSettingsDialog: React.FC<Props> = ({ settings, onSettingsChan
     const [customMultiplier, setCustomMultiplier] = useState(1);
 
     useEffect(() => {
-        console.log("Running reset config", settings.numberTrainerCustomConfig);
-
         setCustomMin(settings.numberTrainerCustomConfig?.generators[0]?.min ?? 1);
         setCustomMax(settings.numberTrainerCustomConfig?.generators[0]?.max ?? 100);
         setCustomMultiplier(settings.numberTrainerCustomConfig?.generators[0]?.multiplier ?? 1);

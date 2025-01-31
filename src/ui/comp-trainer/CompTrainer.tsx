@@ -1,6 +1,7 @@
 import * as React from "react";
 import "./CompTrainer.css";
 import SlBadge from "@shoelace-style/shoelace/dist/react/badge";
+import SlIconButton from "@shoelace-style/shoelace/dist/react/icon-button";
 import { AppSettings } from "../../models/app-settings";
 import { TARGET_LANGUAGES } from "../../shared/languages";
 import { CompTrainerMenu } from "./CompTrainerMenu";
@@ -25,6 +26,13 @@ export const CompTrainer: React.FC<Props> = ({ settings, onSettingsChange }) => 
                         <h2>Comprehension Trainer</h2>
                     </div>
                     <div>
+                        {isPlaying && (
+                            <SlIconButton
+                                name="x-lg"
+                                style={{ fontSize: "0.75rem", verticalAlign: "middle" }}
+                                onClick={handleStop}
+                            />
+                        )}
                         <SlBadge variant="primary" pill style={{ fontSize: "0.75rem", verticalAlign: "middle" }}>
                             {TARGET_LANGUAGES.find((l) => l.id === settings.targetLanguage)?.description}
                         </SlBadge>
