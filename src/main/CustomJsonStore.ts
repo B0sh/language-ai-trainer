@@ -10,8 +10,6 @@ export class CustomJsonStore {
         const userDataPath = app.getPath("userData");
         this.filePath = path.join(userDataPath, `settings`, `${storeKey}.json`);
 
-        console.log("USER PATH", this.filePath);
-
         try {
             this.data = JSON.parse(fs.readFileSync(this.filePath, "utf-8"));
         } catch (error) {
