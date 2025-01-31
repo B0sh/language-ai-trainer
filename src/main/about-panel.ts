@@ -9,7 +9,7 @@ export function setupAboutPanel(): void {
         applicationVersion: app.getVersion(),
         authors: ["Walden Perry"],
         copyright: "© Walden Perry",
-        credits: "https://github.com/B0sh/language-ai-trainer",
+        credits: "https://github.com/B0sh/language-trainer",
         iconPath,
         version: process.versions.electron,
         website: "https://waldens.world/",

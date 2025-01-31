@@ -26,14 +26,14 @@ const config: ForgeConfig = {
     packagerConfig: {
         asar: true,
         icon: path.join(iconDir, "AppIcon"),
-        executableName: "language-ai-trainer",
+        executableName: "language-trainer",
         // appBundleId: "world.waldens.langtrainer",
         // osxSign: {},
     },
     rebuildConfig: {},
     makers: [
         new MakerSquirrel({
-            name: "language-ai-trainer",
+            name: "language-trainer",
             iconUrl: path.join(iconDir, "AppIcon.ico"),
             setupIcon: path.join(iconDir, "AppIcon.ico"),
         }),
@@ -45,7 +45,7 @@ const config: ForgeConfig = {
             },
         }),
         new MakerDMG({
-            name: "language-ai-trainer",
+            name: "language-trainer",
             icon: path.join(iconDir, "AppIcon.icns"),
             format: "ULFO",
         }),
@@ -84,7 +84,7 @@ const config: ForgeConfig = {
         new PublisherGithub({
             repository: {
                 owner: "B0sh",
-                name: "testtesttest",
+                name: "language-trainer",
             },
             prerelease: false,
             draft: true,
