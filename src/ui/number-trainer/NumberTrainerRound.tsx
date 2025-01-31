@@ -22,6 +22,16 @@ export const NumberTrainerRound: React.FC<NumberTrainerRoundProps> = ({ playback
         return <SlIcon style={{ fontSize: "2rem" }} name="soundwave" />;
     };
 
+    const handleInputChange = (event: Event) => {
+        const input = event.target as HTMLInputElement;
+        const value = input.value.replace(/[^\d]/g, "");
+        if (value) {
+            // if I want to support over 1b, need to figure out an alt solution here
+            const number = parseInt(value, 10);
+            input.value = number.toLocaleString();
+        }
+    };
+
     inputRef.current?.focus();
 
     return (
@@ -36,8 +46,12 @@ export const NumberTrainerRound: React.FC<NumberTrainerRoundProps> = ({ playback
                     autoFocus
                     autocomplete="off"
                     autoCorrect="off"
+                    maxlength={12}
                     disabled={status === "correct" || status === "incorrect" ? true : false}
-                    onKeyDown={(e) => e.key === "Enter" && onSubmit((e.target as HTMLInputElement).value)}
+                    onKeyDown={(e) =>
+                        e.key === "Enter" && onSubmit((e.target as HTMLInputElement).value.replace(/,/g, ""))
+                    }
+                    onSlInput={handleInputChange}
                 />
             </div>
 
