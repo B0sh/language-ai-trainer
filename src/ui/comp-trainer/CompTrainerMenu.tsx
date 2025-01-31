@@ -15,7 +15,7 @@ export const CompTrainerMenu: React.FC<Props> = ({ settings, onStart, onSettings
     return (
         <>
             <div>
-                Practice your listening skill!
+                Practice listening comprehension!
                 <br />
                 <br />
                 AI will speak some random sentences in {language}, and you will need to describe what was said. The AI

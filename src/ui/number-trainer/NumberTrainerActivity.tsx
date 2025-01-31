@@ -63,7 +63,7 @@ export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ se
         return () => {
             challenge.stopAudio();
         };
-    }, [speakNumber]);
+    }, [challenge, speakNumber]);
 
     const handleNextRound = useCallback(() => {
         challenge.nextRound();
@@ -71,9 +71,9 @@ export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ se
         forceUpdate({});
     }, [challenge]);
 
-    const replayAudio = () => {
+    const replayAudio = useCallback(() => {
         challenge.playAudio();
-    };
+    }, [challenge]);
 
     return (
         <>

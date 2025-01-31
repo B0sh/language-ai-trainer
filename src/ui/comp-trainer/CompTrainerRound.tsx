@@ -49,7 +49,7 @@ export const CompTrainerRound: React.FC<Props> = ({ playbackStatus, status, stre
                         alignItems: "center",
                     }}
                 >
-                    <div>Give a breif summary of what was said.</div>
+                    <div>Write a summary of what was said.</div>
                     <div>
                         <SlButton type="submit" variant="primary" pill>
                             <SlIcon slot="prefix" name="book" />
@@ -58,10 +58,6 @@ export const CompTrainerRound: React.FC<Props> = ({ playbackStatus, status, stre
                     </div>
                 </div>
             </form>
-            {/* 
-            <div className="stats">
-                Your streak is <strong>{streak}</strong>.
-            </div> */}
         </div>
     );
 };

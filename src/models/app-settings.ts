@@ -1,3 +1,5 @@
+import { NumberChallengeRoundConfig } from "../ui/number-trainer/NumberChallenge";
+
 export interface AppSettings {
     tts: string;
     stt: string;
@@ -8,6 +10,7 @@ export interface AppSettings {
     theme: string;
     numberTrainerDifficulty: string;
     numberTrainerGenSentence: boolean;
+    numberTrainerCustomConfig: NumberChallengeRoundConfig | null;
     microphoneDeviceId: string | null;
     configs: Record<string, any>;
 }
@@ -26,6 +29,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
     theme: "light",
     numberTrainerDifficulty: "easy",
     numberTrainerGenSentence: false,
+    numberTrainerCustomConfig: null,
     volume: 50,
     microphoneDeviceId: null,
 };

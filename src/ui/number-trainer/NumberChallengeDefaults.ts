@@ -3,7 +3,7 @@ import { NumberChallengeRoundConfig } from "./NumberChallenge";
 export const NUMBER_CHALLENGE_DEFAULT_DIFFICULTY: NumberChallengeRoundConfig[] = [
     {
         label: "Easy",
-        helpText: "Generates numbers up up to 99",
+        helpText: "Generate numbers up up to 99",
         generators: [
             {
                 type: "random",
@@ -15,7 +15,7 @@ export const NUMBER_CHALLENGE_DEFAULT_DIFFICULTY: NumberChallengeRoundConfig[] =
     },
     {
         label: "Medium",
-        helpText: "Generates numbers up to 10,000",
+        helpText: "Generate numbers up to 10,000",
         generators: [
             {
                 type: "random",
@@ -42,7 +42,7 @@ export const NUMBER_CHALLENGE_DEFAULT_DIFFICULTY: NumberChallengeRoundConfig[] =
     },
     {
         label: "Hard",
-        helpText: "Generates numbers with 2 significant digits up to 1 billion",
+        helpText: "Generate numbers with 2 significant digits up to 1 billion",
         generators: [
             {
                 type: "random",
@@ -71,18 +71,6 @@ export const NUMBER_CHALLENGE_DEFAULT_DIFFICULTY: NumberChallengeRoundConfig[] =
                 min: 1,
                 max: 99,
                 multiplier: 10000000,
-            },
-        ],
-    },
-    {
-        label: "Very Hard",
-        helpText: "Completely random numbers up to 1 billion",
-        generators: [
-            {
-                type: "random",
-                weight: 10,
-                min: 1,
-                max: 1000000000,
             },
         ],
     },

@@ -18,9 +18,11 @@ export const NumberTrainer: React.FC<Props> = ({ settings, onSettingsChange }) =
     const handleStart = () => setIsPlaying(true);
     const handleStop = () => setIsPlaying(false);
 
-    const config = NUMBER_CHALLENGE_DEFAULT_DIFFICULTY.find(
-        (round) => round.label === settings.numberTrainerDifficulty
-    );
+    const config = settings.numberTrainerDifficulty === "custom" && settings.numberTrainerCustomConfig
+        ? settings.numberTrainerCustomConfig
+        : NUMBER_CHALLENGE_DEFAULT_DIFFICULTY.find(
+            (round) => round.label === settings.numberTrainerDifficulty
+        );
 
     return (
         <div className="trainer-container number-trainer">
