@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import SlDialog from "@shoelace-style/shoelace/dist/react/dialog";
 import SlButton from "@shoelace-style/shoelace/dist/react/button";
 import SlInput from "@shoelace-style/shoelace/dist/react/input";
@@ -15,31 +15,29 @@ interface Props {
 }
 
 export const CustomSettingsDialog: React.FC<Props> = ({ settings, onSettingsChange, open, onClose }) => {
-    const [customMin, setCustomMin] = React.useState(settings.numberTrainerCustomConfig?.generators[0]?.min ?? 1);
-    const [customMax, setCustomMax] = React.useState(settings.numberTrainerCustomConfig?.generators[0]?.max ?? 100);
-    const [customMultiplier, setCustomMultiplier] = React.useState(
-        settings.numberTrainerCustomConfig?.generators[0]?.multiplier ?? 1
-    );
+    const [customMin, setCustomMin] = useState(1);
+    const [customMax, setCustomMax] = useState(100);
+    const [customMultiplier, setCustomMultiplier] = useState(1);
 
     useEffect(() => {
-        if (settings.numberTrainerCustomConfig) {
-            setCustomMin(settings.numberTrainerCustomConfig.generators[0]?.min ?? 1);
-            setCustomMax(settings.numberTrainerCustomConfig.generators[0]?.max ?? 100);
-            setCustomMultiplier(settings.numberTrainerCustomConfig.generators[0]?.multiplier ?? 1);
-        }
+        console.log("Running reset config", settings.numberTrainerCustomConfig);
+
+        setCustomMin(settings.numberTrainerCustomConfig?.generators[0]?.min ?? 1);
+        setCustomMax(settings.numberTrainerCustomConfig?.generators[0]?.max ?? 100);
+        setCustomMultiplier(settings.numberTrainerCustomConfig?.generators[0]?.multiplier ?? 1);
     }, [open, settings.numberTrainerCustomConfig]);
 
-    const handleSubmit = () => {
+    const updateConfig = (min: number, max: number, multiplier: number) => {
         const customConfig: NumberChallengeRoundConfig = {
             label: "Custom",
-            helpText: `Generates numbers from ${customMin} to ${customMax} × ${customMultiplier}`,
+            helpText: `Generates numbers from ${min} to ${max} × ${multiplier}`,
             generators: [
                 {
                     type: "random",
                     weight: 1,
-                    min: customMin,
-                    max: customMax,
-                    multiplier: customMultiplier,
+                    min: min,
+                    max: max,
+                    multiplier: multiplier,
                 },
             ],
         };
@@ -49,88 +47,87 @@ export const CustomSettingsDialog: React.FC<Props> = ({ settings, onSettingsChan
             numberTrainerDifficulty: "custom",
             numberTrainerCustomConfig: customConfig,
         });
-        onClose();
     };
 
     const handleMinChange = (event: Event) => {
         const input = event.target as SlInputElement;
-        const value = parseInt(input.value, 10);
-        if (value) {
-            if (value < 1) {
-                setCustomMin(1);
-            } else if (value > customMax) {
-                setCustomMin(customMax);
-            } else {
-                setCustomMin(value);
-            }
+        let value = parseInt(input.value, 10) ?? 0;
+        if (value < 1) {
+            value = 1;
+        } else if (value > customMax) {
+            value = customMax;
         }
+
+        setCustomMin(value);
+        updateConfig(value, customMax, customMultiplier);
     };
 
     const handleMaxChange = (event: Event) => {
         const input = event.target as SlInputElement;
-        const value = parseInt(input.value, 10);
-        if (value) {
-            if (value < customMin) {
-                setCustomMax(customMin);
-            } else if (value > 1000000000) {
-                setCustomMax(1000000000);
-            } else {
-                setCustomMax(value);
-            }
+        let value = parseInt(input.value, 10) ?? 0;
+        if (value < customMin) {
+            value = customMin;
+        } else if (value > 1000000000) {
+            value = 1000000000;
         }
+
+        setCustomMax(value);
+        updateConfig(customMin, value, customMultiplier);
+    };
+
+    const handleMultiplierChange = (event: Event) => {
+        const input = event.target as SlInputElement;
+        let value = parseInt(input.value, 10) ?? 0;
+        if (value < 1) {
+            value = 1;
+        } else if (value > 1000000) {
+            value = 1000000;
+        }
+        setCustomMultiplier(value);
+        updateConfig(customMin, customMax, value);
     };
 
     return (
         <SlDialog label="Custom Number Trainer Settings" open={open} onSlAfterHide={onClose}>
-            <div style={{ padding: "1rem" }}>
-                <div style={{ marginBottom: "1rem" }}>
-                    <SlInput
-                        align-right
-                        label="Minimum"
-                        type="number"
-                        value={customMin.toString()}
-                        onSlInput={handleMinChange}
-                        maxlength={customMax.toString().length}
-                        min="1"
-                        max={customMax.toString()}
-                    />
+            <div style={{ padding: "0.5rem 3rem" }}>
+                <div style={{ display: "flex", gap: "var(--sl-spacing-large)", alignItems: "center" }}>
+                    <div style={{ width: "45%" }}>
+                        <SlInput
+                            type="number"
+                            value={customMin.toString()}
+                            onSlInput={handleMinChange}
+                            min="1"
+                            max={customMax.toString()}
+                        />
+                    </div>
+                    <div>to</div>
+                    <div style={{ width: "45%" }}>
+                        <SlInput
+                            type="number"
+                            value={customMax.toString()}
+                            onSlInput={handleMaxChange}
+                            min={customMin.toString()}
+                            max="1000000000"
+                        />
+                    </div>
                 </div>
-                <div style={{ marginBottom: "1rem" }}>
-                    <SlInput
-                        align-right
-                        label="Maximum"
-                        type="number"
-                        value={customMax.toString()}
-                        onSlInput={handleMaxChange}
-                        min={customMin.toString()}
-                        max="1000000000"
-                    />
-                </div>
-                <div style={{ marginBottom: "1rem" }}>
-                    <SlInput
-                        align-right
-                        label="Multiplier"
-                        type="number"
-                        value={customMultiplier.toString()}
-                        onSlInput={(e) => setCustomMultiplier(parseInt((e.target as HTMLInputElement).value) || 1)}
-                        min="1"
-                        max="1000000"
-                    />
-                </div>
-                <div>
-                    <p>
-                        Effective Range: <SlFormatNumber value={customMin * customMultiplier} /> to{" "}
-                        <SlFormatNumber value={customMax * customMultiplier} />
-                    </p>
-                </div>
+                <br />
+
+                <SlInput
+                    className="label-on-left"
+                    label="Multiplier"
+                    type="number"
+                    value={customMultiplier.toString()}
+                    onSlInput={handleMultiplierChange}
+                    min="1"
+                    max="1000000"
+                />
             </div>
-            <div slot="footer">
-                <SlButton variant="default" onClick={onClose}>
-                    Cancel
-                </SlButton>
-                <SlButton variant="primary" onClick={handleSubmit}>
-                    Save
-                </SlButton>
+            <div style={{ textAlign: "center" }}>
+                <p>
+                    <SlFormatNumber value={customMin * customMultiplier} /> to{" "}
+                    <SlFormatNumber value={customMax * customMultiplier} />
+                </p>
             </div>
         </SlDialog>
     );

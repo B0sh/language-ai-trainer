@@ -4,6 +4,7 @@ import { NumberTrainerMenu } from "./NumberTrainerMenu";
 import { NumberTrainerActivity } from "./NumberTrainerActivity";
 import { AppSettings } from "../../models/app-settings";
 import SlBadge from "@shoelace-style/shoelace/dist/react/badge";
+import SlIconButton from "@shoelace-style/shoelace/dist/react/icon-button";
 import { TARGET_LANGUAGES } from "../../shared/languages";
 import { NUMBER_CHALLENGE_DEFAULT_DIFFICULTY } from "./NumberChallengeDefaults";
 
@@ -18,11 +19,10 @@ export const NumberTrainer: React.FC<Props> = ({ settings, onSettingsChange }) =
     const handleStart = () => setIsPlaying(true);
     const handleStop = () => setIsPlaying(false);
 
-    const config = settings.numberTrainerDifficulty === "custom" && settings.numberTrainerCustomConfig
-        ? settings.numberTrainerCustomConfig
-        : NUMBER_CHALLENGE_DEFAULT_DIFFICULTY.find(
-            (round) => round.label === settings.numberTrainerDifficulty
-        );
+    const config =
+        settings.numberTrainerDifficulty === "custom" && settings.numberTrainerCustomConfig
+            ? settings.numberTrainerCustomConfig
+            : NUMBER_CHALLENGE_DEFAULT_DIFFICULTY.find((round) => round.label === settings.numberTrainerDifficulty);
 
     return (
         <div className="trainer-container number-trainer">
@@ -32,6 +32,13 @@ export const NumberTrainer: React.FC<Props> = ({ settings, onSettingsChange }) =
                         <h2>Number Trainer</h2>
                     </div>
                     <div>
+                        {isPlaying && (
+                            <SlIconButton
+                                name="x-lg"
+                                style={{ fontSize: "0.75rem", verticalAlign: "middle" }}
+                                onClick={handleStop}
+                            />
+                        )}
                         {config && (
                             <SlBadge
                                 variant="primary"
@@ -48,7 +55,7 @@ export const NumberTrainer: React.FC<Props> = ({ settings, onSettingsChange }) =
                 </div>
                 <div className="trainer-content">
                     {isPlaying ? (
-                        <NumberTrainerActivity settings={settings} config={config} onStop={handleStop} />
+                        <NumberTrainerActivity settings={settings} config={config} />
                     ) : (
                         <NumberTrainerMenu
                             settings={settings}

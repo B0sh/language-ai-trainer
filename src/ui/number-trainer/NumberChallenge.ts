@@ -42,7 +42,6 @@ export class NumberChallenge {
         this.ttsAudio = null;
         this.language = language;
         this.sentenceMode = sentenceMode;
-        console.log(this);
     }
 
     loading = false;

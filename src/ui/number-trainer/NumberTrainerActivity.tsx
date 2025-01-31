@@ -10,10 +10,9 @@ import { useErrorBoundary } from "react-error-boundary";
 interface NumberTrainerActivityProps {
     settings: AppSettings;
     config: NumberChallengeRoundConfig;
-    onStop: () => void;
 }
 
-export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ settings, config, onStop }) => {
+export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ settings, config }) => {
     const [challenge] = useState(
         () => new NumberChallenge(config, settings.targetLanguage, settings.numberTrainerGenSentence)
     );
