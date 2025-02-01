@@ -79,7 +79,7 @@ export const DateTrainerActivity: React.FC<DateTrainerActivityProps> = ({ settin
                 <TrainerFeedback
                     playbackStatus={playbackStatus}
                     statusMessage={<div>The date was {challenge.displayAnswer()}. </div>}
-                    message={challenge.sentenceMode ? challenge.text : null}
+                    message={challenge.sentenceMode ? challenge.round.sentence : null}
                     status={challenge.status}
                     onNextRound={handleNextRound}
                     onReplayAudio={replayAudio}

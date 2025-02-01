@@ -107,6 +107,19 @@ export const DateTrainerRound: React.FC<DateTrainerRoundProps> = ({
                         />
                     </div>
                 )}
+                {round.format === "mm" && (
+                    <SlInput
+                        ref={inputRef}
+                        pill
+                        type="number"
+                        min="1"
+                        max="12"
+                        maxlength={2}
+                        placeholder="Month"
+                        className="trainer-input input-mm"
+                        size="large"
+                    />
+                )}
 
                 {round.format === "mm-dd" && (
                     <div style={{ display: "flex", gap: "8px" }}>
