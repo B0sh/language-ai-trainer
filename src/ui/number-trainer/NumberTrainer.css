@@ -7,7 +7,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100%;
+    height: var(--content-min-height);
 
     > div {
         width: 100%;
