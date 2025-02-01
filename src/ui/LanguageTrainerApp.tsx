@@ -6,7 +6,6 @@ import SlDivider from "@shoelace-style/shoelace/dist/react/divider";
 import * as React from "react";
 import { useState, useEffect, createRef } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { DateTrainer } from "./date-trainer/DateTrainer";
 import { NumberTrainer } from "./number-trainer/NumberTrainer";
 import { Settings } from "./settings/Settings";
 import "./LanguageTrainerApp.css";
@@ -18,6 +17,7 @@ import { Home } from "./home/Home";
 import { AIProviderSettings } from "./settings/AIProviderSettings";
 import { CompTrainer } from "./comp-trainer/CompTrainer";
 import { AiLog } from "./ai-log/AiLog";
+import { DateTrainer } from "./date-trainer/DateTrainer";
 
 export const LanguageTrainerApp: React.FC = () => {
     const [open, setOpen] = useState(true);
@@ -62,7 +62,7 @@ export const LanguageTrainerApp: React.FC = () => {
             case "speaking":
                 return <SpeakingTrainer />;
             case "date":
-                return <DateTrainer />;
+                return <DateTrainer settings={settings} onSettingsChange={handleSettingsChange} />;
             case "number":
                 return <NumberTrainer settings={settings} onSettingsChange={handleSettingsChange} />;
             case "comprehension":

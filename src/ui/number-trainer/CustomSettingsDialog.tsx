@@ -127,6 +127,11 @@ export const CustomSettingsDialog: React.FC<Props> = ({ settings, onSettingsChan
                     <SlFormatNumber value={customMax * customMultiplier} />
                 </p>
             </div>
+            <div slot="footer">
+                <SlButton variant="primary" onClick={onClose}>
+                    Done
+                </SlButton>
+            </div>
         </SlDialog>
     );
 };

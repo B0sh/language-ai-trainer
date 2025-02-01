@@ -6,6 +6,7 @@ import { getRandomElement } from "../../shared/utility";
 
 interface GoogleConfig {
     apiKey: string;
+    voice: string;
 }
 
 export class GoogleProvider extends AIProvider {
@@ -17,6 +18,7 @@ export class GoogleProvider extends AIProvider {
         canSpeechToText: false,
     };
 
+    private defaultVoice: string | null = null;
     private apiKey?: string;
     private genAI?: GoogleGenerativeAI;
 
@@ -29,6 +31,8 @@ export class GoogleProvider extends AIProvider {
 
     configure(config: GoogleConfig): void {
         this.apiKey = config.apiKey;
+        this.defaultVoice = config.voice;
+
         if (this.apiKey) {
             this.genAI = new GoogleGenerativeAI(this.apiKey);
         }
@@ -55,7 +59,9 @@ export class GoogleProvider extends AIProvider {
         }
 
         let voice = "";
-        if (request.voice) {
+        if (this.defaultVoice) {
+            voice = availableVoices.find((v) => v.name === this.defaultVoice)?.name;
+        } else if (request.voice) {
             if (request.voice === "default") {
                 voice = availableVoices[0].name;
             } else if (request.voice === "random") {
