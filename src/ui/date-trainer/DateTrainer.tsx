@@ -7,6 +7,7 @@ import { DATE_CHALLENGE_DEFAULT_DIFFICULTY } from "./DateChallengeDefaults";
 import "./DateTrainer.css";
 import { DateTrainerActivity } from "./DateTrainerActivity";
 import { DateTrainerMenu } from "./DateTrainerMenu";
+import { TrainerHeaderBadges } from "../shared/Trainer/TrainerHeaderBadges";
 
 type Props = {
     settings: AppSettings;
@@ -32,27 +33,12 @@ export const DateTrainer: React.FC<Props> = ({ settings, onSettingsChange }) => 
                     <div>
                         <h2>Date Trainer</h2>
                     </div>
-                    <div>
-                        {isPlaying && (
-                            <SlIconButton
-                                name="x-lg"
-                                style={{ fontSize: "0.75rem", verticalAlign: "middle" }}
-                                onClick={handleStop}
-                            />
-                        )}
-                        {config && (
-                            <SlBadge
-                                variant="primary"
-                                pill
-                                style={{ fontSize: "0.75rem", verticalAlign: "middle", marginRight: "4px" }}
-                            >
-                                {config.label}
-                            </SlBadge>
-                        )}
-                        <SlBadge variant="primary" pill style={{ fontSize: "0.75rem", verticalAlign: "middle" }}>
-                            {language?.description}
-                        </SlBadge>
-                    </div>
+                    <TrainerHeaderBadges
+                        isPlaying={isPlaying}
+                        onStop={handleStop}
+                        language={language}
+                        configLabel={config?.label}
+                    />
                 </div>
                 <div className="trainer-content">
                     {isPlaying ? (
