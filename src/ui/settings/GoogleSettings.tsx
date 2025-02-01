@@ -5,7 +5,14 @@ import SlIconButton from "@shoelace-style/shoelace/dist/react/icon-button";
 import SlTooltip from "@shoelace-style/shoelace/dist/react/tooltip";
 import SlAlert from "@shoelace-style/shoelace/dist/react/alert";
 import SlIcon from "@shoelace-style/shoelace/dist/react/icon";
+import SlSelect from "@shoelace-style/shoelace/dist/react/select";
+import SlOption from "@shoelace-style/shoelace/dist/react/option";
+import SlButton from "@shoelace-style/shoelace/dist/react/button";
+import type SlSelectElement from "@shoelace-style/shoelace/dist/components/select/select";
 import { openUrl } from "../../shared/utility";
+import googleVoicesData from "../../ai/google/google-voices.json";
+import { AIProviderRegistry } from "../../ai/registry";
+import { TARGET_LANGUAGES } from "../../shared/languages";
 
 interface GoogleSettingsProps {
     settings: AppSettings;
@@ -13,6 +20,8 @@ interface GoogleSettingsProps {
 }
 
 export const GoogleSettings: React.FC<GoogleSettingsProps> = ({ settings, onSettingsChange }) => {
+    const [isPreviewPlaying, setIsPreviewPlaying] = React.useState(false);
+
     const handleConfigChange = (field: string, value: string) => {
         onSettingsChange({
             ...settings,
@@ -24,6 +33,24 @@ export const GoogleSettings: React.FC<GoogleSettingsProps> = ({ settings, onSett
                 },
             },
         });
+    };
+
+    const previewVoice = async () => {
+        const language = TARGET_LANGUAGES.find((l) => l.id === settings.targetLanguage);
+        if (!language || !settings.configs.google?.apiKey || !settings.configs.google?.voice) return;
+
+        setIsPreviewPlaying(true);
+        try {
+            const ttsAudio = await AIProviderRegistry.textToSpeech({
+                text: language.ttsPreview,
+                language: language.id,
+            });
+            if (ttsAudio) {
+                await ttsAudio.play();
+            }
+        } finally {
+            setIsPreviewPlaying(false);
+        }
     };
 
     return (
@@ -46,6 +73,38 @@ export const GoogleSettings: React.FC<GoogleSettingsProps> = ({ settings, onSett
                 onSlChange={(e) => handleConfigChange("apiKey", (e.target as HTMLInputElement).value)}
             />
 
+            {settings.tts === "google" && (
+                <>
+                    <div style={{ marginTop: "1rem" }}>
+                        <SlSelect
+                            label="Voice"
+                            align-right
+                            value={settings.configs.google?.voice || ""}
+                            onSlChange={(e) => handleConfigChange("voice", (e.target as HTMLSelectElement).value)}
+                        >
+                            {googleVoicesData.voices
+                                .filter((voice) => voice.languageCodes.includes(settings.targetLanguage))
+                                .map((voice) => (
+                                    <SlOption key={voice.name} value={voice.name}>
+                                        {voice.name} ({voice.ssmlGender})
+                                    </SlOption>
+                                ))}
+                        </SlSelect>
+                    </div>
+                    <div style={{ marginTop: "1rem", textAlign: "right" }}>
+                        {settings.configs.google?.voice && (
+                            <SlButton
+                                onClick={previewVoice}
+                                disabled={!settings.configs.google?.apiKey || isPreviewPlaying}
+                            >
+                                <SlIcon slot="prefix" name={isPreviewPlaying ? "arrow-repeat" : "play-fill"} />
+                                {isPreviewPlaying ? "Playing..." : "Preview Voice"}
+                            </SlButton>
+                        )}
+                    </div>
+                </>
+            )}
+
             <br />
 
             <SlAlert open>
@@ -53,6 +112,7 @@ export const GoogleSettings: React.FC<GoogleSettingsProps> = ({ settings, onSett
                 <strong>The Google API key requires the following permissions:</strong>
                 <ul>
                     <li>Cloud Text-to-Speech API</li>
+                    <li>Cloud Speech-to-Text API</li>
                     <li>Generative Language API</li>
                 </ul>
             </SlAlert>
