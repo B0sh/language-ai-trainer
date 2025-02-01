@@ -1,3 +1,4 @@
+import { DateChallengeRoundConfig } from "../ui/date-trainer/DateChallenge";
 import { NumberChallengeRoundConfig } from "../ui/number-trainer/NumberChallenge";
 
 export interface AppSettings {
@@ -11,6 +12,9 @@ export interface AppSettings {
     numberTrainerDifficulty: string;
     numberTrainerGenSentence: boolean;
     numberTrainerCustomConfig: NumberChallengeRoundConfig | null;
+    dateTrainerDifficulty: string;
+    dateTrainerGenSentence: boolean;
+    dateTrainerCustomConfig: DateChallengeRoundConfig | null;
     microphoneDeviceId: string | null;
     configs: Record<string, any>;
 }
@@ -30,6 +34,9 @@ export const DEFAULT_SETTINGS: AppSettings = {
     numberTrainerDifficulty: "easy",
     numberTrainerGenSentence: false,
     numberTrainerCustomConfig: null,
+    dateTrainerDifficulty: "easy",
+    dateTrainerGenSentence: false,
+    dateTrainerCustomConfig: null,
     volume: 50,
     microphoneDeviceId: null,
 };

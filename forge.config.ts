@@ -24,6 +24,7 @@ const iconDir = path.join(__dirname, "src", "assets", "icons");
 
 const config: ForgeConfig = {
     packagerConfig: {
+        name: "Walden's AI Language Trainer",
         asar: true,
         icon: path.join(iconDir, "AppIcon"),
         executableName: "language-trainer",

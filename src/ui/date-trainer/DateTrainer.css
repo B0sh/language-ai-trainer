@@ -1,16 +1,3 @@
-.date-trainer {
-    display: grid;
-    grid-template-rows: 1fr 1fr 1fr;
-    height: 100%;
-}
-
-.date-section {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #ccc; /* Optional: for visual separation */
-}
-
-.date-input {
+.date-trainer .trainer-content {
+    background-color: var(--sl-color-blue-50);
 }
