@@ -8,11 +8,10 @@ import SlIcon from "@shoelace-style/shoelace/dist/react/icon";
 import SlSelect from "@shoelace-style/shoelace/dist/react/select";
 import SlOption from "@shoelace-style/shoelace/dist/react/option";
 import SlButton from "@shoelace-style/shoelace/dist/react/button";
-import type SlSelectElement from "@shoelace-style/shoelace/dist/components/select/select";
 import { openUrl } from "../../shared/utility";
 import googleVoicesData from "../../ai/google/google-voices.json";
 import { AIProviderRegistry } from "../../ai/registry";
-import { TARGET_LANGUAGES } from "../../shared/languages";
+import { getTargetLanguage } from "../../shared/languages";
 
 interface GoogleSettingsProps {
     settings: AppSettings;
@@ -36,7 +35,7 @@ export const GoogleSettings: React.FC<GoogleSettingsProps> = ({ settings, onSett
     };
 
     const previewVoice = async () => {
-        const language = TARGET_LANGUAGES.find((l) => l.id === settings.targetLanguage);
+        const language = getTargetLanguage(settings.targetLanguage);
         if (!language || !settings.configs.google?.apiKey || !settings.configs.google?.voice) return;
 
         setIsPreviewPlaying(true);
@@ -46,7 +45,7 @@ export const GoogleSettings: React.FC<GoogleSettingsProps> = ({ settings, onSett
                 language: language.id,
             });
             if (ttsAudio) {
-                await ttsAudio.play();
+                await ttsAudio.play(settings.volume);
             }
         } finally {
             setIsPreviewPlaying(false);

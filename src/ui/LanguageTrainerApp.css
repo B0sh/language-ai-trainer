@@ -1,9 +1,13 @@
+:root {
+    --content-min-height: calc(100vh - 40px - 2rem);
+}
+
 .container {
     position: relative;
 }
 
 main {
-    height: calc(100vh - 40px - 2rem);
+    min-height: var(--content-min-height);
     margin-left: 220px;
     transition: margin-left 0.25s ease;
     padding: 1rem;

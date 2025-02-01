@@ -8,10 +8,9 @@ import { useErrorBoundary } from "react-error-boundary";
 
 interface Props {
     settings: AppSettings;
-    onStop: () => void;
 }
 
-export const CompTrainerActivity: React.FC<Props> = ({ settings, onStop }) => {
+export const CompTrainerActivity: React.FC<Props> = ({ settings }) => {
     const [challenge] = useState(() => new CompChallenge(settings.targetLanguage));
     const [playbackStatus, setPlaybackStatus] = useState<string>("");
     const [, forceUpdate] = useState({});
@@ -30,7 +29,7 @@ export const CompTrainerActivity: React.FC<Props> = ({ settings, onStop }) => {
                         challenge.setStatus("correct");
                     } else {
                         challenge.setStatus("incorrect");
-                        // challenge.playAudio();
+                        // challenge.playAudio(settings.volume);
                     }
 
                     forceUpdate({});
@@ -62,7 +61,7 @@ export const CompTrainerActivity: React.FC<Props> = ({ settings, onStop }) => {
             success = await challenge.generateProblemAudio();
             if (success) {
                 setPlaybackStatus("playing");
-                await challenge.playAudio();
+                await challenge.playAudio(settings.volume);
                 setPlaybackStatus("finished");
             }
         } catch (error) {
@@ -103,12 +102,7 @@ export const CompTrainerActivity: React.FC<Props> = ({ settings, onStop }) => {
                     onReplayAudio={generateProblem}
                 />
             ) : (
-                <CompTrainerRound
-                    playbackStatus={playbackStatus}
-                    status={challenge.status}
-                    streak={challenge.streak}
-                    onSubmit={handleSubmit}
-                />
+                <CompTrainerRound playbackStatus={playbackStatus} status={challenge.status} onSubmit={handleSubmit} />
             )}
         </>
     );

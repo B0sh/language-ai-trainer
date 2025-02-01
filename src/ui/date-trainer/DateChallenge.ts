@@ -2,7 +2,7 @@ import { TTSAudio, TTSRequest } from "../../ai/interfaces";
 import { generateAIInspirationWord } from "../../ai/prompts/ai-inspiration-words";
 import { PROMPT_DATE_TRAINER_SENTENCE } from "../../ai/prompts/date-trainer-prompts";
 import { AIProviderRegistry } from "../../ai/registry";
-import { TARGET_LANGUAGES } from "../../shared/languages";
+import { getTargetLanguage } from "../../shared/languages";
 import { Weighter } from "../../shared/weighter";
 
 export type DateChallengeRoundFormat =
@@ -45,7 +45,6 @@ function getRandomDate(start: Date, end: Date): Date {
 export class DateChallenge {
     public round: DateChallengeRound;
     public status: DateChallengeStatus;
-    public streak: number;
     public language: string;
     public sentenceMode: boolean;
     public inspirationWord: string;
@@ -56,7 +55,6 @@ export class DateChallenge {
         this.config = config;
         this.round = this.generateRound();
         this.status = "active";
-        this.streak = 0;
         this.ttsAudio = null;
         this.language = language;
         this.sentenceMode = sentenceMode;
@@ -70,11 +68,11 @@ export class DateChallenge {
             this.round.sentence = formattedDate;
         } else {
             this.loading = true;
-            const language = TARGET_LANGUAGES.find((l) => l.id === this.language)?.description;
+            const language = getTargetLanguage(this.language);
 
             this.inspirationWord = generateAIInspirationWord();
 
-            const prompt = PROMPT_DATE_TRAINER_SENTENCE(language, formattedDate, this.inspirationWord);
+            const prompt = PROMPT_DATE_TRAINER_SENTENCE(language?.description, formattedDate, this.inspirationWord);
             const result = await AIProviderRegistry.llm(prompt);
 
             this.loading = false;
@@ -100,10 +98,10 @@ export class DateChallenge {
         }
     }
 
-    public async playAudio(): Promise<void> {
+    public async playAudio(volume: number): Promise<void> {
         if (this.ttsAudio) {
             await this.ttsAudio.stop();
-            await this.ttsAudio.play();
+            await this.ttsAudio.play(volume);
         }
     }
 
@@ -120,7 +118,6 @@ export class DateChallenge {
     public nextRound(): void {
         this.round = this.generateRound();
         this.status = "active";
-        this.streak++;
     }
 
     private generateRound(): DateChallengeRound {

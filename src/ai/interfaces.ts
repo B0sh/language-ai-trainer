@@ -64,7 +64,7 @@ export abstract class AIProvider {
     }
 
     configure?(config: Record<string, any>): void {
-        // Optional configuration method
+        throw new Error("Method not implemented");
     }
 }
 

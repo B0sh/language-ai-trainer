@@ -10,9 +10,13 @@ export class GoogleTTSAudio extends TTSAudio {
         this.metadata = metadata;
     }
 
-    async play(): Promise<void> {
+    async play(volume?: number): Promise<void> {
         if (!this.audioElement.paused) {
             return;
+        }
+
+        if (volume !== undefined) {
+            this.audioElement.volume = volume / 100;
         }
 
         return new Promise((resolve, reject) => {

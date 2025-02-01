@@ -3,7 +3,7 @@ import "./CompTrainer.css";
 import SlBadge from "@shoelace-style/shoelace/dist/react/badge";
 import SlIconButton from "@shoelace-style/shoelace/dist/react/icon-button";
 import { AppSettings } from "../../models/app-settings";
-import { TARGET_LANGUAGES } from "../../shared/languages";
+import { getTargetLanguage } from "../../shared/languages";
 import { CompTrainerMenu } from "./CompTrainerMenu";
 import { CompTrainerActivity } from "./CompTrainerActivity";
 
@@ -17,6 +17,8 @@ export const CompTrainer: React.FC<Props> = ({ settings, onSettingsChange }) => 
 
     const handleStart = () => setIsPlaying(true);
     const handleStop = () => setIsPlaying(false);
+
+    const language = getTargetLanguage(settings.targetLanguage);
 
     return (
         <div className="trainer-container comp-trainer">
@@ -34,13 +36,13 @@ export const CompTrainer: React.FC<Props> = ({ settings, onSettingsChange }) => 
                             />
                         )}
                         <SlBadge variant="primary" pill style={{ fontSize: "0.75rem", verticalAlign: "middle" }}>
-                            {TARGET_LANGUAGES.find((l) => l.id === settings.targetLanguage)?.description}
+                            {language.description}
                         </SlBadge>
                     </div>
                 </div>
                 <div className="trainer-content">
                     {isPlaying ? (
-                        <CompTrainerActivity settings={settings} onStop={handleStop} />
+                        <CompTrainerActivity settings={settings} />
                     ) : (
                         <CompTrainerMenu
                             settings={settings}

@@ -8,11 +8,10 @@ import type SlTextareaElement from "@shoelace-style/shoelace/dist/components/tex
 interface Props {
     playbackStatus: string;
     status: string;
-    streak: number;
     onSubmit: (input: string) => void;
 }
 
-export const CompTrainerRound: React.FC<Props> = ({ playbackStatus, status, streak, onSubmit }) => {
+export const CompTrainerRound: React.FC<Props> = ({ playbackStatus, status, onSubmit }) => {
     const inputRef = useRef<SlTextareaElement>(null);
 
     if (playbackStatus === "loading" || status === "evaluating") {

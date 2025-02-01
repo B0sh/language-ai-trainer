@@ -5,7 +5,7 @@ import { NumberTrainerActivity } from "./NumberTrainerActivity";
 import { AppSettings } from "../../models/app-settings";
 import SlBadge from "@shoelace-style/shoelace/dist/react/badge";
 import SlIconButton from "@shoelace-style/shoelace/dist/react/icon-button";
-import { TARGET_LANGUAGES } from "../../shared/languages";
+import { getTargetLanguage } from "../../shared/languages";
 import { NUMBER_CHALLENGE_DEFAULT_DIFFICULTY } from "./NumberChallengeDefaults";
 
 type Props = {
@@ -23,6 +23,7 @@ export const NumberTrainer: React.FC<Props> = ({ settings, onSettingsChange }) =
         settings.numberTrainerDifficulty === "custom" && settings.numberTrainerCustomConfig
             ? settings.numberTrainerCustomConfig
             : NUMBER_CHALLENGE_DEFAULT_DIFFICULTY.find((round) => round.label === settings.numberTrainerDifficulty);
+    const language = getTargetLanguage(settings.targetLanguage);
 
     return (
         <div className="trainer-container number-trainer">
@@ -49,7 +50,7 @@ export const NumberTrainer: React.FC<Props> = ({ settings, onSettingsChange }) =
                             </SlBadge>
                         )}
                         <SlBadge variant="primary" pill style={{ fontSize: "0.75rem", verticalAlign: "middle" }}>
-                            {TARGET_LANGUAGES.find((l) => l.id === settings.targetLanguage)?.description}
+                            {language.description}
                         </SlBadge>
                     </div>
                 </div>

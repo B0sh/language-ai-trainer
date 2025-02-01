@@ -37,6 +37,6 @@ export const DEFAULT_SETTINGS: AppSettings = {
     dateTrainerDifficulty: "easy",
     dateTrainerGenSentence: false,
     dateTrainerCustomConfig: null,
-    volume: 50,
+    volume: 80,
     microphoneDeviceId: null,
 };

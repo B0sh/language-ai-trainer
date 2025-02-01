@@ -27,7 +27,7 @@ export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ se
                 challenge.setStatus("correct");
             } else {
                 challenge.setStatus("incorrect");
-                challenge.playAudio();
+                challenge.playAudio(settings.volume);
             }
             forceUpdate({});
         },
@@ -49,7 +49,7 @@ export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ se
         try {
             await challenge.generateAudio();
             setPlaybackStatus("playing");
-            await challenge.playAudio();
+            await challenge.playAudio(settings.volume);
             setPlaybackStatus("finished");
         } catch (error) {
             const provider = AIProviderRegistry.getActiveProvider("tts");
@@ -71,7 +71,7 @@ export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ se
     }, [challenge]);
 
     const replayAudio = useCallback(() => {
-        challenge.playAudio();
+        challenge.playAudio(settings.volume);
     }, [challenge]);
 
     return (
@@ -91,12 +91,7 @@ export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ se
                     onReplayAudio={replayAudio}
                 />
             ) : (
-                <NumberTrainerRound
-                    playbackStatus={playbackStatus}
-                    status={challenge.status}
-                    streak={challenge.streak}
-                    onSubmit={handleSubmit}
-                />
+                <NumberTrainerRound playbackStatus={playbackStatus} status={challenge.status} onSubmit={handleSubmit} />
             )}
         </>
     );

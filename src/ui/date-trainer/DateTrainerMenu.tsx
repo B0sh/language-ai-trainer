@@ -7,7 +7,7 @@ import SlRadioGroup from "@shoelace-style/shoelace/dist/react/radio-group";
 import SlSwitch from "@shoelace-style/shoelace/dist/react/switch";
 import React, { useState } from "react";
 import { AppSettings } from "../../models/app-settings";
-import { TARGET_LANGUAGES } from "../../shared/languages";
+import { getTargetLanguage } from "../../shared/languages";
 import { DATE_CHALLENGE_DEFAULT_DIFFICULTY } from "./DateChallengeDefaults";
 import { CustomSettingsDialog } from "./CustomSettingsDialog";
 
@@ -20,7 +20,7 @@ interface Props {
 export const DateTrainerMenu: React.FC<Props> = ({ settings, onStart, onSettingsChange }) => {
     const [difficulty, setDifficulty] = useState(settings.dateTrainerDifficulty);
     const [showCustomSettings, setShowCustomSettings] = useState(false);
-    const language = TARGET_LANGUAGES.find((l) => l.id === settings.targetLanguage);
+    const language = getTargetLanguage(settings.targetLanguage);
 
     const handleDifficultyChange = (value: string) => {
         setDifficulty(value);

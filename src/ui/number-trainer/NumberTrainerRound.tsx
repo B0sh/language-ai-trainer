@@ -7,11 +7,10 @@ import type SlInputElement from "@shoelace-style/shoelace/dist/components/input/
 interface NumberTrainerRoundProps {
     playbackStatus: string;
     status: string;
-    streak: number;
     onSubmit: (input: string) => void;
 }
 
-export const NumberTrainerRound: React.FC<NumberTrainerRoundProps> = ({ playbackStatus, status, streak, onSubmit }) => {
+export const NumberTrainerRound: React.FC<NumberTrainerRoundProps> = ({ playbackStatus, status, onSubmit }) => {
     const inputRef = useRef<SlInputElement>(null);
 
     const getStatusIcon = () => {
@@ -53,10 +52,6 @@ export const NumberTrainerRound: React.FC<NumberTrainerRoundProps> = ({ playback
                     }
                     onSlInput={handleInputChange}
                 />
-            </div>
-
-            <div className="stats">
-                Your streak is <strong>{streak}</strong>.
             </div>
         </>
     );

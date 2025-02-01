@@ -2,7 +2,7 @@ import { TTSAudio, TTSRequest } from "../../ai/interfaces";
 import { generateAIInspirationWord } from "../../ai/prompts/ai-inspiration-words";
 import { PROMPT_NUMBER_TRAINER_SENTENCE } from "../../ai/prompts/number-trainer-prompts";
 import { AIProviderRegistry } from "../../ai/registry";
-import { TARGET_LANGUAGES } from "../../shared/languages";
+import { getTargetLanguage } from "../../shared/languages";
 import { getRandomInt } from "../../shared/utility";
 import { Weighter } from "../../shared/weighter";
 
@@ -25,7 +25,6 @@ export type NumberChallengeStatus = "active" | "correct" | "incorrect";
 export class NumberChallenge {
     public currentNumber: number;
     public status: NumberChallengeStatus;
-    public streak: number;
     public text: string;
     public language: string;
     public sentenceMode: boolean;
@@ -38,7 +37,6 @@ export class NumberChallenge {
 
         this.currentNumber = this.generateNumber();
         this.status = "active";
-        this.streak = 0;
         this.ttsAudio = null;
         this.language = language;
         this.sentenceMode = sentenceMode;
@@ -50,11 +48,15 @@ export class NumberChallenge {
             this.text = this.currentNumber.toString();
         } else {
             this.loading = true;
-            const language = TARGET_LANGUAGES.find((l) => l.id === this.language)?.description;
+            const language = getTargetLanguage(this.language);
 
             this.inspirationWord = generateAIInspirationWord();
 
-            const prompt = PROMPT_NUMBER_TRAINER_SENTENCE(language, this.currentNumber, this.inspirationWord);
+            const prompt = PROMPT_NUMBER_TRAINER_SENTENCE(
+                language?.description,
+                this.currentNumber,
+                this.inspirationWord
+            );
             const result = await AIProviderRegistry.llm(prompt);
 
             this.loading = false;
@@ -80,10 +82,10 @@ export class NumberChallenge {
         }
     }
 
-    public async playAudio(): Promise<void> {
+    public async playAudio(volume: number): Promise<void> {
         if (this.ttsAudio) {
             await this.ttsAudio.stop();
-            await this.ttsAudio.play();
+            await this.ttsAudio.play(volume);
         }
     }
 
@@ -100,7 +102,6 @@ export class NumberChallenge {
     public nextRound(): void {
         this.currentNumber = this.generateNumber();
         this.status = "active";
-        this.streak += 1;
     }
 
     public generateNumber(): number {
