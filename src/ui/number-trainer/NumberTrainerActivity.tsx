@@ -91,12 +91,7 @@ export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ se
                     onReplayAudio={replayAudio}
                 />
             ) : (
-                <NumberTrainerRound
-                    playbackStatus={playbackStatus}
-                    status={challenge.status}
-                    streak={challenge.streak}
-                    onSubmit={handleSubmit}
-                />
+                <NumberTrainerRound playbackStatus={playbackStatus} status={challenge.status} onSubmit={handleSubmit} />
             )}
         </>
     );

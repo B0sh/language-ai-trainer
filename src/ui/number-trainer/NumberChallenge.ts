@@ -25,7 +25,6 @@ export type NumberChallengeStatus = "active" | "correct" | "incorrect";
 export class NumberChallenge {
     public currentNumber: number;
     public status: NumberChallengeStatus;
-    public streak: number;
     public text: string;
     public language: string;
     public sentenceMode: boolean;
@@ -38,7 +37,6 @@ export class NumberChallenge {
 
         this.currentNumber = this.generateNumber();
         this.status = "active";
-        this.streak = 0;
         this.ttsAudio = null;
         this.language = language;
         this.sentenceMode = sentenceMode;
@@ -104,7 +102,6 @@ export class NumberChallenge {
     public nextRound(): void {
         this.currentNumber = this.generateNumber();
         this.status = "active";
-        this.streak += 1;
     }
 
     public generateNumber(): number {

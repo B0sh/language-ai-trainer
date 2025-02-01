@@ -102,12 +102,7 @@ export const CompTrainerActivity: React.FC<Props> = ({ settings }) => {
                     onReplayAudio={generateProblem}
                 />
             ) : (
-                <CompTrainerRound
-                    playbackStatus={playbackStatus}
-                    status={challenge.status}
-                    streak={challenge.streak}
-                    onSubmit={handleSubmit}
-                />
+                <CompTrainerRound playbackStatus={playbackStatus} status={challenge.status} onSubmit={handleSubmit} />
             )}
         </>
     );

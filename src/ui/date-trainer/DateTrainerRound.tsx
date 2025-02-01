@@ -10,7 +10,6 @@ import { AppSettings } from "../../models/app-settings";
 interface DateTrainerRoundProps {
     playbackStatus: string;
     status: string;
-    streak: number;
     settings: AppSettings;
     round: DateChallengeRound;
     onSubmit: (input: string) => void;
@@ -20,7 +19,6 @@ export const DateTrainerRound: React.FC<DateTrainerRoundProps> = ({
     playbackStatus,
     status,
     settings,
-    streak,
     round,
     onSubmit,
 }) => {
@@ -167,10 +165,6 @@ export const DateTrainerRound: React.FC<DateTrainerRoundProps> = ({
                         lang={settings.targetLanguage}
                     />
                 )}
-            </div>
-
-            <div className="stats">
-                Your streak is <strong>{streak}</strong>.
             </div>
         </>
     );

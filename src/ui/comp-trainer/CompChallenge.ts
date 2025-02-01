@@ -13,7 +13,6 @@ export class CompChallenge {
     private language: string;
     private ttsAudio: TTSAudio | null = null;
 
-    public streak = 0;
     public status = "active";
     public storyText = "";
     public inspirationWord = "";
@@ -120,7 +119,6 @@ export class CompChallenge {
 
     public nextRound() {
         this.storyText = "";
-        this.streak += 1;
         this.status = "active";
         this.ttsAudio = null;
     }

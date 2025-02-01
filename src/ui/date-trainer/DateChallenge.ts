@@ -45,7 +45,6 @@ function getRandomDate(start: Date, end: Date): Date {
 export class DateChallenge {
     public round: DateChallengeRound;
     public status: DateChallengeStatus;
-    public streak: number;
     public language: string;
     public sentenceMode: boolean;
     public inspirationWord: string;
@@ -56,7 +55,6 @@ export class DateChallenge {
         this.config = config;
         this.round = this.generateRound();
         this.status = "active";
-        this.streak = 0;
         this.ttsAudio = null;
         this.language = language;
         this.sentenceMode = sentenceMode;
@@ -120,7 +118,6 @@ export class DateChallenge {
     public nextRound(): void {
         this.round = this.generateRound();
         this.status = "active";
-        this.streak++;
     }
 
     private generateRound(): DateChallengeRound {

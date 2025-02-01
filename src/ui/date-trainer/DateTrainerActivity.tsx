@@ -89,7 +89,6 @@ export const DateTrainerActivity: React.FC<DateTrainerActivityProps> = ({ settin
                     settings={settings}
                     playbackStatus={playbackStatus}
                     status={challenge.status}
-                    streak={challenge.streak}
                     round={challenge.round}
                     onSubmit={handleSubmit}
                 />
