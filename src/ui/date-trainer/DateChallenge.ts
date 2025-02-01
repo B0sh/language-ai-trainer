@@ -3,10 +3,16 @@ import { generateAIInspirationWord } from "../../ai/prompts/ai-inspiration-words
 import { PROMPT_DATE_TRAINER_SENTENCE } from "../../ai/prompts/date-trainer-prompts";
 import { AIProviderRegistry } from "../../ai/registry";
 import { TARGET_LANGUAGES } from "../../shared/languages";
-import { getRandomElement } from "../../shared/utility";
 import { Weighter } from "../../shared/weighter";
 
-type DateChallengeRoundFormat = "yyyy-mm-dd" | "yyyy-mm" | "yyyy" | "mm" | "mm-dd" | "yyyy-mm-dd hh:mm" | "hh:mm";
+export type DateChallengeRoundFormat =
+    | "yyyy-mm-dd"
+    | "yyyy-mm"
+    | "yyyy"
+    | "mm"
+    | "mm-dd"
+    | "yyyy-mm-dd hh:mm"
+    | "hh:mm";
 
 export interface DateChallengeRound {
     answer: Date;

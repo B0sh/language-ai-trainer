@@ -9,6 +9,7 @@ import React, { useState } from "react";
 import { AppSettings } from "../../models/app-settings";
 import { TARGET_LANGUAGES } from "../../shared/languages";
 import { DATE_CHALLENGE_DEFAULT_DIFFICULTY } from "./DateChallengeDefaults";
+import { CustomSettingsDialog } from "./CustomSettingsDialog";
 
 interface Props {
     settings: AppSettings;
@@ -103,12 +104,12 @@ export const DateTrainerMenu: React.FC<Props> = ({ settings, onStart, onSettings
                 </div>
             </div>
 
-            {/* <CustomSettingsDialog
+            <CustomSettingsDialog
                 settings={settings}
                 onSettingsChange={onSettingsChange}
                 open={showCustomSettings}
                 onClose={() => setShowCustomSettings(false)}
-            /> */}
+            />
         </>
     );
 };
