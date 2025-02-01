@@ -1,4 +1,4 @@
-import { screen, BrowserWindow, BrowserWindowConstructorOptions } from "electron";
+import { screen, BrowserWindow, BrowserWindowConstructorOptions, BaseWindow } from "electron";
 import { CustomJsonStore } from "./CustomJsonStore";
 
 export class BrowserWindowWithSavedPosition extends BrowserWindow {
@@ -49,6 +49,11 @@ export class BrowserWindowWithSavedPosition extends BrowserWindow {
         this.once("close", () => {
             this.savePosition();
         });
+    }
+
+    static hasActiveWindow(): boolean {
+        const windows = BaseWindow.getAllWindows().filter((window) => window instanceof BrowserWindowWithSavedPosition);
+        return windows.length > 0;
     }
 
     async savePosition() {
