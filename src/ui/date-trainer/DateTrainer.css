@@ -1,3 +1,19 @@
 .date-trainer .trainer-content {
     background-color: var(--sl-color-blue-50);
 }
+
+.input-yyyy {
+    width: 200px;
+}
+
+.input-yyyy-mm-dd {
+    width: 250px;
+}
+
+.input-mm {
+    width: 120px;
+}
+
+.input-dd {
+    width: 120px;
+}

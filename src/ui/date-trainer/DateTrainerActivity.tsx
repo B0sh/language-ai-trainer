@@ -78,9 +78,7 @@ export const DateTrainerActivity: React.FC<DateTrainerActivityProps> = ({ settin
             {challenge.status === "correct" || challenge.status === "incorrect" ? (
                 <TrainerFeedback
                     playbackStatus={playbackStatus}
-                    statusMessage={
-                        <div>The date was {challenge.currentDate.toLocaleDateString(settings.appLanguage)}.</div>
-                    }
+                    statusMessage={<div>The date was {challenge.displayAnswer()}. </div>}
                     message={challenge.sentenceMode ? challenge.text : null}
                     status={challenge.status}
                     onNextRound={handleNextRound}
@@ -88,9 +86,11 @@ export const DateTrainerActivity: React.FC<DateTrainerActivityProps> = ({ settin
                 />
             ) : (
                 <DateTrainerRound
+                    settings={settings}
                     playbackStatus={playbackStatus}
                     status={challenge.status}
                     streak={challenge.streak}
+                    round={challenge.round}
                     onSubmit={handleSubmit}
                 />
             )}
