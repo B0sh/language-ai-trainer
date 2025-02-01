@@ -2,6 +2,7 @@ export type TargetLanguage = {
     id: string;
     description: string;
     ttsPreview: string;
+    emoji: string;
 };
 
 export const TARGET_LANGUAGES: TargetLanguage[] = [
@@ -9,11 +10,13 @@ export const TARGET_LANGUAGES: TargetLanguage[] = [
         id: "en-US",
         description: "English",
         ttsPreview: "I'm inside of Walden's AI Language Trainer.",
+        emoji: "🇺🇸",
     },
     {
         id: "ja-JP",
         description: "Japanese",
         ttsPreview: "日本語を話すことができます",
+        emoji: "🇯🇵",
     },
 ];
 

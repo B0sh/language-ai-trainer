@@ -1,5 +1,3 @@
-import SlBadge from "@shoelace-style/shoelace/dist/react/badge";
-import SlIconButton from "@shoelace-style/shoelace/dist/react/icon-button";
 import * as React from "react";
 import { AppSettings } from "../../models/app-settings";
 import { getTargetLanguage } from "../../shared/languages";
@@ -38,6 +36,7 @@ export const DateTrainer: React.FC<Props> = ({ settings, onSettingsChange }) => 
                         onStop={handleStop}
                         language={language}
                         configLabel={config?.label}
+                        targetLanguageLevel={settings.targetLanguageLevel}
                     />
                 </div>
                 <div className="trainer-content">

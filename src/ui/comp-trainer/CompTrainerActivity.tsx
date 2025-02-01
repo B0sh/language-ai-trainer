@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const CompTrainerActivity: React.FC<Props> = ({ settings }) => {
-    const [challenge] = useState(() => new CompChallenge(settings.targetLanguage));
+    const [challenge] = useState(() => new CompChallenge(settings.targetLanguage, settings.targetLanguageLevel));
     const [playbackStatus, setPlaybackStatus] = useState<string>("");
     const [, forceUpdate] = useState({});
     const { showBoundary } = useErrorBoundary();

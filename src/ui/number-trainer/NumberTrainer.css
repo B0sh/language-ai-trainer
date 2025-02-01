@@ -34,6 +34,16 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+
+        .trainer-badge {
+            font-size: 0.75rem;
+            vertical-align: middle;
+            margin-right: 4px;
+        }
+        
+        .trainer-badge:last-child {
+            margin-right: 0;
+        }
     }
 
     .controls {

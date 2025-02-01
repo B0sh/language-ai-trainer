@@ -13,7 +13,13 @@ interface DateTrainerActivityProps {
 
 export const DateTrainerActivity: React.FC<DateTrainerActivityProps> = ({ settings, config }) => {
     const [challenge] = useState(
-        () => new DateChallenge(config, settings.targetLanguage, settings.dateTrainerGenSentence)
+        () =>
+            new DateChallenge(
+                config,
+                settings.targetLanguage,
+                settings.targetLanguageLevel,
+                settings.dateTrainerGenSentence
+            )
     );
     const [playbackStatus, setPlaybackStatus] = useState<string>("");
     const [, forceUpdate] = useState({});

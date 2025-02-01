@@ -1,8 +1,22 @@
 import { LLMRequest } from "../interfaces";
+import { TargetLanguageLevel } from "../../models/app-settings";
 
-export const PROMPT_COMP_SENTENCE = function (language: string, inspirationWord: string): LLMRequest {
+export const PROMPT_COMP_SENTENCE = function (
+    language: string,
+    languageLevel: TargetLanguageLevel,
+    inspirationWord: string
+): LLMRequest {
+    let levelClause = "";
+
+    if (languageLevel === "low") {
+        levelClause = `The text should be understandable for beginner learners of ${language}.`;
+    }
+    if (languageLevel === "medium") {
+        levelClause = `The text should be understandable for non native speakers of ${language}.`;
+    }
+
     return {
-        prompt: `Generate a few sentences about "${inspirationWord}" in the ${language} language. You do not have to use this word in the sentence. Use the character set appropriate for the ${language} language. Only return the text of the sentences.
+        prompt: `Generate a story approximately a paragraph in length using the word "${inspirationWord}" in the ${language} language. You do not have to use this word in the sentence. Use the character set appropriate for the ${language} language. Only return the text of the sentences. ${levelClause}
 
 Do not include any other text except for the generated sentences.
 Do not include any translations.`,

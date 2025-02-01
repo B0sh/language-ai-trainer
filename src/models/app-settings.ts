@@ -1,12 +1,15 @@
 import { DateChallengeRoundConfig } from "../ui/date-trainer/DateChallenge";
 import { NumberChallengeRoundConfig } from "../ui/number-trainer/NumberChallenge";
 
+export type TargetLanguageLevel = "low" | "medium" | "high";
+
 export interface AppSettings {
     tts: string;
     stt: string;
     llm: string;
     appLanguage: string;
     targetLanguage: string;
+    targetLanguageLevel: TargetLanguageLevel;
     volume: number;
     theme: "light" | "dark" | "auto";
     numberTrainerDifficulty: string;
@@ -30,6 +33,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
     },
     appLanguage: "en-US",
     targetLanguage: "en",
+    targetLanguageLevel: "high",
     theme: "auto",
     numberTrainerDifficulty: "easy",
     numberTrainerGenSentence: false,

@@ -14,7 +14,13 @@ interface NumberTrainerActivityProps {
 
 export const NumberTrainerActivity: React.FC<NumberTrainerActivityProps> = ({ settings, config }) => {
     const [challenge] = useState(
-        () => new NumberChallenge(config, settings.targetLanguage, settings.numberTrainerGenSentence)
+        () =>
+            new NumberChallenge(
+                config,
+                settings.targetLanguage,
+                settings.targetLanguageLevel,
+                settings.numberTrainerGenSentence
+            )
     );
     const [playbackStatus, setPlaybackStatus] = useState<string>("");
     const [, forceUpdate] = useState({});

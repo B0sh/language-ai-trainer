@@ -3,8 +3,6 @@ import "./NumberTrainer.css";
 import { NumberTrainerMenu } from "./NumberTrainerMenu";
 import { NumberTrainerActivity } from "./NumberTrainerActivity";
 import { AppSettings } from "../../models/app-settings";
-import SlBadge from "@shoelace-style/shoelace/dist/react/badge";
-import SlIconButton from "@shoelace-style/shoelace/dist/react/icon-button";
 import { getTargetLanguage } from "../../shared/languages";
 import { NUMBER_CHALLENGE_DEFAULT_DIFFICULTY } from "./NumberChallengeDefaults";
 import { TrainerHeaderBadges } from "../shared/Trainer/TrainerHeaderBadges";
@@ -38,6 +36,7 @@ export const NumberTrainer: React.FC<Props> = ({ settings, onSettingsChange }) =
                         onStop={handleStop}
                         language={language}
                         configLabel={config?.label}
+                        targetLanguageLevel={settings.targetLanguageLevel}
                     />
                 </div>
                 <div className="trainer-content">

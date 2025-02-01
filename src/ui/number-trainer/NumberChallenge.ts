@@ -5,6 +5,7 @@ import { AIProviderRegistry } from "../../ai/registry";
 import { getTargetLanguage } from "../../shared/languages";
 import { getRandomInt } from "../../shared/utility";
 import { Weighter } from "../../shared/weighter";
+import { TargetLanguageLevel } from "../../models/app-settings";
 
 export interface NumberChallengeRoundConfig {
     label?: string;
@@ -30,10 +31,17 @@ export class NumberChallenge {
     public sentenceMode: boolean;
     public inspirationWord: string;
     public config: NumberChallengeRoundConfig;
+    public targetLanguageLevel: TargetLanguageLevel;
     private ttsAudio: TTSAudio | null;
 
-    constructor(config: NumberChallengeRoundConfig, language: string, sentenceMode: boolean) {
+    constructor(
+        config: NumberChallengeRoundConfig,
+        language: string,
+        targetLanguageLevel: TargetLanguageLevel,
+        sentenceMode: boolean
+    ) {
         this.config = config;
+        this.targetLanguageLevel = targetLanguageLevel;
 
         this.currentNumber = this.generateNumber();
         this.status = "active";
@@ -53,7 +61,8 @@ export class NumberChallenge {
             this.inspirationWord = generateAIInspirationWord();
 
             const prompt = PROMPT_NUMBER_TRAINER_SENTENCE(
-                language?.description,
+                language.description,
+                this.targetLanguageLevel,
                 this.currentNumber,
                 this.inspirationWord
             );

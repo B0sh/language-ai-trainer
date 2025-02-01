@@ -2,6 +2,7 @@ import { LLMRequest, LLMResult, TTSAudio } from "../../ai/interfaces";
 import { generateAIInspirationWord } from "../../ai/prompts/ai-inspiration-words";
 import { PROMPT_COMP_SENTENCE, PROMPT_COMP_VALIDATE } from "../../ai/prompts/comp-prompts";
 import { AIProviderRegistry } from "../../ai/registry";
+import { TargetLanguageLevel } from "../../models/app-settings";
 import { getTargetLanguage } from "../../shared/languages";
 
 interface ComprehensionCheckResponse {
@@ -11,6 +12,7 @@ interface ComprehensionCheckResponse {
 
 export class CompChallenge {
     private language: string;
+    private languageLevel: TargetLanguageLevel;
     private ttsAudio: TTSAudio | null = null;
 
     public status = "active";
@@ -18,8 +20,9 @@ export class CompChallenge {
     public inspirationWord = "";
     public comprehensionResponse: ComprehensionCheckResponse | null = null;
 
-    constructor(language: string) {
+    constructor(language: string, languageLevel: TargetLanguageLevel) {
         this.language = language;
+        this.languageLevel = languageLevel;
     }
 
     public setStatus(status: string): void {
@@ -37,7 +40,7 @@ export class CompChallenge {
 
         this.inspirationWord = generateAIInspirationWord();
 
-        const prompt = PROMPT_COMP_SENTENCE(language?.description, this.inspirationWord);
+        const prompt = PROMPT_COMP_SENTENCE(language?.description, this.languageLevel, this.inspirationWord);
         const response = await AIProviderRegistry.llm(prompt);
 
         this.storyText = response.response;

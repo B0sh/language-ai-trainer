@@ -2,6 +2,7 @@ import { TTSAudio, TTSRequest } from "../../ai/interfaces";
 import { generateAIInspirationWord } from "../../ai/prompts/ai-inspiration-words";
 import { PROMPT_DATE_TRAINER_SENTENCE } from "../../ai/prompts/date-trainer-prompts";
 import { AIProviderRegistry } from "../../ai/registry";
+import { TargetLanguageLevel } from "../../models/app-settings";
 import { getTargetLanguage } from "../../shared/languages";
 import { Weighter } from "../../shared/weighter";
 
@@ -49,15 +50,22 @@ export class DateChallenge {
     public sentenceMode: boolean;
     public inspirationWord: string;
     public config: DateChallengeRoundConfig;
+    public targetLanguageLevel: TargetLanguageLevel;
     private ttsAudio: TTSAudio | null;
 
-    constructor(config: DateChallengeRoundConfig, language: string, sentenceMode: boolean) {
+    constructor(
+        config: DateChallengeRoundConfig,
+        language: string,
+        targetLanguageLevel: TargetLanguageLevel,
+        sentenceMode: boolean
+    ) {
         this.config = config;
         this.round = this.generateRound();
         this.status = "active";
         this.ttsAudio = null;
         this.language = language;
         this.sentenceMode = sentenceMode;
+        this.targetLanguageLevel = targetLanguageLevel;
     }
 
     loading = false;
@@ -72,7 +80,12 @@ export class DateChallenge {
 
             this.inspirationWord = generateAIInspirationWord();
 
-            const prompt = PROMPT_DATE_TRAINER_SENTENCE(language?.description, formattedDate, this.inspirationWord);
+            const prompt = PROMPT_DATE_TRAINER_SENTENCE(
+                language.description,
+                this.targetLanguageLevel,
+                formattedDate,
+                this.inspirationWord
+            );
             const result = await AIProviderRegistry.llm(prompt);
 
             this.loading = false;
