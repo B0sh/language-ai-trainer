@@ -26,7 +26,7 @@ export const DateTrainerActivity: React.FC<DateTrainerActivityProps> = ({ settin
                 challenge.setStatus("correct");
             } else {
                 challenge.setStatus("incorrect");
-                challenge.playAudio();
+                challenge.playAudio(settings.volume);
             }
             forceUpdate({});
         },
@@ -48,7 +48,7 @@ export const DateTrainerActivity: React.FC<DateTrainerActivityProps> = ({ settin
         try {
             await challenge.generateAudio();
             setPlaybackStatus("playing");
-            await challenge.playAudio();
+            await challenge.playAudio(settings.volume);
             setPlaybackStatus("finished");
         } catch (error) {
             const provider = AIProviderRegistry.getActiveProvider("tts");
@@ -70,7 +70,7 @@ export const DateTrainerActivity: React.FC<DateTrainerActivityProps> = ({ settin
     }, [challenge, speakDate]);
 
     const replayAudio = useCallback(() => {
-        challenge.playAudio();
+        challenge.playAudio(settings.volume);
     }, [challenge]);
 
     return (

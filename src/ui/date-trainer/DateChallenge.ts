@@ -100,10 +100,10 @@ export class DateChallenge {
         }
     }
 
-    public async playAudio(): Promise<void> {
+    public async playAudio(volume: number): Promise<void> {
         if (this.ttsAudio) {
             await this.ttsAudio.stop();
-            await this.ttsAudio.play();
+            await this.ttsAudio.play(volume);
         }
     }
 

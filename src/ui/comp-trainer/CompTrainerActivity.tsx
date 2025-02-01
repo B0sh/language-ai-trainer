@@ -30,7 +30,7 @@ export const CompTrainerActivity: React.FC<Props> = ({ settings, onStop }) => {
                         challenge.setStatus("correct");
                     } else {
                         challenge.setStatus("incorrect");
-                        // challenge.playAudio();
+                        // challenge.playAudio(settings.volume);
                     }
 
                     forceUpdate({});
@@ -62,7 +62,7 @@ export const CompTrainerActivity: React.FC<Props> = ({ settings, onStop }) => {
             success = await challenge.generateProblemAudio();
             if (success) {
                 setPlaybackStatus("playing");
-                await challenge.playAudio();
+                await challenge.playAudio(settings.volume);
                 setPlaybackStatus("finished");
             }
         } catch (error) {
