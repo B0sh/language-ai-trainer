@@ -17,6 +17,10 @@ export const TARGET_LANGUAGES: TargetLanguage[] = [
     },
 ];
 
+export function getTargetLanguage(id: string): TargetLanguage | undefined {
+    return TARGET_LANGUAGES.find((l) => l.id === id);
+}
+
 export type AppLanguage = {
     id: string;
     description: string;
@@ -32,3 +36,7 @@ export const APP_LANGUAGES: AppLanguage[] = [
         description: "Japanese",
     },
 ];
+
+export function getAppLanguage(id: string): AppLanguage | undefined {
+    return APP_LANGUAGES.find((l) => l.id === id);
+}

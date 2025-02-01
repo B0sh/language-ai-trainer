@@ -2,7 +2,7 @@ import { LLMRequest, LLMResult, TTSAudio } from "../../ai/interfaces";
 import { generateAIInspirationWord } from "../../ai/prompts/ai-inspiration-words";
 import { PROMPT_COMP_SENTENCE, PROMPT_COMP_VALIDATE } from "../../ai/prompts/comp-prompts";
 import { AIProviderRegistry } from "../../ai/registry";
-import { TARGET_LANGUAGES } from "../../shared/languages";
+import { getTargetLanguage } from "../../shared/languages";
 
 interface ComprehensionCheckResponse {
     valid: boolean;
@@ -34,11 +34,11 @@ export class CompChallenge {
         }
 
         this.loading = true;
-        const language = TARGET_LANGUAGES.find((l) => l.id === this.language)?.description;
+        const language = getTargetLanguage(this.language);
 
         this.inspirationWord = generateAIInspirationWord();
 
-        const prompt = PROMPT_COMP_SENTENCE(language, this.inspirationWord);
+        const prompt = PROMPT_COMP_SENTENCE(language?.description, this.inspirationWord);
         const response = await AIProviderRegistry.llm(prompt);
 
         this.storyText = response.response;
@@ -76,14 +76,14 @@ export class CompChallenge {
     }
 
     public async checkComprehension(input: string): Promise<ComprehensionCheckResponse> {
-        const language = TARGET_LANGUAGES.find((l) => l.id === this.language)?.description;
+        const language = getTargetLanguage(this.language);
         if (!language) {
             throw new Error("Invalid language configuration");
         }
 
         let response: LLMResult | null = null;
         try {
-            const request: LLMRequest = PROMPT_COMP_VALIDATE(language, this.storyText, input);
+            const request: LLMRequest = PROMPT_COMP_VALIDATE(language.description, this.storyText, input);
             response = await AIProviderRegistry.llm(request);
         } catch (error) {
             throw new Error(`Comprehension check failed: ${error.message}`);
@@ -105,10 +105,10 @@ export class CompChallenge {
         }
     }
 
-    public async playAudio(): Promise<void> {
+    public async playAudio(volume: number): Promise<void> {
         if (this.ttsAudio) {
             await this.ttsAudio.stop();
-            await this.ttsAudio.play();
+            await this.ttsAudio.play(volume);
         }
     }
 

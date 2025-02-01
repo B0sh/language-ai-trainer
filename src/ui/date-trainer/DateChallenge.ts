@@ -2,7 +2,7 @@ import { TTSAudio, TTSRequest } from "../../ai/interfaces";
 import { generateAIInspirationWord } from "../../ai/prompts/ai-inspiration-words";
 import { PROMPT_DATE_TRAINER_SENTENCE } from "../../ai/prompts/date-trainer-prompts";
 import { AIProviderRegistry } from "../../ai/registry";
-import { TARGET_LANGUAGES } from "../../shared/languages";
+import { getTargetLanguage } from "../../shared/languages";
 import { Weighter } from "../../shared/weighter";
 
 export type DateChallengeRoundFormat =
@@ -70,11 +70,11 @@ export class DateChallenge {
             this.round.sentence = formattedDate;
         } else {
             this.loading = true;
-            const language = TARGET_LANGUAGES.find((l) => l.id === this.language)?.description;
+            const language = getTargetLanguage(this.language);
 
             this.inspirationWord = generateAIInspirationWord();
 
-            const prompt = PROMPT_DATE_TRAINER_SENTENCE(language, formattedDate, this.inspirationWord);
+            const prompt = PROMPT_DATE_TRAINER_SENTENCE(language?.description, formattedDate, this.inspirationWord);
             const result = await AIProviderRegistry.llm(prompt);
 
             this.loading = false;

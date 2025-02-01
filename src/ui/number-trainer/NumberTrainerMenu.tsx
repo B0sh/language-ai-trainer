@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import SlButton from "@shoelace-style/shoelace/dist/react/button";
 import SlIcon from "@shoelace-style/shoelace/dist/react/icon";
 import SlRadioGroup from "@shoelace-style/shoelace/dist/react/radio-group";
@@ -7,7 +7,7 @@ import SlSwitch from "@shoelace-style/shoelace/dist/react/switch";
 import SlIconButton from "@shoelace-style/shoelace/dist/react/icon-button";
 import type SlSwitchElement from "@shoelace-style/shoelace/dist/components/switch/switch";
 import { AppSettings } from "../../models/app-settings";
-import { TARGET_LANGUAGES } from "../../shared/languages";
+import { getTargetLanguage } from "../../shared/languages";
 import { NUMBER_CHALLENGE_DEFAULT_DIFFICULTY } from "./NumberChallengeDefaults";
 import { CustomSettingsDialog } from "./CustomSettingsDialog";
 
@@ -20,7 +20,7 @@ interface Props {
 export const NumberTrainerMenu: React.FC<Props> = ({ settings, onStart, onSettingsChange }) => {
     const [difficulty, setDifficulty] = useState(settings.numberTrainerDifficulty);
     const [showCustomSettings, setShowCustomSettings] = useState(false);
-    const language = TARGET_LANGUAGES.find((l) => l.id === settings.targetLanguage);
+    const language = getTargetLanguage(settings.targetLanguage);
 
     const handleDifficultyChange = (value: string) => {
         setDifficulty(value);

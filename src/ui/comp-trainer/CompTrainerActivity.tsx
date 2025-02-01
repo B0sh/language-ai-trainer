@@ -8,10 +8,9 @@ import { useErrorBoundary } from "react-error-boundary";
 
 interface Props {
     settings: AppSettings;
-    onStop: () => void;
 }
 
-export const CompTrainerActivity: React.FC<Props> = ({ settings, onStop }) => {
+export const CompTrainerActivity: React.FC<Props> = ({ settings }) => {
     const [challenge] = useState(() => new CompChallenge(settings.targetLanguage));
     const [playbackStatus, setPlaybackStatus] = useState<string>("");
     const [, forceUpdate] = useState({});
