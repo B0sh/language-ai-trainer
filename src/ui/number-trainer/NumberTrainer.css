@@ -2,6 +2,11 @@
     background-color: var(--sl-color-emerald-50);
 }
 
+.trainer-icon-button {
+    font-size: 0.75rem;
+    vertical-align: middle;
+}
+
 .trainer-container {
     display: flex;
     flex-direction: column;
@@ -40,7 +45,7 @@
             vertical-align: middle;
             margin-right: 4px;
         }
-        
+
         .trainer-badge:last-child {
             margin-right: 0;
         }

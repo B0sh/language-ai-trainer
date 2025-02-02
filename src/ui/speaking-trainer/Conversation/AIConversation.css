@@ -24,6 +24,7 @@
         display: flex;
         flex-direction: column;
         max-width: 80%;
+        box-shadow: var(--sl-shadow-medium);
     }
 
     .message.assistant {
@@ -57,6 +58,49 @@
         background-color: var(--sl-color-amber-500);
         color: var(--sl-color-neutral-0);
         border-bottom-right-radius: 0.25rem;
+    }
+
+    .message.correction {
+        background-color: var(--sl-color-danger-50);
+        border-radius: 8px;
+        margin: 8px 0;
+        padding: 12px;
+        display: grid;
+        gap: 8px;
+        grid-template-columns: 1fr 2rem;
+        grid-template-rows: auto auto;
+        grid-template-areas:
+            "incorrect-text correction-icon"
+            "correct-text correction-icon";
+    }
+
+    .message.correction .incorrect-text {
+        grid-area: incorrect-text;
+        color: var(--sl-color-danger-600);
+        margin: 0.25rem 0.25rem 0.25rem 0;
+
+        sl-icon {
+            margin-right: 0.25rem;
+        }
+    }
+
+    .message.correction .correct-text {
+        grid-area: correct-text;
+        color: var(--sl-color-success-600);
+        font-weight: 500;
+        margin: 0.25rem 0.25rem 0.25rem 0;
+
+        sl-icon {
+            margin-right: 0.25rem;
+        }
+    }
+
+    .correction-icon {
+        grid-area: correction-icon;
+        font-size: 1.25rem;
+        align-self: center;
+        justify-self: center;
+        color: var(--sl-color-neutral-600);
     }
 
     .prompt-container {
@@ -96,6 +140,26 @@
         background-color: var(--sl-color-success-100);
         border-radius: 0.5rem;
         margin: 1rem 0;
+    }
+
+    .correction-details {
+        padding: 0 1rem 2em 1rem;
+    }
+
+    .correction-details h3 {
+        color: var(--sl-color-primary-600);
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .correction-details h3:first-child {
+        margin-top: 0;
+    }
+
+    .correction-details p {
+        margin: 0;
+        line-height: 1.5;
+        color: var(--sl-color-neutral-700);
     }
 }
 

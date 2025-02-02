@@ -24,6 +24,30 @@ export const AIConversation: React.FC<Props> = ({ settings }) => {
     );
     const [messages, setMessages] = useState<LLMChatMessage[]>([]);
     const [analysis, setAnalysis] = useState<ConversationAnalysis | null>(null);
+
+    // const [messages, setMessages] = useState<LLMChatMessage[]>([
+    //     {
+    //         role: "user",
+    //         content: "どー亜が好き",
+    //     },
+    //     {
+    //         role: "assistant",
+    //         content:
+    //             "「どー亜」とは、具体的にどのような「開く」という意味でしょうか？ 心理的な「開く」、物理的な「開く」、それとも比喩的な表現でしょうか？  もう少し詳しく教えていただけますか？ 例えば、お店の開店について話したいのであれば、どのようなお店ですか？",
+    //     },
+    // ]);
+    // const [analysis, setAnalysis] = useState<ConversationAnalysis | null>({
+    //     noFeedback: false,
+    //     corrections: [
+    //         {
+    //             messageIndex: 0,
+    //             original: "どー亜が好き",
+    //             suggestedText: "ドアが好き",
+    //             explanation: "「どー亜」は誤字です。正しくは「ドア」です。",
+    //         },
+    //     ],
+    // });
+
     const [playbackStatus, setPlaybackStatus] = useState<string>("");
     const [, forceUpdate] = useState({});
     const { showBoundary } = useErrorBoundary();

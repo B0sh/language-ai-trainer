@@ -33,7 +33,7 @@ Do not complement the user on their language skill or offer any corrections.`,
 
 export interface ConversationAnalysis {
     noFeedback: boolean;
-    corrections: {
+    corrections?: {
         messageIndex: number;
         original: string;
         suggestedText: string;
