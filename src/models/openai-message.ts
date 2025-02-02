@@ -1,4 +1,4 @@
-export type OpenAIMessageRole = 'system' | 'user' | 'assistant';
+export type OpenAIMessageRole = "system" | "user" | "assistant";
 export interface OpenAIMessage {
     role: OpenAIMessageRole;
     content: string;
@@ -6,7 +6,7 @@ export interface OpenAIMessage {
 
 export interface CorrectionMessage {
     role: OpenAIMessageRole;
-    correctedText?: string;
+    suggestedTextText?: string;
     notes?: string;
     content: string;
 

@@ -216,7 +216,7 @@ export class GoogleProvider extends AIProvider {
             return {
                 response: {
                     role: "assistant",
-                    content: result.response.text(),
+                    content: result.response.text().trim(),
                 },
                 metadata: {
                     model,

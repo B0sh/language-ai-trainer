@@ -21,13 +21,11 @@ export const AiLogDetail: React.FC<Props> = ({ log, settings }) => {
 
     const formatContent = (content: string | undefined, type: string) => {
         if (!content) return "N/A";
-        if (type === "llm_chat") {
-            try {
-                const parsed = JSON.parse(content);
-                return JSON.stringify(parsed, null, 2);
-            } catch {
-                return content;
-            }
+        try {
+            const parsed = JSON.parse(content);
+            return JSON.stringify(parsed, null, 2);
+        } catch {
+            return content;
         }
         return content;
     };
