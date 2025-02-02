@@ -60,7 +60,7 @@ export const LanguageTrainerApp: React.FC = () => {
     const renderContent = () => {
         switch (selectedMenu) {
             case "speaking":
-                return <SpeakingTrainer />;
+                return <SpeakingTrainer settings={settings} onSettingsChange={handleSettingsChange} />;
             case "date":
                 return <DateTrainer settings={settings} onSettingsChange={handleSettingsChange} />;
             case "number":
@@ -90,7 +90,7 @@ export const LanguageTrainerApp: React.FC = () => {
         }
     }
 
-    const onError = (error: Error, info: React.ErrorInfo) => {
+    const onError = () => {
         setSelectedMenu("home");
     };
 
@@ -126,6 +126,7 @@ export const LanguageTrainerApp: React.FC = () => {
                         placement="start"
                         onSlAfterHide={() => setOpen(false)}
                     >
+                        {/* <center>Trainers</center> */}
                         <SlButton
                             variant="text"
                             size="large"
@@ -133,25 +134,7 @@ export const LanguageTrainerApp: React.FC = () => {
                             onClick={() => selectMenu("speaking")}
                         >
                             <SlIcon slot="prefix" name="soundwave"></SlIcon>
-                            Speaking Trainer
-                        </SlButton>
-                        <SlButton
-                            variant="text"
-                            size="large"
-                            className={selectedMenu === "date" ? "selected" : ""}
-                            onClick={() => selectMenu("date")}
-                        >
-                            <SlIcon slot="prefix" name="calendar"></SlIcon>
-                            Date Trainer
-                        </SlButton>
-                        <SlButton
-                            variant="text"
-                            size="large"
-                            className={selectedMenu === "number" ? "selected" : ""}
-                            onClick={() => selectMenu("number")}
-                        >
-                            <SlIcon slot="prefix" name="123"></SlIcon>
-                            Number Trainer
+                            Speaking
                         </SlButton>
                         <SlButton
                             variant="text"
@@ -162,6 +145,25 @@ export const LanguageTrainerApp: React.FC = () => {
                             <SlIcon slot="prefix" name="book"></SlIcon>
                             Comprehension
                         </SlButton>
+                        <SlButton
+                            variant="text"
+                            size="large"
+                            className={selectedMenu === "date" ? "selected" : ""}
+                            onClick={() => selectMenu("date")}
+                        >
+                            <SlIcon slot="prefix" name="calendar"></SlIcon>
+                            Date
+                        </SlButton>
+                        <SlButton
+                            variant="text"
+                            size="large"
+                            className={selectedMenu === "number" ? "selected" : ""}
+                            onClick={() => selectMenu("number")}
+                        >
+                            <SlIcon slot="prefix" name="123"></SlIcon>
+                            Number
+                        </SlButton>
+
                         <SlDivider />
                         <SlButton
                             variant="text"

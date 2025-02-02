@@ -1,5 +1,3 @@
-import SlBadge from "@shoelace-style/shoelace/dist/react/badge";
-import SlIconButton from "@shoelace-style/shoelace/dist/react/icon-button";
 import * as React from "react";
 import { AppSettings } from "../../models/app-settings";
 import { getTargetLanguage } from "../../shared/languages";
@@ -7,6 +5,7 @@ import { DATE_CHALLENGE_DEFAULT_DIFFICULTY } from "./DateChallengeDefaults";
 import "./DateTrainer.css";
 import { DateTrainerActivity } from "./DateTrainerActivity";
 import { DateTrainerMenu } from "./DateTrainerMenu";
+import { TrainerHeaderBadges } from "../shared/Trainer/TrainerHeaderBadges";
 
 type Props = {
     settings: AppSettings;
@@ -32,27 +31,13 @@ export const DateTrainer: React.FC<Props> = ({ settings, onSettingsChange }) => 
                     <div>
                         <h2>Date Trainer</h2>
                     </div>
-                    <div>
-                        {isPlaying && (
-                            <SlIconButton
-                                name="x-lg"
-                                style={{ fontSize: "0.75rem", verticalAlign: "middle" }}
-                                onClick={handleStop}
-                            />
-                        )}
-                        {config && (
-                            <SlBadge
-                                variant="primary"
-                                pill
-                                style={{ fontSize: "0.75rem", verticalAlign: "middle", marginRight: "4px" }}
-                            >
-                                {config.label}
-                            </SlBadge>
-                        )}
-                        <SlBadge variant="primary" pill style={{ fontSize: "0.75rem", verticalAlign: "middle" }}>
-                            {language?.description}
-                        </SlBadge>
-                    </div>
+                    <TrainerHeaderBadges
+                        isPlaying={isPlaying}
+                        onStop={handleStop}
+                        language={language}
+                        configLabel={config?.label}
+                        targetLanguageLevel={settings.targetLanguageLevel}
+                    />
                 </div>
                 <div className="trainer-content">
                     {isPlaying ? (

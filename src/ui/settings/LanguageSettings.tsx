@@ -1,7 +1,9 @@
 import * as React from "react";
-import { AppSettings } from "../../models/app-settings";
+import { AppSettings, TargetLanguageLevel } from "../../models/app-settings";
 import SlSelect from "@shoelace-style/shoelace/dist/react/select";
 import SlOption from "@shoelace-style/shoelace/dist/react/option";
+import SlRadioGroup from "@shoelace-style/shoelace/dist/react/radio-group";
+import SlRadioButton from "@shoelace-style/shoelace/dist/react/radio-button";
 import { TARGET_LANGUAGES } from "../../shared/languages";
 
 interface Props {
@@ -17,6 +19,13 @@ export const LanguageSettings: React.FC<Props> = ({ settings, onSettingsChange }
         });
     };
 
+    const handleTargetLanguageLevelChange = (level: string) => {
+        onSettingsChange({
+            ...settings,
+            targetLanguageLevel: level as TargetLanguageLevel,
+        });
+    };
+
     return (
         <div>
             <h2>Language Settings</h2>
@@ -29,10 +38,23 @@ export const LanguageSettings: React.FC<Props> = ({ settings, onSettingsChange }
             >
                 {TARGET_LANGUAGES.map((lang) => (
                     <SlOption key={lang.id} value={lang.id}>
-                        {lang.description}
+                        {lang.emoji} {lang.description}
                     </SlOption>
                 ))}
             </SlSelect>
+
+            <SlRadioGroup
+                align-right
+                label="Target Language Level"
+                name="targetLanguageLevel"
+                helpText="This is given to the AI to adjust the content generation. If you find advanced to be too difficult, try lowering the language level."
+                value={settings.targetLanguageLevel}
+                onSlChange={(e) => handleTargetLanguageLevelChange((e.target as HTMLInputElement).value)}
+            >
+                <SlRadioButton value="low">Beginner</SlRadioButton>
+                <SlRadioButton value="medium">Intermediate</SlRadioButton>
+                <SlRadioButton value="high">Advanced</SlRadioButton>
+            </SlRadioGroup>
         </div>
     );
 };

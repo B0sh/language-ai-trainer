@@ -1,11 +1,10 @@
 import * as React from "react";
 import "./CompTrainer.css";
-import SlBadge from "@shoelace-style/shoelace/dist/react/badge";
-import SlIconButton from "@shoelace-style/shoelace/dist/react/icon-button";
 import { AppSettings } from "../../models/app-settings";
 import { getTargetLanguage } from "../../shared/languages";
 import { CompTrainerMenu } from "./CompTrainerMenu";
 import { CompTrainerActivity } from "./CompTrainerActivity";
+import { TrainerHeaderBadges } from "../shared/Trainer/TrainerHeaderBadges";
 
 type Props = {
     settings: AppSettings;
@@ -27,18 +26,12 @@ export const CompTrainer: React.FC<Props> = ({ settings, onSettingsChange }) => 
                     <div>
                         <h2>Comprehension Trainer</h2>
                     </div>
-                    <div>
-                        {isPlaying && (
-                            <SlIconButton
-                                name="x-lg"
-                                style={{ fontSize: "0.75rem", verticalAlign: "middle" }}
-                                onClick={handleStop}
-                            />
-                        )}
-                        <SlBadge variant="primary" pill style={{ fontSize: "0.75rem", verticalAlign: "middle" }}>
-                            {language.description}
-                        </SlBadge>
-                    </div>
+                    <TrainerHeaderBadges
+                        isPlaying={isPlaying}
+                        onStop={handleStop}
+                        language={language}
+                        targetLanguageLevel={settings.targetLanguageLevel}
+                    />
                 </div>
                 <div className="trainer-content">
                     {isPlaying ? (

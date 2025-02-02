@@ -1,5 +1,5 @@
 import React from "react";
-import { AIRequestLog } from "../../ai/db";
+import { AI_REQUEST_TYPE, AIRequestLog } from "../../ai/db";
 import { AppSettings } from "../../models/app-settings";
 import SlFormatDate from "@shoelace-style/shoelace/dist/react/format-date";
 import "./AiLogDetail.css";
@@ -17,6 +17,19 @@ export const AiLogDetail: React.FC<Props> = ({ log, settings }) => {
         } catch {
             return "Unable to parse metadata.";
         }
+    };
+
+    const formatContent = (content: string | undefined, type: string) => {
+        if (!content) return "N/A";
+        if (type === "llm_chat") {
+            try {
+                const parsed = JSON.parse(content);
+                return JSON.stringify(parsed, null, 2);
+            } catch {
+                return content;
+            }
+        }
+        return content;
     };
 
     return (
@@ -38,13 +51,7 @@ export const AiLogDetail: React.FC<Props> = ({ log, settings }) => {
                 </div>
                 <div className="meta-item">
                     <label>Type:</label>
-                    <span>
-                        {log.requestType === "llm"
-                            ? "LLM"
-                            : log.requestType === "stt"
-                            ? "Speech-to-Text"
-                            : "Text-to-Speech"}
-                    </span>
+                    <span>{AI_REQUEST_TYPE[log.requestType]}</span>
                 </div>
                 <div className="meta-item">
                     <label>Provider:</label>
@@ -61,7 +68,7 @@ export const AiLogDetail: React.FC<Props> = ({ log, settings }) => {
             <div className="detail-content">
                 <section>
                     <h3>Input</h3>
-                    <pre className="content-box">{log.inputText || "N/A"}</pre>
+                    <pre className="content-box">{formatContent(log.inputText, log.requestType)}</pre>
                 </section>
 
                 {log.response !== "success" ? (
@@ -72,7 +79,7 @@ export const AiLogDetail: React.FC<Props> = ({ log, settings }) => {
                 ) : (
                     <section>
                         <h3>Output</h3>
-                        <pre className="content-box">{log.outputText || "N/A"}</pre>
+                        <pre className="content-box">{formatContent(log.outputText, log.requestType)}</pre>
                     </section>
                 )}
 

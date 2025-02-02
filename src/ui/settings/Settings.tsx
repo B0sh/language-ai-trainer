@@ -17,12 +17,10 @@ export const Settings: React.FC<SettingsProps> = ({ settings, onSettingsChange }
             className="settings-container form-control"
             style={{ padding: "20px", maxWidth: "600px", margin: "0 auto" }}
         >
-            <GeneralSettings settings={settings} onSettingsChange={onSettingsChange} />
-
+            <LanguageSettings settings={settings} onSettingsChange={onSettingsChange} />
             <SlDivider />
 
-            <LanguageSettings settings={settings} onSettingsChange={onSettingsChange} />
-
+            <GeneralSettings settings={settings} onSettingsChange={onSettingsChange} />
             <SlDivider />
 
             <MicrophoneSettings settings={settings} onSettingsChange={onSettingsChange} />
