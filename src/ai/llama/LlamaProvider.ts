@@ -1,4 +1,4 @@
-import { AIProvider, AICapabilities, LLMRequest, LLMResult } from "../interfaces";
+import { AIProvider, AICapabilities, LLMRequest, LLMResult, LLMChatRequest, LLMChatResult } from "../interfaces";
 // https://github.com/ollama/ollama-js/issues/151
 // must be manually imported from dist file because of upstream issue with ollama bundling
 import ollama, { ChatRequest, ChatResponse, ListResponse, Message, ModelResponse } from "ollama/dist/browser.cjs";
@@ -43,16 +43,10 @@ export class LlamaProvider extends AIProvider {
             throw new Error(validation);
         }
 
-        const messages: Message[] = [];
-        if (request.systemPrompt) {
-            messages.push({ role: "system", content: request.systemPrompt });
-        }
-        messages.push({ role: "user", content: request.prompt });
-
         // Sad typescript assertion
         const dto: ChatRequest & { stream?: false } = {
             model: this.model,
-            messages,
+            messages: [{ role: "user", content: request.prompt }],
             stream: false,
             options: {
                 temperature: request.temperature ?? 0.7,
@@ -68,6 +62,37 @@ export class LlamaProvider extends AIProvider {
         return {
             response: response.message.content,
             tokens: response.eval_count,
+        };
+    }
+
+    async llmChat(request: LLMChatRequest): Promise<LLMChatResult> {
+        const validation = this.validateConfig();
+        if (validation) {
+            throw new Error(validation);
+        }
+
+        // Sad typescript assertion
+        const dto: ChatRequest & { stream?: false } = {
+            model: this.model,
+            messages: request.messages,
+            stream: false,
+            options: {
+                temperature: request.temperature ?? 0.7,
+            },
+        };
+
+        const response: ChatResponse = await ollama.chat(dto);
+
+        return {
+            response: {
+                role: "assistant",
+                content: response.message.content,
+            },
+            tokens: response.eval_count,
+            metadata: {
+                model: this.model,
+                temperature: request.temperature,
+            },
         };
     }
 

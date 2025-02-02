@@ -2,13 +2,19 @@ export interface AIRequestLog {
     id?: number;
     date?: Date;
     provider: string;
-    requestType: "llm" | "stt" | "tts";
+    requestType: "llm" | "stt" | "tts" | "llm_chat";
     model?: string;
     response?: string;
     inputText?: string;
     outputText?: string;
     metadata?: Record<string, unknown>;
 }
+export const AI_REQUEST_TYPE = {
+    llm: "llm",
+    stt: "stt",
+    tts: "tts",
+    llm_chat: "llm_chat",
+};
 
 class AIRequestDatabase {
     private db: IDBDatabase | null = null;

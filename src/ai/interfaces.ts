@@ -23,15 +23,30 @@ export interface SpeechToTextResult {
 
 export interface LLMRequest {
     prompt: string;
-    systemPrompt?: string;
     temperature?: number;
-    maxTokens?: number;
     model?: string;
     format?: "json" | "text";
 }
 
 export interface LLMResult {
     response: string;
+    tokens?: number;
+    metadata?: Record<string, any>;
+}
+
+export interface LLMChatRequest {
+    messages: LLMChatMessage[];
+    temperature?: number;
+    model?: string;
+}
+
+export interface LLMChatMessage {
+    role: "system" | "user" | "assistant";
+    content: string;
+}
+
+export interface LLMChatResult {
+    response: LLMChatMessage;
     tokens?: number;
     metadata?: Record<string, any>;
 }
@@ -61,6 +76,10 @@ export abstract class AIProvider {
 
     llm?(request: LLMRequest): Promise<LLMResult> {
         throw new Error("Text generation not supported by this provider");
+    }
+
+    llmChat?(request: LLMChatRequest): Promise<LLMChatResult> {
+        throw new Error("Chat generation not supported by this provider");
     }
 
     configure?(config: Record<string, any>): void {

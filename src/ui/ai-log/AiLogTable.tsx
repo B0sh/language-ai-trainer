@@ -1,5 +1,5 @@
 import React from "react";
-import { AIRequestLog } from "../../ai/db";
+import { AI_REQUEST_TYPE, AIRequestLog } from "../../ai/db";
 import SlRelativeTime from "@shoelace-style/shoelace/dist/react/relative-time";
 import { AppSettings } from "../../models/app-settings";
 import "./AiLogTable.css";
@@ -11,6 +11,24 @@ interface Props {
 }
 
 export const AiLogTable: React.FC<Props> = ({ logs, settings, onSelectLog }) => {
+    const formatContent = (content: string | undefined, type: string) => {
+        if (!content) return "N/A";
+        if (type === "llm_chat") {
+            try {
+                const parsed = JSON.parse(content);
+                if (Array.isArray(parsed)) {
+                    const lastUserMsg = parsed.reverse().find((msg) => msg.role === "user");
+                    return lastUserMsg ? lastUserMsg.content : "N/A";
+                } else {
+                    return parsed.content || "N/A";
+                }
+            } catch {
+                return content;
+            }
+        }
+        return content;
+    };
+
     return (
         <div className="ai-log-table-container">
             <table className="ai-log-table">
@@ -30,10 +48,10 @@ export const AiLogTable: React.FC<Props> = ({ logs, settings, onSelectLog }) => 
                             <td>
                                 <SlRelativeTime date={log.date} lang={settings.targetLanguage}></SlRelativeTime>
                             </td>
-                            <td>{log.requestType}</td>
+                            <td>{AI_REQUEST_TYPE[log.requestType]}</td>
                             <td>{log.provider}</td>
-                            <td className="text-cell">{log.inputText || "N/A"}</td>
-                            <td className="text-cell">{log.outputText || "N/A"}</td>
+                            <td className="text-cell">{formatContent(log.inputText, log.requestType)}</td>
+                            <td className="text-cell">{formatContent(log.outputText, log.requestType)}</td>
                             <td>
                                 <span className={`status ${log.response === "success" ? "success" : "error"}`}>
                                     {log.response === "success" ? "Success" : "Error"}

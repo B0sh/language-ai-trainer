@@ -3,21 +3,20 @@ import { useEffect, useRef, useState } from "react";
 import { AppSettings } from "../../../models/app-settings";
 import { getTargetLanguage } from "../../../shared/languages";
 import { MessageInput } from "./MessageInput";
+import type SlTextareaElement from "@shoelace-style/shoelace/dist/components/textarea/textarea";
 import "./AIConversation.css";
+import { AIProviderRegistry } from "../../../ai/registry";
+import { LLMChatMessage, LLMChatRequest } from "../../../ai/interfaces";
 
-interface Message {
-    role: "user" | "assistant";
-    content: string;
-}
-
-interface AIConversationProps {
+interface Props {
     settings: AppSettings;
 }
 
-export const AIConversation: React.FC<AIConversationProps> = ({ settings }) => {
-    const [messages, setMessages] = useState<Message[]>([]);
+export const AIConversation: React.FC<Props> = ({ settings }) => {
+    const [messages, setMessages] = useState<LLMChatMessage[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const textareaRef = useRef<SlTextareaElement>(null);
     const targetLanguage = getTargetLanguage(settings.targetLanguage);
 
     const scrollToBottom = () => {
@@ -29,7 +28,7 @@ export const AIConversation: React.FC<AIConversationProps> = ({ settings }) => {
     }, [messages]);
 
     const handleSubmit = async (message: string) => {
-        const newMessage: Message = {
+        const newMessage: LLMChatMessage = {
             role: "user",
             content: message,
         };
@@ -37,16 +36,37 @@ export const AIConversation: React.FC<AIConversationProps> = ({ settings }) => {
         setMessages((prev) => [...prev, newMessage]);
         setIsLoading(true);
 
-        // TODO: Implement AI response
-        // For now, we'll just simulate a response
-        setTimeout(() => {
-            const aiResponse: Message = {
-                role: "assistant",
-                content: "This is a placeholder response. The AI integration will be implemented later.",
+        try {
+            const chatRequest: LLMChatRequest = {
+                messages: [
+                    {
+                        role: "system",
+                        content: `You are a friendly conversation partner helping someone practice ${targetLanguage.description}. 
+                                Respond naturally and conversationally, keeping responses concise and engaging. 
+                                If the user makes language mistakes, provide gentle corrections while maintaining the flow of conversation.`,
+                    },
+                    ...messages,
+                    newMessage,
+                ],
             };
-            setMessages((prev) => [...prev, aiResponse]);
+
+            const result = await AIProviderRegistry.llmChat(chatRequest);
+            setMessages((prev) => [...prev, result.response]);
+        } catch (error) {
+            // Add an error message to the conversation
+            setMessages((prev) => [
+                ...prev,
+                {
+                    role: "assistant",
+                    content: `I apologize, but I encountered an error: ${error.message}. Please try again.`,
+                },
+            ]);
+        } finally {
             setIsLoading(false);
-        }, 1000);
+            setTimeout(() => {
+                textareaRef.current?.focus();
+            }, 100);
+        }
     };
 
     return (
@@ -66,7 +86,7 @@ export const AIConversation: React.FC<AIConversationProps> = ({ settings }) => {
                     <div ref={messagesEndRef} />
                 </div>
             )}
-            <MessageInput onSubmit={handleSubmit} isLoading={isLoading} />
+            <MessageInput onSubmit={handleSubmit} isLoading={isLoading} textareaRef={textareaRef} />
         </div>
     );
 };

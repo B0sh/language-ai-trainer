@@ -1,4 +1,13 @@
-import { AICapabilities, AIProvider, LLMRequest, LLMResult, TTSAudio, TTSRequest } from "./interfaces";
+import {
+    AICapabilities,
+    AIProvider,
+    LLMRequest,
+    LLMResult,
+    TTSAudio,
+    TTSRequest,
+    LLMChatRequest,
+    LLMChatResult,
+} from "./interfaces";
 import { BrowserProvider } from "./browser/BrowserProvider";
 import { OpenAIProvider } from "./openai/OpenAIProvider";
 import { GoogleProvider } from "./google/GoogleProvider";
@@ -169,6 +178,43 @@ export class AIProviderRegistry {
                 provider: provider.name,
                 requestType: "llm",
                 inputText: request.prompt,
+                response: error instanceof Error ? error.message : "Unknown error",
+            });
+
+            throw error;
+        } finally {
+            this.llmProcessing = false;
+        }
+    }
+
+    static async llmChat(request: LLMChatRequest): Promise<LLMChatResult> {
+        const provider = this.getActiveProvider("llm");
+        if (!provider.llmChat) {
+            throw new Error(`Provider ${provider.name} does not support chat generation`);
+        }
+        if (this.llmProcessing) {
+            return;
+        }
+
+        this.llmProcessing = true;
+        try {
+            const result = await provider.llmChat(request);
+
+            await aiRequestDB.logRequest({
+                provider: provider.name,
+                requestType: "llm_chat",
+                inputText: JSON.stringify(request.messages),
+                outputText: JSON.stringify(result.response),
+                metadata: result.metadata,
+                response: "success",
+            });
+
+            return result;
+        } catch (error) {
+            await aiRequestDB.logRequest({
+                provider: provider.name,
+                requestType: "llm_chat",
+                inputText: JSON.stringify(request.messages),
                 response: error instanceof Error ? error.message : "Unknown error",
             });
 

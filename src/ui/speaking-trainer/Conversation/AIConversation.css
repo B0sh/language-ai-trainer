@@ -63,17 +63,22 @@
     .input-container {
         padding: 1rem;
         background-color: var(--sl-color-neutral-0);
-        border-top: 1px solid var(--sl-color-neutral-200);
         transition: all 0.3s ease-in-out;
     }
 
-    .input-form {
-        display: flex;
-        gap: 0.5rem;
+    sl-textarea::part(base) {
+        border-radius: var(--sl-border-radius-x-large);
     }
 
-    .input-textarea {
-        flex: 1;
+    .input-form {
+        gap: 0.5rem;
+        margin: 0 auto;
+        max-width: 600px;
+        display: flex;
+
+        sl-textarea {
+            flex: 1;
+        }
     }
 }
 

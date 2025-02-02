@@ -1,5 +1,5 @@
 import { ChatCompletion, ChatCompletionMessageParam } from "openai/resources/chat/completions";
-import { AIProvider, AICapabilities, LLMRequest, LLMResult } from "../interfaces";
+import { AIProvider, AICapabilities, LLMRequest, LLMResult, LLMChatRequest, LLMChatResult } from "../interfaces";
 import OpenAI from "openai";
 
 export interface OpenAIConfig {
@@ -67,30 +67,62 @@ export class OpenAIProvider extends AIProvider {
             throw new Error("OpenAI API client is not initialized");
         }
 
-        const messages: ChatCompletionMessageParam[] = [];
-        if (request.systemPrompt) {
-            messages.push({ role: "system", content: request.systemPrompt });
-        }
-
-        messages.push({ role: "user", content: request.prompt });
-
         const completion: ChatCompletion = await this.openai.chat.completions.create(
             {
                 model: request.model || "gpt-4o-mini",
-                messages,
+                messages: [{ role: "user", content: request.prompt }],
             },
             {
                 stream: false,
             }
         );
         const endTime = performance.now();
-        const duration = endTime - startTime;
 
         return {
             response: completion.choices[0].message.content,
             tokens: completion.usage.total_tokens,
             metadata: {
-                duration,
+                model: request.model || "gpt-4o-mini",
+                temperature: request.temperature,
+                duration: endTime - startTime,
+                promptTokens: completion.usage.prompt_tokens,
+                completionTokens: completion.usage.completion_tokens,
+            },
+        };
+    }
+
+    async llmChat(request: LLMChatRequest): Promise<LLMChatResult> {
+        const startTime = performance.now();
+        const validation = this.validateConfig();
+        if (validation) {
+            throw new Error(validation);
+        }
+
+        if (!this.openai) {
+            throw new Error("OpenAI API client is not initialized");
+        }
+
+        const completion = await this.openai.chat.completions.create(
+            {
+                model: request.model || "gpt-4o-mini",
+                messages: request.messages,
+                temperature: request.temperature,
+            },
+            {
+                stream: false,
+            }
+        );
+        const endTime = performance.now();
+
+        return {
+            response: completion.choices[0].message,
+            tokens: completion.usage.total_tokens,
+            metadata: {
+                model: request.model || "gpt-4o-mini",
+                temperature: request.temperature,
+                duration: endTime - startTime,
+                promptTokens: completion.usage.prompt_tokens,
+                completionTokens: completion.usage.completion_tokens,
             },
         };
     }

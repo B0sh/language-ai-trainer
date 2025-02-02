@@ -1,4 +1,13 @@
-import { AICapabilities, AIProvider, LLMRequest, LLMResult, TTSRequest } from "../interfaces";
+import {
+    AICapabilities,
+    AIProvider,
+    LLMRequest,
+    LLMResult,
+    TTSRequest,
+    LLMChatRequest,
+    LLMChatResult,
+    LLMChatMessage,
+} from "../interfaces";
 import { GoogleTTSAudio } from "./GoogleTTSAudio";
 import { GoogleGenerativeAI, ModelParams } from "@google/generative-ai";
 import * as VOICE_LIST from "./google-voices.json";
@@ -126,11 +135,13 @@ export class GoogleProvider extends AIProvider {
         try {
             const modelParams: ModelParams = {
                 model,
+                generationConfig: {
+                    temperature: request.temperature ?? 1,
+                },
             };
+
             if (request.format == "json") {
-                modelParams.generationConfig = {
-                    responseMimeType: "application/json",
-                };
+                modelParams.generationConfig.responseMimeType = "application/json";
             }
 
             const genModel = this.genAI.getGenerativeModel(modelParams);
@@ -143,6 +154,73 @@ export class GoogleProvider extends AIProvider {
                 metadata: {
                     temperature: request.temperature,
                     model,
+                    promptTokenCount: result.response.usageMetadata.promptTokenCount,
+                    candidatesTokenCount: result.response.usageMetadata.candidatesTokenCount,
+                    totalTokenCount: result.response.usageMetadata.totalTokenCount,
+                    cachedContentTokenCount: result.response.usageMetadata.cachedContentTokenCount,
+                    executionTime: endTime - startTime,
+                },
+            };
+        } catch (error) {
+            throw new Error(`Gemini API error: ${error.message}`);
+        }
+    }
+
+    async llmChat(request: LLMChatRequest): Promise<LLMChatResult> {
+        const validation = this.validateConfig();
+        if (validation) {
+            throw new Error(validation);
+        }
+
+        if (!this.genAI) {
+            throw new Error("Gemini API not initialized");
+        }
+
+        const model = request.model || "gemini-1.5-flash";
+
+        try {
+            const startTime = performance.now();
+
+            const systemInstruction = request.messages
+                .filter((m) => m.role === "system")
+                .map((m) => m.content)
+                .join("\n");
+
+            const history = request.messages
+                .slice(0, request.messages.length - 1)
+                .filter((m) => m.role === "user" || m.role === "assistant")
+                .map((m) => {
+                    let role: string = m.role;
+                    if (m.role === "assistant") {
+                        role = "model";
+                    }
+                    return { role: role, parts: [{ text: m.content }] };
+                });
+
+            const genModel = this.genAI.getGenerativeModel({
+                model,
+                systemInstruction,
+            });
+
+            const chat = genModel.startChat({
+                generationConfig: {
+                    temperature: request.temperature ?? 1,
+                },
+                history: history,
+            });
+
+            const result = await chat.sendMessage(request.messages[request.messages.length - 1].content);
+
+            const endTime = performance.now();
+
+            return {
+                response: {
+                    role: "assistant",
+                    content: result.response.text(),
+                },
+                metadata: {
+                    model,
+                    temperature: request.temperature,
                     promptTokenCount: result.response.usageMetadata.promptTokenCount,
                     candidatesTokenCount: result.response.usageMetadata.candidatesTokenCount,
                     totalTokenCount: result.response.usageMetadata.totalTokenCount,
