@@ -8,7 +8,7 @@ interface Props {
 export const ConversationPrompt: React.FC<Props> = ({ inspirationWord, targetLanguageDescription }) => {
     return (
         <div className="prompt-container">
-            Start a conversation about a "{inspirationWord}" in {targetLanguageDescription}
+            Start a conversation about the word "{inspirationWord}" in {targetLanguageDescription}
         </div>
     );
 };

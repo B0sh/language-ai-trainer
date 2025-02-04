@@ -13,6 +13,7 @@ import { LLMChatMessage } from "../../../ai/interfaces";
 import { ConversationAnalysis } from "../../../ai/prompts/conversation-prompts";
 import { Messages } from "./Messages";
 import { ConversationPrompt } from "./ConversationPrompt";
+import { sleep } from "../../../shared/utility";
 
 interface Props {
     settings: AppSettings;
@@ -57,7 +58,7 @@ export const AIConversation: React.FC<Props> = ({ settings }) => {
 
     const handleSubmit = useCallback(
         async (message: string) => {
-            setPlaybackStatus("loading");
+            setPlaybackStatus("loading_chat");
             if (conversation.loading) return;
 
             const nextMessage: LLMChatMessage = {
@@ -68,8 +69,10 @@ export const AIConversation: React.FC<Props> = ({ settings }) => {
             setMessages((prev) => [...prev, nextMessage]);
 
             try {
+                // await sleep(4000);
                 const result = await conversation.submitMessage(nextMessage);
                 setMessages((prev) => [...prev, result]);
+                setPlaybackStatus("loading_audio");
             } catch (error) {
                 const provider = AIProviderRegistry.getActiveProvider("llm");
                 showBoundary(`Failed to request LLM with ${provider.name}.\n\n${error.message}`);
@@ -110,6 +113,7 @@ export const AIConversation: React.FC<Props> = ({ settings }) => {
             ) : (
                 <Messages messages={messages} playbackStatus={playbackStatus} analysis={analysis} />
             )}
+
             <MessageInput
                 onSubmit={handleSubmit}
                 onFinish={messages.length > 0 && handleFinish}

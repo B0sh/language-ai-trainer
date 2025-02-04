@@ -7,6 +7,7 @@ import SlTooltip from "@shoelace-style/shoelace/dist/react/tooltip";
 import { LLMChatMessage } from "../../../ai/interfaces";
 import { ConversationAnalysis } from "../../../ai/prompts/conversation-prompts";
 import { CorrectionDialog } from "./CorrectionDialog";
+import { TypewriterEffect } from "../../shared/TypewriterEffect";
 
 interface Props {
     messages: LLMChatMessage[];
@@ -28,15 +29,17 @@ export const Messages: React.FC<Props> = ({ messages, playbackStatus, analysis }
     return (
         <div className="messages-container">
             {messages.map((message, index) => {
-                return <Message key={index} message={message} index={index} analysis={analysis} />;
+                return (
+                    <Message
+                        key={index}
+                        message={message}
+                        index={index}
+                        analysis={analysis}
+                        typewriterAnimation={message.role === "assistant" && messages.length - 1 === index}
+                    />
+                );
             })}
-            {playbackStatus === "loading" && (
-                <div className="message ai">
-                    <div className="message-content">
-                        <SlSpinner className="large-spinner" />
-                    </div>
-                </div>
-            )}
+            {playbackStatus === "loading_chat" && <SlSpinner style={{ fontSize: "1.5rem" }} />}
             {analysis && analysis.noFeedback && (
                 <div className="no-feedback-message">There was no feedback for your messages.</div>
             )}
@@ -49,9 +52,10 @@ interface MessageProps {
     message: LLMChatMessage;
     index: number;
     analysis: ConversationAnalysis | null;
+    typewriterAnimation: boolean;
 }
 
-const Message: React.FC<MessageProps> = ({ message, index, analysis }) => {
+const Message: React.FC<MessageProps> = ({ message, index, analysis, typewriterAnimation }) => {
     const [showCorrectionModal, setShowCorrectionModal] = useState(false);
 
     if (analysis) {
@@ -72,13 +76,11 @@ const Message: React.FC<MessageProps> = ({ message, index, analysis }) => {
                         </div>
                         <div className="correction-icon">
                             <SlTooltip content={"View AI's Explanation"}>
-                                <SlIconButton 
-                                    name="info-circle-fill" 
-                                    onClick={() => setShowCorrectionModal(true)}
-                                />
+                                <SlIconButton name="info-circle-fill" onClick={() => setShowCorrectionModal(true)} />
                             </SlTooltip>
                         </div>
                     </div>
+
                     <CorrectionDialog
                         open={showCorrectionModal}
                         onClose={() => setShowCorrectionModal(false)}
@@ -93,7 +95,9 @@ const Message: React.FC<MessageProps> = ({ message, index, analysis }) => {
 
     return (
         <div className={`message ${message.role}`}>
-            <div className="message-content">{message.content}</div>
+            <div className="message-content">
+                {typewriterAnimation ? <TypewriterEffect text={message.content} /> : message.content}
+            </div>
         </div>
     );
 };
