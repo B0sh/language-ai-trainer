@@ -21,7 +21,7 @@ export class ConversationChallenge {
         this.loading = false;
         this.language = language;
         this.targetLanguageLevel = targetLanguageLevel;
-        this.inspirationWord = generateAIInspirationWord();
+        this.inspirationWord = generateAIInspirationWord(this.language, this.targetLanguageLevel);
         this.ttsAudio = null;
     }
 
@@ -91,6 +91,10 @@ export class ConversationChallenge {
 
     public startNewConversation(): void {
         this.messages = [];
-        this.inspirationWord = generateAIInspirationWord();
+        this.inspirationWord = generateAIInspirationWord(this.language, this.targetLanguageLevel);
+    }
+
+    public setInspirationWord(word: string) {
+        this.inspirationWord = word;
     }
 }

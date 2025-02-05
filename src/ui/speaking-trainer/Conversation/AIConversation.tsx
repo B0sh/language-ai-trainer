@@ -103,12 +103,21 @@ export const AIConversation: React.FC<Props> = ({ settings }) => {
         setAnalysis(analysis);
     }, [conversation]);
 
+    const handleCustomWordSelect = useCallback(
+        (word: string) => {
+            conversation.setInspirationWord(word);
+            forceUpdate({});
+        },
+        [conversation]
+    );
+
     return (
         <div className={`chat-container ${messages.length === 0 ? "empty" : ""}`}>
             {messages.length === 0 ? (
                 <ConversationPrompt
                     inspirationWord={conversation.inspirationWord}
-                    targetLanguageDescription={targetLanguage.description}
+                    settings={settings}
+                    onCustomWordSelect={handleCustomWordSelect}
                 />
             ) : (
                 <Messages messages={messages} playbackStatus={playbackStatus} analysis={analysis} />
