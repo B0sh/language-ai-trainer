@@ -12,7 +12,7 @@ interface Props {
 
 export const CompTrainerActivity: React.FC<Props> = ({ settings }) => {
     const [challenge] = useState(() => new CompChallenge(settings.targetLanguage, settings.targetLanguageLevel));
-    const [playbackStatus, setPlaybackStatus] = useState<string>("");
+    const [playbackStatus, setPlaybackStatus] = useState<string>("loading");
     const [, forceUpdate] = useState({});
     const { showBoundary } = useErrorBoundary();
 
@@ -84,6 +84,10 @@ export const CompTrainerActivity: React.FC<Props> = ({ settings }) => {
         forceUpdate({});
     }, [challenge]);
 
+    const replayAudio = () => {
+        challenge.playAudio(settings.volume);
+    };
+
     return (
         <>
             {challenge.status === "correct" || challenge.status === "incorrect" ? (
@@ -99,10 +103,15 @@ export const CompTrainerActivity: React.FC<Props> = ({ settings }) => {
                     message={challenge.storyText}
                     status={challenge.status}
                     onNextRound={handleNextRound}
-                    onReplayAudio={generateProblem}
+                    onReplayAudio={replayAudio}
                 />
             ) : (
-                <CompTrainerRound playbackStatus={playbackStatus} status={challenge.status} onSubmit={handleSubmit} />
+                <CompTrainerRound
+                    playbackStatus={playbackStatus}
+                    status={challenge.status}
+                    duration={challenge.ttsAudio?.duration}
+                    onSubmit={handleSubmit}
+                />
             )}
         </>
     );

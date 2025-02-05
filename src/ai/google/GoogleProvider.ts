@@ -117,7 +117,10 @@ export class GoogleProvider extends AIProvider {
             voice,
         };
 
-        return new GoogleTTSAudio(request.text, data.audioContent, metadata);
+        const audio = new GoogleTTSAudio(request.text, data.audioContent, metadata);
+        await audio.decodeAudio();
+
+        return audio;
     }
 
     async llm(request: LLMRequest): Promise<LLMResult> {

@@ -4,4 +4,11 @@
 
 .comp-trainer-round {
     width: 100%;
+
+    .progress {
+        width: 100%;
+    }
+    sl-progress-bar::part(indicator) {
+        transition-duration: 0;
+    }
 }

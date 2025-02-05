@@ -13,8 +13,8 @@ interface ComprehensionCheckResponse {
 export class CompChallenge {
     private language: string;
     private languageLevel: TargetLanguageLevel;
-    private ttsAudio: TTSAudio | null = null;
 
+    public ttsAudio: TTSAudio | null = null;
     public status = "active";
     public storyText = "";
     public inspirationWord = "";
