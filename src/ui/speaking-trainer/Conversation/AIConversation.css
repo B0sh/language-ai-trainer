@@ -160,6 +160,9 @@
     border-top: none;
     background: transparent;
 }
+.chat-container.empty.loading {
+    align-items: center;
+}
 
 .chat-container:not(.empty) .messages-container {
     opacity: 1;

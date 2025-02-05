@@ -50,6 +50,7 @@ export const AIConversation: React.FC<Props> = ({ settings }) => {
     // });
 
     const [playbackStatus, setPlaybackStatus] = useState<string>("");
+    const [loading, setLoading] = useState<boolean>(false);
     const [, forceUpdate] = useState({});
     const { showBoundary } = useErrorBoundary();
 
@@ -97,13 +98,22 @@ export const AIConversation: React.FC<Props> = ({ settings }) => {
     );
 
     const handleFinish = useCallback(async () => {
-        setPlaybackStatus("loading");
-        const analysis = await conversation.generateAnalysis();
-        setPlaybackStatus("finished");
-        setAnalysis(analysis);
+        setLoading(true);
+
+        try {
+            const analysis = await conversation.generateAnalysis();
+            setLoading(false);
+            setAnalysis(analysis);
+        } catch (error) {
+            const provider = AIProviderRegistry.getActiveProvider("llm");
+            showBoundary(`Failed to request LLM with ${provider.name}.\n\n${error.message}`);
+            return;
+        } finally {
+            setLoading(false);
+        }
     }, [conversation]);
 
-    const handleCustomWordSelect = useCallback(
+    const handleWordSelect = useCallback(
         (word: string) => {
             conversation.setInspirationWord(word);
             forceUpdate({});
@@ -111,13 +121,21 @@ export const AIConversation: React.FC<Props> = ({ settings }) => {
         [conversation]
     );
 
+    if (loading) {
+        return (
+            <div className="chat-container empty loading">
+                <SlSpinner className="large-spinner" />
+            </div>
+        );
+    }
+
     return (
         <div className={`chat-container ${messages.length === 0 ? "empty" : ""}`}>
             {messages.length === 0 ? (
                 <ConversationPrompt
                     inspirationWord={conversation.inspirationWord}
                     settings={settings}
-                    onCustomWordSelect={handleCustomWordSelect}
+                    onWordSelect={handleWordSelect}
                 />
             ) : (
                 <Messages messages={messages} playbackStatus={playbackStatus} analysis={analysis} />

@@ -1,14 +1,9 @@
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import SlSpinner from "@shoelace-style/shoelace/dist/react/spinner";
-import SlIcon from "@shoelace-style/shoelace/dist/react/icon";
-import SlIconButton from "@shoelace-style/shoelace/dist/react/icon-button";
-import SlTooltip from "@shoelace-style/shoelace/dist/react/tooltip";
 import { LLMChatMessage } from "../../../ai/interfaces";
 import { ConversationAnalysis } from "../../../ai/prompts/conversation-prompts";
-import { CorrectionDialog } from "./CorrectionDialog";
-import { TypewriterEffect } from "../../shared/TypewriterEffect";
-import { TextDiff } from "../../shared/TextDiff";
+import { Message } from "./Message";
 
 interface Props {
     messages: LLMChatMessage[];
@@ -36,7 +31,7 @@ export const Messages: React.FC<Props> = ({ messages, playbackStatus, analysis }
                         message={message}
                         index={index}
                         analysis={analysis}
-                        typewriterAnimation={message.role === "assistant" && messages.length - 1 === index}
+                        typewriterAnimation={!analysis && message.role === "assistant" && messages.length - 1 === index}
                     />
                 );
             })}
@@ -45,54 +40,6 @@ export const Messages: React.FC<Props> = ({ messages, playbackStatus, analysis }
                 <div className="no-feedback-message">There was no feedback for your messages.</div>
             )}
             <div ref={messagesEndRef} />
-        </div>
-    );
-};
-
-interface MessageProps {
-    message: LLMChatMessage;
-    index: number;
-    analysis: ConversationAnalysis | null;
-    typewriterAnimation: boolean;
-}
-
-const Message: React.FC<MessageProps> = ({ message, index, analysis, typewriterAnimation }) => {
-    const [showCorrectionModal, setShowCorrectionModal] = useState(false);
-
-    if (analysis) {
-        const corrections = analysis.corrections?.filter((c) => c.messageIndex === index);
-
-        if (corrections?.length > 0) {
-            const correction = corrections[0];
-            return (
-                <>
-                    <div className="message correction">
-                        <TextDiff before={message.content} after={correction.suggestedText} />
-
-                        <div className="correction-icon">
-                            <SlTooltip content={"View AI's Explanation"}>
-                                <SlIconButton name="info-circle-fill" onClick={() => setShowCorrectionModal(true)} />
-                            </SlTooltip>
-                        </div>
-                    </div>
-
-                    <CorrectionDialog
-                        open={showCorrectionModal}
-                        onClose={() => setShowCorrectionModal(false)}
-                        originalText={message.content}
-                        correctedText={correction.suggestedText}
-                        explanation={correction.explanation}
-                    />
-                </>
-            );
-        }
-    }
-
-    return (
-        <div className={`message ${message.role}`}>
-            <div className="message-content">
-                {typewriterAnimation ? <TypewriterEffect text={message.content} /> : message.content}
-            </div>
         </div>
     );
 };

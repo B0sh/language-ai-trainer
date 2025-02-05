@@ -12,24 +12,23 @@ import { generateAIInspirationWord } from "../../../ai/prompts/ai-inspiration-wo
 interface Props {
     inspirationWord: string;
     settings: AppSettings;
-    onCustomWordSelect?: (word: string) => void;
+    onWordSelect: (word: string) => void;
 }
 
-export const ConversationPrompt: React.FC<Props> = ({ inspirationWord, settings, onCustomWordSelect }) => {
+export const ConversationPrompt: React.FC<Props> = ({ inspirationWord, settings, onWordSelect }) => {
     const [open, setOpen] = React.useState(false);
-    const [customWord, setCustomWord] = React.useState(inspirationWord);
+    const [input, setInput] = React.useState(inspirationWord);
 
     const handleSubmit = () => {
-        if (customWord.trim() && onCustomWordSelect) {
-            onCustomWordSelect(customWord.trim());
+        if (input.trim()) {
+            onWordSelect(input.trim());
             setOpen(false);
-            setCustomWord("");
         }
     };
 
     const randomizeWord = () => {
         const word = generateAIInspirationWord(settings.targetLanguage, settings.targetLanguageLevel);
-        setCustomWord(word);
+        setInput(word);
     };
 
     const onHide = (event: Event) => {
@@ -42,17 +41,16 @@ export const ConversationPrompt: React.FC<Props> = ({ inspirationWord, settings,
         <div className="prompt-container">
             Start a conversation about the word "{inspirationWord}" in{" "}
             {getTargetLanguage(settings.targetLanguage).description}.
-            {onCustomWordSelect && (
-                <SlButton size="small" variant="text" onClick={() => setOpen(true)} style={{ marginLeft: "0.5rem" }}>
-                    Change Word
-                </SlButton>
-            )}
+            <SlButton size="small" variant="text" onClick={() => setOpen(true)} style={{ marginLeft: "0.5rem" }}>
+                Change Word
+            </SlButton>
             <SlDialog label="Choose Custom Word" open={open} onSlAfterHide={onHide}>
                 <div className="conversation-prompt-dialog">
                     <SlInput
                         placeholder="Enter a custom word"
-                        value={customWord}
-                        onSlInput={(e) => setCustomWord((e.target as SlInputElement).value)}
+                        autoFocus={true}
+                        value={input}
+                        onSlInput={(e) => setInput((e.target as SlInputElement).value)}
                     />
 
                     <SlTooltip content="Randomize Word">
