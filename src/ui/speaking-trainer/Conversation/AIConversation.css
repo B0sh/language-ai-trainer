@@ -76,23 +76,13 @@
 
     .message.correction .incorrect-text {
         grid-area: incorrect-text;
-        color: var(--sl-color-danger-600);
         margin: 0.25rem 0.25rem 0.25rem 0;
-
-        sl-icon {
-            margin-right: 0.25rem;
-        }
     }
 
     .message.correction .correct-text {
         grid-area: correct-text;
-        color: var(--sl-color-success-600);
         font-weight: 500;
         margin: 0.25rem 0.25rem 0.25rem 0;
-
-        sl-icon {
-            margin-right: 0.25rem;
-        }
     }
 
     .correction-icon {
@@ -177,4 +167,15 @@
 }
 .chat-container:not(.empty) .prompt-container {
     display: none;
+}
+
+.conversation-prompt-dialog {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+
+    sl-input {
+        flex: 1;
+    }
 }

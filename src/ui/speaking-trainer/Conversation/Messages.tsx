@@ -8,6 +8,7 @@ import { LLMChatMessage } from "../../../ai/interfaces";
 import { ConversationAnalysis } from "../../../ai/prompts/conversation-prompts";
 import { CorrectionDialog } from "./CorrectionDialog";
 import { TypewriterEffect } from "../../shared/TypewriterEffect";
+import { TextDiff } from "../../shared/TextDiff";
 
 interface Props {
     messages: LLMChatMessage[];
@@ -66,14 +67,8 @@ const Message: React.FC<MessageProps> = ({ message, index, analysis, typewriterA
             return (
                 <>
                     <div className="message correction">
-                        <div className="incorrect-text">
-                            <SlIcon name="x-lg" className="incorrect" />
-                            {message.content}
-                        </div>
-                        <div className="correct-text">
-                            <SlIcon name="check-lg" className="correct" />
-                            {correction.suggestedText}
-                        </div>
+                        <TextDiff before={message.content} after={correction.suggestedText} />
+
                         <div className="correction-icon">
                             <SlTooltip content={"View AI's Explanation"}>
                                 <SlIconButton name="info-circle-fill" onClick={() => setShowCorrectionModal(true)} />
