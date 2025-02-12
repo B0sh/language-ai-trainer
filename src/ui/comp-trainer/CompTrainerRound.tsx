@@ -3,14 +3,16 @@ import SlTextarea from "@shoelace-style/shoelace/dist/react/textarea";
 import SlSpinner from "@shoelace-style/shoelace/dist/react/spinner";
 import type SlTextareaElement from "@shoelace-style/shoelace/dist/components/textarea/textarea";
 import { useKeypress } from "../../shared/useKeypress";
+import { AnimatedProgress } from "../shared/AnimatedProgress";
 
 interface Props {
     playbackStatus: string;
     status: string;
+    duration: number | null;
     onSubmit: (input: string) => void;
 }
 
-export const CompTrainerRound: React.FC<Props> = ({ playbackStatus, status, onSubmit }) => {
+export const CompTrainerRound: React.FC<Props> = ({ playbackStatus, status, duration, onSubmit }) => {
     const inputRef = useRef<SlTextareaElement>(null);
 
     useKeypress("Enter", (event: KeyboardEvent) => {
@@ -48,10 +50,13 @@ export const CompTrainerRound: React.FC<Props> = ({ playbackStatus, status, onSu
                     rows={2}
                     autocomplete="off"
                     autoCorrect="off"
-                    helpText="Write a summary of what was said."
+                    resize="none"
+                    label="Write a summary of what was said"
                     disabled={status === "correct" || status === "incorrect" ? true : false}
                 />
             </form>
+
+            {duration && <AnimatedProgress duration={duration} className="progress" />}
         </div>
     );
 };

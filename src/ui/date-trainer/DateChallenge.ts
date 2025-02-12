@@ -78,7 +78,7 @@ export class DateChallenge {
             this.loading = true;
             const language = getTargetLanguage(this.language);
 
-            this.inspirationWord = generateAIInspirationWord();
+            this.inspirationWord = generateAIInspirationWord(this.language, this.targetLanguageLevel);
 
             const prompt = PROMPT_DATE_TRAINER_SENTENCE(
                 language.description,

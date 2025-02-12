@@ -1,8 +1,9 @@
 import React, { useRef } from "react";
 import SlInput from "@shoelace-style/shoelace/dist/react/input";
-import SlSpinner from "@shoelace-style/shoelace/dist/react/spinner";
 import SlIcon from "@shoelace-style/shoelace/dist/react/icon";
 import type SlInputElement from "@shoelace-style/shoelace/dist/components/input/input";
+import { AnimatedSoundwave } from "../shared/AnimatedSoundwave";
+import { PlaybackIcon } from "../shared/PlaybackIcon";
 
 interface NumberTrainerRoundProps {
     playbackStatus: string;
@@ -12,14 +13,6 @@ interface NumberTrainerRoundProps {
 
 export const NumberTrainerRound: React.FC<NumberTrainerRoundProps> = ({ playbackStatus, status, onSubmit }) => {
     const inputRef = useRef<SlInputElement>(null);
-
-    const getStatusIcon = () => {
-        if (playbackStatus === "loading") {
-            return <SlSpinner style={{ fontSize: "2rem" }} />;
-        }
-
-        return <SlIcon style={{ fontSize: "2rem" }} name="soundwave" />;
-    };
 
     const handleInputChange = (event: Event) => {
         const input = event.target as HTMLInputElement;
@@ -36,7 +29,8 @@ export const NumberTrainerRound: React.FC<NumberTrainerRoundProps> = ({ playback
     return (
         <>
             <div className="number-trainer-input-row">
-                <div className="status-icon">{getStatusIcon()}</div>
+                <PlaybackIcon playbackStatus={playbackStatus} />
+
                 <SlInput
                     ref={inputRef}
                     pill

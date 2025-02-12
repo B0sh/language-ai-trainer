@@ -1,28 +1,19 @@
 import React, { useRef, useState, useEffect } from "react";
 import SlInput from "@shoelace-style/shoelace/dist/react/input";
-import SlSpinner from "@shoelace-style/shoelace/dist/react/spinner";
-import SlIcon from "@shoelace-style/shoelace/dist/react/icon";
 import type SlInputElement from "@shoelace-style/shoelace/dist/components/input/input";
 import { useKeypress } from "../../shared/useKeypress";
 import { DateChallengeRound } from "./DateChallenge";
 import { AppSettings } from "../../models/app-settings";
+import { PlaybackIcon } from "../shared/PlaybackIcon";
 
 interface DateTrainerRoundProps {
     playbackStatus: string;
-    status: string;
     settings: AppSettings;
     round: DateChallengeRound;
     onSubmit: (input: string) => void;
 }
 
-export const DateTrainerRound: React.FC<DateTrainerRoundProps> = ({
-    playbackStatus,
-    status,
-    settings,
-    round,
-    onSubmit,
-}) => {
-    const [input, setInput] = useState<string>("");
+export const DateTrainerRound: React.FC<DateTrainerRoundProps> = ({ playbackStatus, settings, round, onSubmit }) => {
     const inputRef = useRef<SlInputElement>(null);
     const inputRef2 = useRef<SlInputElement>(null);
 
@@ -45,19 +36,10 @@ export const DateTrainerRound: React.FC<DateTrainerRoundProps> = ({
         }
     }, [inputRef]);
 
-    const getStatusIcon = () => {
-        if (playbackStatus === "loading") {
-            return <SlSpinner style={{ fontSize: "2rem" }} />;
-        }
-
-        return <SlIcon style={{ fontSize: "2rem" }} name="soundwave" />;
-    };
-
     return (
         <>
             <div className="number-trainer-input-row">
-                <div className="status-icon">{getStatusIcon()}</div>
-                {input}
+                <PlaybackIcon playbackStatus={playbackStatus} />
                 {round.format === "yyyy" && (
                     <SlInput
                         ref={inputRef}

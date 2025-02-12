@@ -1,0 +1,20 @@
+sl-icon.text-incorrect-icon {
+    vertical-align: middle;
+    color: var(--sl-color-danger-600);
+    margin-right: 0.25rem;
+}
+sl-icon.text-correct-icon {
+    vertical-align: middle;
+    color: var(--sl-color-success-600);
+    margin-right: 0.25rem;
+}
+
+.diff-delete {
+    text-decoration: line-through;
+    color: var(--sl-color-danger-600);
+}
+
+.diff-insert {
+    text-decoration: none;
+    color: var(--sl-color-success-600);
+}

@@ -12,7 +12,7 @@ export const PROMPT_COMP_SENTENCE = function (
         levelClause = `The text should be understandable for beginner learners of ${language}.`;
     }
     if (languageLevel === "medium") {
-        levelClause = `The text should be understandable for non native speakers of ${language}.`;
+        levelClause = `The text should be understandable for non native ${language}.`;
     }
 
     return {

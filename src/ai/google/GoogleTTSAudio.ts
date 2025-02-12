@@ -10,6 +10,16 @@ export class GoogleTTSAudio extends TTSAudio {
         this.metadata = metadata;
     }
 
+    async decodeAudio(): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this.audioElement.onloadedmetadata = () => {
+                this.duration = this.audioElement.duration;
+                resolve();
+            };
+            this.audioElement.onerror = (e) => reject(new Error(`Audio decoding failed: ${e}`));
+        });
+    }
+
     async play(volume?: number): Promise<void> {
         if (!this.audioElement.paused) {
             return;
@@ -23,6 +33,7 @@ export class GoogleTTSAudio extends TTSAudio {
             this.audioElement.onended = () => resolve();
             this.audioElement.onerror = (e) => reject(new Error(`Audio playback failed: ${e}`));
             this.audioElement.play().catch(reject);
+            this.duration = this.audioElement.duration;
         });
     }
 

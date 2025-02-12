@@ -7,11 +7,12 @@ import type SlTextareaElement from "@shoelace-style/shoelace/dist/components/tex
 
 interface MessageInputProps {
     onSubmit: (message: string) => void;
+    onFinish?: () => void;
     textareaRef: React.RefObject<SlTextareaElement>;
     isLoading: boolean;
 }
 
-export const MessageInput: React.FC<MessageInputProps> = ({ onSubmit, textareaRef, isLoading }) => {
+export const MessageInput: React.FC<MessageInputProps> = ({ onSubmit, onFinish, textareaRef, isLoading }) => {
     const [inputValue, setInputValue] = React.useState("");
 
     const handleSubmit = (e?: React.FormEvent) => {
@@ -36,7 +37,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({ onSubmit, textareaRe
 
     return (
         <div className="input-container">
-            <form onSubmit={handleSubmit} className="input-form">
+            <form className="input-form">
                 <SlTextarea
                     className="input-textarea"
                     resize="auto"
@@ -47,10 +48,12 @@ export const MessageInput: React.FC<MessageInputProps> = ({ onSubmit, textareaRe
                     placeholder="Type your message..."
                     ref={textareaRef}
                 />
-                <SlButton pill type="submit" variant="primary">
-                    <SlIcon slot="prefix" name="stopwatch-fill" />
-                    Finish
-                </SlButton>
+                {onFinish && (
+                    <SlButton className="finish-button" onClick={onFinish} pill type="button" variant="primary">
+                        <SlIcon slot="prefix" name="stopwatch-fill" />
+                        Finish
+                    </SlButton>
+                )}
             </form>
         </div>
     );

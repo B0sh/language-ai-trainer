@@ -13,8 +13,8 @@ interface ComprehensionCheckResponse {
 export class CompChallenge {
     private language: string;
     private languageLevel: TargetLanguageLevel;
-    private ttsAudio: TTSAudio | null = null;
 
+    public ttsAudio: TTSAudio | null = null;
     public status = "active";
     public storyText = "";
     public inspirationWord = "";
@@ -38,7 +38,7 @@ export class CompChallenge {
         this.loading = true;
         const language = getTargetLanguage(this.language);
 
-        this.inspirationWord = generateAIInspirationWord();
+        this.inspirationWord = generateAIInspirationWord(this.language, this.languageLevel);
 
         const prompt = PROMPT_COMP_SENTENCE(language?.description, this.languageLevel, this.inspirationWord);
         const response = await AIProviderRegistry.llm(prompt);
